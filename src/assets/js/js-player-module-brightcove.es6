@@ -326,10 +326,10 @@ class PLAYER_MODULE_BRIGHTCOVE {
         loadEvent = 'loadedmetadata';
       }
 
-      videojs(_that.config.player_id).on( loadEvent , function() {
+      // Set Load Flg
+      _that.PlayerLoadFlg = false;
 
-        // Set Load Flg
-        _that.PlayerLoadFlg = _that.Player == '' ? false : true;
+      videojs(_that.config.player_id).on( loadEvent , function() {
 
         // Set Instance
         _that.Player = this;
@@ -349,6 +349,10 @@ class PLAYER_MODULE_BRIGHTCOVE {
 
         // ロードイベントが複数掛からないためのハック
         if(String(_that.Player.readyState()) !== loadNum || _that.PlayerLoadFlg === true) return false;
+
+        // Set Load Flg
+        _that.PlayerLoadFlg = true;
+
         _that.EventPlay();
         _that.EventPause();
         _that.EventStop();
