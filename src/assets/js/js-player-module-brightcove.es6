@@ -556,12 +556,24 @@ class PLAYER_MODULE_BRIGHTCOVE {
       this.$uiSeekbarTime.addEventListener('mouseleave', (event) => {
         if(_flag === true){
           this.Player.play();
+          if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
+            for (var i = 0; i < this.$uiBtnPlay.length; ++i) {
+              this.$uiBtnPlay[i].addClass('active');
+            }
+          }
+          this.$uiBtnPause.addClass('active');
         }
         _flag = false;
       });
       this.$uiSeekbarTime.addEventListener('mouseup', (event) => {
         if(_flag === true){
           this.Player.play();
+          if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
+            for (var i = 0; i < this.$uiBtnPlay.length; ++i) {
+              this.$uiBtnPlay[i].addClass('active');
+            }
+          }
+          this.$uiBtnPause.addClass('active');
         }
         _flag = false;
       });
@@ -652,6 +664,12 @@ class PLAYER_MODULE_BRIGHTCOVE {
 
       // 変更後に再生
       this.Player.play();
+      if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
+        for (var i = 0; i < this.$uiBtnPlay.length; ++i) {
+          this.$uiBtnPlay[i].addClass('active');
+        }
+      }
+      this.$uiBtnPause.addClass('active');
 
       // Set Video Data
       this.playerVideo.id          = video.id;
