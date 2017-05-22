@@ -1,8 +1,5 @@
 .DS_Store
 node_modules
 .sass-cache
-test.html
-depapepe
-HajimeChitose
-theyatou
-ot
+_*.html
+_*
