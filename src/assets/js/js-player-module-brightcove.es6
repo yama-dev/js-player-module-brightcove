@@ -66,6 +66,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
       <div class="seekbar_vol"><div class="seekbar_vol_bg"></div><span></span></div>
       <button class="btn_full btn btn-default">full screen</button>
       <div class="display_poster"><img src="" alt=""></div>
+      <div class="display_name"></div>
     `;
 
     this.playerScriptCode = '//players.brightcove.net/{{ account }}/{{ player }}_default/index.min.js';
@@ -340,6 +341,9 @@ class PLAYER_MODULE_BRIGHTCOVE {
         // Set PlayerJson
         _that.PlayerJson = _that.Player.toJSON();
 
+        // Set MediaInfo
+        _that.PlayerMediaInfo = _that.Player.mediainfo;
+
         // DebugMode
         if(_that.currentUrl.search(/localhost/) !== -1 || _that.currentUrl.search(/192.168/) !== -1){
           _that.DebugModePlayer(loadEvent,loadNum);
@@ -356,6 +360,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
         // Set Load Flg
         _that.PlayerLoadFlg = true;
 
+        _that.SetInfo();
         _that.EventPlay();
         _that.EventPause();
         _that.EventStop();
@@ -414,6 +419,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
     this.$uiDisplayTime      = document.querySelector('#'+this.config.id+' .display_time')                     ? document.querySelector('#'+this.config.id+' .display_time')                     : document.createElement('div');
     this.$uiDisplayTimePar   = document.querySelector('#'+this.config.id+' .display_time_par')                 ? document.querySelector('#'+this.config.id+' .display_time_par')                 : document.createElement('div');
     this.$uiDisplayPoster    = document.querySelector('#'+this.config.id+' .display_poster')                   ? document.querySelector('#'+this.config.id+' .display_poster')                   : document.createElement('div');
+    this.$uiDisplayName      = document.querySelector('#'+this.config.id+' .display_name')                     ? document.querySelector('#'+this.config.id+' .display_name')                     : document.createElement('div');
     this.$uiBtnFull          = document.querySelector('#'+this.config.id+' .btn_full')                         ? document.querySelector('#'+this.config.id+' .btn_full')                         : document.createElement('div');
     this.$uiSeekbarVol       = document.querySelector('#'+this.config.id+' .seekbar_vol')                      ? document.querySelector('#'+this.config.id+' .seekbar_vol')                      : document.createElement('div');
     this.$uiSeekbarVolBg     = document.querySelector('#'+this.config.id+' .seekbar_vol .seekbar_vol_bg')      ? document.querySelector('#'+this.config.id+' .seekbar_vol .seekbar_vol_bg')      : document.createElement('div');
@@ -671,6 +677,10 @@ class PLAYER_MODULE_BRIGHTCOVE {
             this.playerVideo.description = video.description;
             this.playerVideo.duration    = video.duration;
             this.playerVideo.thumbnail   = video.thumbnail;
+
+            // Set MediaInfo
+            this.PlayerMediaInfo = this.Player.mediainfo;
+            this.SetInfo();
           });
         });
       }
@@ -740,7 +750,13 @@ class PLAYER_MODULE_BRIGHTCOVE {
       this.playerVideo.description = video.description;
       this.playerVideo.duration    = video.duration;
       this.playerVideo.thumbnail   = video.thumbnail;
+
+      // Set MediaInfo
+      this.PlayerMediaInfo = this.Player.mediainfo;
+      this.SetInfo();
     });
+
+
   }
   StopAll(){
     for (var _i in window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST) {
@@ -768,6 +784,9 @@ class PLAYER_MODULE_BRIGHTCOVE {
     let _s_max = parseNumber(Math.floor(this.Player.duration()%60));
     return _m_max+':'+_s_max;
   }
+  GetInfo(){
+    return this.PlayerMediaInfo;
+  }
   GetTimeRatio(){
     return Math.floor(this.Player.currentTime() / this.Player.duration() * 1000) / 1000;
   }
@@ -776,6 +795,9 @@ class PLAYER_MODULE_BRIGHTCOVE {
   }
   GetUrlPoster(){
     return this.Player.poster();
+  }
+  SetInfo(){
+    this.$uiDisplayPoster.innerHTML = this.PlayerMediaInfo.name;
   }
   SetUrlPoster(url){
     this.Player.poster(url);
