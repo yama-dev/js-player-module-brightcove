@@ -315,8 +315,8 @@ class PLAYER_MODULE_BRIGHTCOVE {
         loadNum = '1';
         loadEvent = 'loadedmetadata';
         if (ua.indexOf('iphone') > 0 || ua.indexOf('ipad') > 0 || ua.indexOf('android') > 0 || ua.indexOf('android') > 0 && ua.indexOf('mobile') > 0) {
-          // Android
-          loadNum = '2'; // uaにsafari
+          // iPhone iOS 10.3.1
+          loadNum = '1';
           loadEvent = 'loadedmetadata';
         }
       } else if (ua.indexOf('opera') != -1){
