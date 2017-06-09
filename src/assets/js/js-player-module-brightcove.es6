@@ -1,5 +1,5 @@
 /*!
- * js-player-module-brightcove.js JavaScript Library v1.0
+ * js-player-module-brightcove.js JavaScript Library v1.1
  * https://github.com/yama-dev/js-player-module-brightcove
  * Copyright yama-dev
  * Licensed under the MIT license.
@@ -29,6 +29,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
       ui_round       : options.ui_round||null,
       ui_round_num   : options.ui_round_num||146,
       ui_round_color : options.ui_round_color||'#696969',
+      style_text     : options.style_text||'',
     }
     this.playerVideo = {
       id          : '',
@@ -202,6 +203,12 @@ class PLAYER_MODULE_BRIGHTCOVE {
 }
     `;
 
+    if(options.mode == 'audio'){
+      this.config.width  = 1;
+      this.config.height = 1;
+      this.playerCss += `#${this.config.player_id} { opacity: 0; }`;
+    }
+
     // Set Options
     // -> playerHtml
     // -> playerScriptCode
@@ -259,14 +266,14 @@ class PLAYER_MODULE_BRIGHTCOVE {
     } else { }
 
     // Player
-    let playerElem = document.getElementById(this.config.id);
-    let playerHtmlDom = document.createElement('div');
-    let playerUiHtmlDom = document.createElement('div');
-    let playerCssDom = document.createElement('style');
-    playerHtmlDom.innerHTML = this.playerHtml;
+    let playerElem            = document.getElementById(this.config.id);
+    let playerHtmlDom         = document.createElement('div');
+    let playerUiHtmlDom       = document.createElement('div');
+    let playerCssDom          = document.createElement('style');
+    playerHtmlDom.innerHTML   = this.playerHtml;
     playerUiHtmlDom.innerHTML = this.playerUiHtml;
-    playerCssDom.innerHTML = this.playerCss;
-    playerCssDom.id = this.config.id+'_scripttag';
+    playerCssDom.innerHTML    = this.playerCss;
+    playerCssDom.id           = this.config.id+'_scripttag';
     playerElem.appendChild(playerHtmlDom);
     if(this.config.ui_default){
       playerElem.appendChild(playerUiHtmlDom);
@@ -287,7 +294,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
 
     // Set ScriptTag
     let s = document.createElement('script');
-    s.id = _that.config.id+'_scripttag';
+    s.id  = _that.config.id+'_scripttag';
     s.src = this.playerScriptCode;
     document.body.appendChild(s);
     s.onload = SetPlayerEvent;
@@ -296,7 +303,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
     function SetPlayerEvent(){
 
       // Set Load Event
-      let ua = window.navigator.userAgent.toLowerCase();
+      let ua  = window.navigator.userAgent.toLowerCase();
       let ver = window.navigator.appVersion.toLowerCase();
       let loadNum = '0';
       let loadEvent = '';
