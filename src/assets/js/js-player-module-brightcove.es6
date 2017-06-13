@@ -1,5 +1,5 @@
 /*!
- * js-player-module-brightcove.js JavaScript Library v1.1
+ * js-player-module-brightcove.js JavaScript Library v1.1.1
  * https://github.com/yama-dev/js-player-module-brightcove
  * Copyright yama-dev
  * Licensed under the MIT license.
@@ -309,6 +309,9 @@ class PLAYER_MODULE_BRIGHTCOVE {
       let loadEvent = '';
       if (ua.indexOf('msie') != -1 || ua.indexOf('trident') != -1){
         loadNum = '0';
+        loadEvent = 'loadedmetadata';
+      } else if (ua.indexOf('applewebkit') != -1 && ua.indexOf('edge') != -1){
+        loadNum = '4';
         loadEvent = 'loadedmetadata';
       } else if (ua.indexOf('chrome') != -1){
         loadNum = '1';
