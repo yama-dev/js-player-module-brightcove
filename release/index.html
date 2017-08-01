@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
   <script src="https://code.jquery.com/jquery-3.1.1.min.js" charset="UTF-8"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
   <script src="./assets/js/js-player-module-brightcove.js"></script>
   <script src="/ga.js"></script>
 </head>
@@ -21,6 +22,35 @@
       <h2>js player module brightcove.js v1.0</h2>
       <hr>
       <h3>Simple Player</h3>
+      <div id="brightcovePlayer1">
+        <script>
+          new PLAYER_MODULE_BRIGHTCOVE({
+            id:'brightcovePlayer1',
+            videoid:'4217352666001',
+            account:'20318290001',
+            ui_controls:true,
+            ui_default:true
+          });
+        </script>
+        <pre class="prettyprint lang-html">
+        <code>
+          &lt;div id="player01"&gt;
+            &lt;script&gt;
+              new PLAYER_MODULE_BRIGHTCOVE({
+                id:'player01',
+                videoid:'4217352666001',
+                account:'20318290001',
+                ui_controls:true,
+                ui_default:true
+              });
+            &lt;/script&gt;
+          &lt;/div&gt;</code>
+        </pre>
+      </div>
+
+      <hr>
+
+      <h3>Simple Player(original images)</h3>
       <div id="player01">
         <script>
           new PLAYER_MODULE_BRIGHTCOVE({
@@ -35,36 +65,35 @@
           <div class="btn_stop"><img class="on" src="http://placehold.jp/14/333/ddd/120x30.png?text=STOP" alt=""><img class="off" src="http://placehold.jp/14/ddd/333/120x30.png?text=STOP" alt=""></div>
           <div class="btn_mute"><img class="on" src="http://placehold.jp/14/333/ddd/120x30.png?text=MUTE" alt=""><img class="off" src="http://placehold.jp/14/ddd/333/120x30.png?text=MUTE" alt=""></div>
         </div>
-        <pre>
+        <pre class="prettyprint lang-html">
         <code>
-          &lt;div id="player01"&gt;<br>
-            &lt;script&gt;<br>
-              new PLAYER_MODULE_BRIGHTCOVE({<br>
-                id:'player01',<br>
-                videoid:'4217352666001',<br>
-                account:'20318290001'<br>
-              });<br>
-            &lt;/script&gt;<br>
-            &lt;div class="player__btn"&gt;<br>
+          &lt;div id="player01"&gt;
+            &lt;script&gt;
+              new PLAYER_MODULE_BRIGHTCOVE({
+                id:'player01',
+                videoid:'4217352666001',
+                account:'20318290001'
+              });
+            &lt;/script&gt;
+            &lt;div class="player__btn"&gt;
               &lt;div class="btn_play"&gt;
                 &lt;img class="on" src="http://placehold.jp/14/333/ddd/120x30.png?text=PLAY" alt=""&gt;
                 &lt;img class="off" src="http://placehold.jp/14/ddd/333/120x30.png?text=PLAY" alt=""&gt;
-              &lt;/div&gt;<br>
+              &lt;/div&gt;
               &lt;div class="btn_pause"&gt;
                 &lt;img class="on" src="http://placehold.jp/14/333/ddd/120x30.png?text=PAUSE" alt=""&gt;
                 &lt;img class="off" src="http://placehold.jp/14/ddd/333/120x30.png?text=PAUSE" alt=""&gt;
-              &lt;/div&gt;<br>
+              &lt;/div&gt;
               &lt;div class="btn_stop"&gt;
                 &lt;img class="on" src="http://placehold.jp/14/333/ddd/120x30.png?text=STOP" alt=""&gt;
                 &lt;img class="off" src="http://placehold.jp/14/ddd/333/120x30.png?text=STOP" alt=""&gt;
-              &lt;/div&gt;<br>
+              &lt;/div&gt;
               &lt;div class="btn_mute"&gt;
                 &lt;img class="on" src="http://placehold.jp/14/333/ddd/120x30.png?text=MUTE" alt=""&gt;
                 &lt;img class="off" src="http://placehold.jp/14/ddd/333/120x30.png?text=MUTE" alt=""&gt;
-              &lt;/div&gt;<br>
-            &lt;/div&gt;<br>
-          &lt;/div&gt;<br>
-        </code>
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;</code>
         </pre>
       </div>
 
@@ -85,7 +114,7 @@
         </script>
         <button class="btn_change btn btn-default" data-id="4217352666001">楽曲変更 id=4217352666001</button>
         <button class="btn btn-default" onclick="PMB.Change('4217352666001')">楽曲変更 id=4217352666001</button>
-        <pre>
+        <pre class="prettyprint lang-html">
         <code>
           &lt;div id="player02"&gt;
             &lt;script&gt;
@@ -120,7 +149,7 @@
             account:'20318290001',
           });
         </script>
-        <pre>
+        <pre class="prettyprint lang-html">
         <code>
           &lt;div id="player03"&gt;
             &lt;script&gt;
