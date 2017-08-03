@@ -1,5 +1,5 @@
 /*!
- * js-player-module-brightcove.js JavaScript Library v1.1.1
+ * js-player-module-brightcove.js JavaScript Library v1.1.2
  * https://github.com/yama-dev/js-player-module-brightcove
  * Copyright yama-dev
  * Licensed under the MIT license.
@@ -308,17 +308,24 @@ class PLAYER_MODULE_BRIGHTCOVE {
       let loadNum = '0';
       let loadEvent = '';
       if (ua.indexOf('msie') != -1 || ua.indexOf('trident') != -1){
+        // For MS IE10-11
         loadNum = '0';
         loadEvent = 'loadedmetadata';
       } else if (ua.indexOf('applewebkit') != -1 && ua.indexOf('edge') != -1){
+        // For MS Edge
         loadNum = '4';
         loadEvent = 'loadedmetadata';
       } else if (ua.indexOf('chrome') != -1){
+        // For Chrome
         loadNum = '1';
         loadEvent = 'loadedmetadata';
-        if (ua.indexOf('iphone') > 0 || ua.indexOf('ipad') > 0 || ua.indexOf('android') > 0 || ua.indexOf('android') > 0 && ua.indexOf('mobile') > 0) {
+        if (ua.indexOf('iphone') > 0 || ua.indexOf('ipad') > 0 ) {
+          // iOS
+          loadNum = '4'; // Chrome
+          loadEvent = 'loadedmetadata';
+        } else if (ua.indexOf('android') > 0 || ua.indexOf('android') > 0 && ua.indexOf('mobile') > 0) {
           // Android
-          loadNum = '4'; // uaにChrome
+          loadNum = '1'; // Chrome
           loadEvent = 'loadedmetadata';
         }
       } else if (ua.indexOf('safari') != -1){
