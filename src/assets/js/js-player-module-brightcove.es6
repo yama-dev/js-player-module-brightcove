@@ -793,7 +793,15 @@ class PLAYER_MODULE_BRIGHTCOVE {
     // 動画IDが取得出来ない場合は処理を中止
     if(id == '' || id == null || id == undefined) return
 
+    if(document.querySelector('[data-PMB-id="'+id+'"]')){
+      if(document.querySelector('[data-PMB-id="'+id+'"]').hasClass('active')){
+        _that.Pause();
+        return
+      }
+    }
+
     // clickイベントの伝播内に一度再生開始処理を走らせる
+    this.Player.muted(true);
     this.Player.play();
     this.Player.catalog.getVideo(id, (error, video) => {
 
@@ -802,6 +810,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
 
       // 変更後に再生
       this.Player.play();
+      this.Player.muted(false);
 
       // Playボタンにhtml-classを付与
       if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
