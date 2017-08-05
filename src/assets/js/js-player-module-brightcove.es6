@@ -1,5 +1,5 @@
 /*!
- * js-player-module-brightcove.js JavaScript Library v1.1.2
+ * js-player-module-brightcove.js JavaScript Library v1.1.3
  * https://github.com/yama-dev/js-player-module-brightcove
  * Copyright yama-dev
  * Licensed under the MIT license.
@@ -319,22 +319,58 @@ class PLAYER_MODULE_BRIGHTCOVE {
         // For Chrome
         loadNum = '1';
         loadEvent = 'loadedmetadata';
+
+        // スマホのブラウザ判定
         if (ua.indexOf('iphone') > 0 || ua.indexOf('ipad') > 0 ) {
           // iOS
           loadNum = '4'; // Chrome
           loadEvent = 'loadedmetadata';
         } else if (ua.indexOf('android') > 0 || ua.indexOf('android') > 0 && ua.indexOf('mobile') > 0) {
           // Android
-          loadNum = '1'; // Chrome
-          loadEvent = 'loadedmetadata';
+          if (
+            /android/.test(ua) && /linux\; u\;/.test(ua) && !/chrome/.test(ua) ||
+            /android/.test(ua) && /chrome/.test(ua) && /version/.test(ua) ||
+            /android/.test(ua) && /chrome/.test(ua) && /samsungbrowser/.test(ua)
+          ) {
+            // Android 標準ブラウザを判定
+            loadNum = '4';
+            loadEvent = 'loadedmetadata';
+            if ( /so-04f/.test(ua) ) {
+              loadNum = '2';
+              loadEvent = 'loadedmetadata';
+            }
+          } else {
+            // Android Chrome
+            loadNum = '1';
+            loadEvent = 'loadedmetadata';
+          }
         }
       } else if (ua.indexOf('safari') != -1){
         loadNum = '1';
         loadEvent = 'loadedmetadata';
-        if (ua.indexOf('iphone') > 0 || ua.indexOf('ipad') > 0 || ua.indexOf('android') > 0 || ua.indexOf('android') > 0 && ua.indexOf('mobile') > 0) {
+        if (ua.indexOf('iphone') > 0 || ua.indexOf('ipad') > 0) {
           // iPhone iOS 10.3.1
           loadNum = '1';
           loadEvent = 'loadedmetadata';
+        } else if (ua.indexOf('android') > 0 || ua.indexOf('android') > 0 && ua.indexOf('mobile') > 0) {
+          // Android
+          if (
+            /android/.test(ua) && /linux\; u\;/.test(ua) && !/chrome/.test(ua) ||
+            /android/.test(ua) && /chrome/.test(ua) && /version/.test(ua) ||
+            /android/.test(ua) && /chrome/.test(ua) && /samsungbrowser/.test(ua)
+          ) {
+            // Android 標準ブラウザを判定
+            loadNum = '4';
+            loadEvent = 'loadedmetadata';
+            if ( /so-04f/.test(ua) ) {
+              loadNum = '2';
+              loadEvent = 'loadedmetadata';
+            }
+          } else {
+            // Android Chrome
+            loadNum = '1';
+            loadEvent = 'loadedmetadata';
+          }
         }
       } else if (ua.indexOf('opera') != -1){
         loadNum = '0';
@@ -350,6 +386,14 @@ class PLAYER_MODULE_BRIGHTCOVE {
       // Set Load Flg
       _that.PlayerLoadFlg = false;
 
+      // For Error
+      videojs(_that.config.player_id).on( 'error' , function(err) {
+        console.log(this.error().code);
+      });
+
+      // TODO:test ready-event
+      // -> There are faulty models with ready-evnt
+      //    `videojs().ready()`
       videojs(_that.config.player_id).on( loadEvent , function() {
 
         // Set Instance
@@ -680,6 +724,10 @@ class PLAYER_MODULE_BRIGHTCOVE {
       for (var j = 0; j < this.$uiBtnChange.length; ++j) {
         this.$uiBtnChange[j].addEventListener('click', (event) => {
           let id = event.currentTarget.dataset.id;
+
+          // clickイベントの伝播内に一度再生開始処理を走らせる
+          this.Player.play();
+
           this.Player.catalog.getVideo(id, (error, video) => {
 
             // プレーヤーの情報を再ロード
@@ -747,6 +795,8 @@ class PLAYER_MODULE_BRIGHTCOVE {
     this.$uiBtnPause.removeClass('active');
   }
   Change(id){
+    // clickイベントの伝播内に一度再生開始処理を走らせる
+    this.Player.play();
     this.Player.catalog.getVideo(id, (error, video) => {
 
       // プレーヤーの情報を再ロード
@@ -772,7 +822,6 @@ class PLAYER_MODULE_BRIGHTCOVE {
       this.PlayerMediaInfo = this.Player.mediainfo;
       this.SetInfo();
     });
-
 
   }
   StopAll(){
