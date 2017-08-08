@@ -71,16 +71,23 @@ Include script.
 ### Default
 
 ```javascript
-ui_controls //false
+id
 ```
-`control`を表示するかしないかを指定します。  
-デフォルトでは、表示されません。  
+プレーヤーを出力する要素のidを設定します。  
+※省略不可  
   
 ```javascript
-ui_default //false
+videoid
 ```
-ライブラリであらかじめ用意したUIパーツを表示するかしないかを指定します。  
-デフォルトでは、表示されません。  
+動画のvideoidを設定します。  
+※省略不可  
+  
+```javascript
+account
+```
+BrightcovePlayerのaccountを設定します。  
+※省略不可  
+  
 
 ### Options
 
