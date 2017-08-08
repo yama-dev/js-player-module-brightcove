@@ -6,27 +6,34 @@ Brightcoveプレーヤーのライブラリ
 
 <br>
 
-## 使い方(Using)
+## インストール(Install)
 
-### 1. インストール
+### 1. ライブラリのダウンロード
 
-#### このリポジトリ`js-player-module-brightcove`をダウンロードしてください。
-
-#### ダウンロード https://github.com/yama-dev/js-player-module-brightcove/releases/latest
+#### ダウンロードURL [yama-dev/js-player-module-brightcove](https://github.com/yama-dev/js-player-module-brightcove/releases/latest)
 
 ### 2. ファイルの読み込み
 
-```html
-<script src="./assets/js/js-player-module-brightcove.js" charset="UTF-8"></script>
+For HTML  
+Include script.  
+
+``` html
+<script src="js-player-module-brightcove.js" charset="UTF-8"></script>
 ```
 
-### 3. サンプルコード
+<br>
 
-#### BASIC 
+## 使い方(Using)
 
-<img src="https://raw.githubusercontent.com/yama-dev/assets/master/images/js-player-module-brightcove/brightcovePlayer1.png" style="width: 100%; max-width: 520px;" alt="">
+### ①BASIC Player
 
-```html
+**UI**
+
+<img src="https://raw.githubusercontent.com/yama-dev/assets/master/images/js-player-module-brightcove/brightcovePlayer1.png" style="width: 100%; max-width: 520px; border: 1px solid #eee;" alt="">
+
+**サンプルコード**
+
+``` html
 <div id="brightcovePlayer1">
   <script>
     new PLAYER_MODULE_BRIGHTCOVE({
@@ -40,9 +47,50 @@ Brightcoveプレーヤーのライブラリ
 </div>
 ```
 
+### ②AUDIO Player
+
+**サンプルコード**
+
+``` html
+<div id="brightcovePlayer2">
+  <script>
+    new PLAYER_MODULE_BRIGHTCOVE({
+      mode: 'audio',
+      id:'brightcovePlayer2',
+      videoid:'4217352666001',
+      account:'20318290001'
+    });
+  </script>
+</div>
+```
+
 <br>
 
-## オプション(Options)
+## API
+
+### Default
+
+```javascript
+id
+```
+プレーヤーを出力する要素のidを設定します。  
+※省略不可  
+  
+```javascript
+videoid
+```
+動画のvideoidを設定します。  
+※省略不可  
+  
+```javascript
+account
+```
+BrightcovePlayerのaccountを設定します。  
+※省略不可  
+  
+
+### Options
+
 ```javascript
 ui_controls //false
 ```
@@ -57,11 +105,6 @@ ui_default //false
 
 <br>
 
-## 依存ライブラリ(Dependencies)
-
-none
-
-<br>
 
 ## ブラウザサポート(Browser support)
 
@@ -76,6 +119,12 @@ none
 
 <br>
 
+## 依存ライブラリ(Dependencies)
+
+none
+
+<br>
+
 ## Contribution
 
 1. Fork it ( https://github.com/yama-dev/js-player-module-brightcove/fork )
@@ -86,9 +135,35 @@ none
 
 <br>
 
+## Develop
+
+### At Development
+
+Install node modules.
+
+``` bash
+$ npm install
+```
+
+Run Gulp default-task.
+
+``` bash
+$ gulp --babel
+```
+
+### At Release
+
+Run Gulp release-task.
+
+``` bash
+$ gulp release --babel --min
+```
+
+<br>
+
 ## Licence
 
-[MIT](https://github.com/tcnksm/tool/blob/master/LICENCE)
+[MIT](https://github.com/yama-dev/js-player-module-brightcove/blob/master/LICENSE)
 
 <br>
 

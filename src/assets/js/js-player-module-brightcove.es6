@@ -1,5 +1,5 @@
 /*!
- * js-player-module-brightcove.js JavaScript Library v1.1.3
+ * js-player-module-brightcove.js JavaScript Library v1.2.0
  * https://github.com/yama-dev/js-player-module-brightcove
  * Copyright yama-dev
  * Licensed under the MIT license.
@@ -495,57 +495,34 @@ class PLAYER_MODULE_BRIGHTCOVE {
     this.$uiBtnRoundSvgPath  = document.querySelector('#'+this.config.id+' .btn_roundsvg .btn_roundsvg__path') ? document.querySelector('#'+this.config.id+' .btn_roundsvg .btn_roundsvg__path') : document.createElement('div');
   }
   EventPlay(){
+    let _that = this;
     if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
       for (var j = 0; j < this.$uiBtnPlay.length; ++j) {
         this.$uiBtnPlay[j].addEventListener('click', (event) => {
           if(this.Player.paused()){
             // 停止状態の場合
-            this.Player.play();
-            if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
-              for (var i = 0; i < this.$uiBtnPlay.length; ++i) {
-                this.$uiBtnPlay[i].addClass('active');
-              }
-            }
-            this.$uiBtnPause.addClass('active');
+            _that.Play();
           } else {
             // 再生状態の場合
-            this.Player.pause();
-            if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
-              for (var i = 0; i < this.$uiBtnPlay.length; ++i) {
-                this.$uiBtnPlay[i].removeClass('active');
-              }
-            }
-            this.$uiBtnPause.removeClass('active');
+            _that.Pause();
           }
         });
       }
     }
   }
   EventPause(){
+    let _that = this;
     if(this.$uiBtnPause !== null){
       this.$uiBtnPause.addEventListener('click', (event) => {
-        this.Player.pause();
-        if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
-          for (var i = 0; i < this.$uiBtnPlay.length; ++i) {
-            this.$uiBtnPlay[i].removeClass('active');
-          }
-        }
-        this.$uiBtnPause.removeClass('active');
+        _that.Pause();
       });
     }
   }
   EventStop(){
+    let _that = this;
     if(this.$uiBtnStop !== null){
       this.$uiBtnStop.addEventListener('click', (event) => {
-        this.Player.pause();
-        this.Player.currentTime(0);
-        this.StopAll();
-        if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
-          for (var i = 0; i < this.$uiBtnPlay.length; ++i) {
-            this.$uiBtnPlay[i].removeClass('active');
-          }
-        }
-        this.$uiBtnPause.removeClass('active');
+        _that.Stop();
       });
     }
   }
@@ -621,18 +598,26 @@ class PLAYER_MODULE_BRIGHTCOVE {
     }
   }
   EventSeekbarTime(){
+    let _that = this;
+
     if(this.$uiSeekbarTime !== null){
       let _flag = false;
+
       this.$uiSeekbarTime.addEventListener('mousedown', (event) => {
+
         _flag = true;
-        this.Player.pause();
+
+        _that.Pause();
+
         let _currentWidth    = this.$uiSeekbarTime.clientWidth;
         let _clickPosition  = this.$uiSeekbarTime.getBoundingClientRect().left;
         let _targetWidth = (event.pageX - _clickPosition) / _currentWidth;
         let _targetTime = this.Player.duration() * _targetWidth;
         this.$uiSeekbarTimeCover.style.width = (_targetWidth * 100) + '%';
         this.Player.currentTime(_targetTime);
+
       });
+
       this.$uiSeekbarTime.addEventListener('mouseleave', (event) => {
         if(_flag === true){
           this.Player.play();
@@ -645,6 +630,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
         }
         _flag = false;
       });
+
       this.$uiSeekbarTime.addEventListener('mouseup', (event) => {
         if(_flag === true){
           this.Player.play();
@@ -657,6 +643,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
         }
         _flag = false;
       });
+
       this.$uiSeekbarTime.addEventListener('mousemove', (event) => {
         if(_flag === true){
           let _currentWidth    = this.$uiSeekbarTime.clientWidth;
@@ -667,10 +654,11 @@ class PLAYER_MODULE_BRIGHTCOVE {
           this.Player.currentTime(_targetTime);
         }
       });
+
     }
     if(this.$uiBtnRound !== null){
       this.$uiBtnRound.addEventListener('click', (event) => {
-        this.Player.pause();
+        _that.Pause();
         let _currentWidth      = this.$uiBtnRound.clientWidth;
         let _currentWidthHalf  = _currentWidth / 2;
         let _clickPositionLeft = this.$uiBtnRound.getBoundingClientRect().left;
@@ -690,13 +678,13 @@ class PLAYER_MODULE_BRIGHTCOVE {
         // this.$uiSeekbarTimeCover.style.width = (_targetWidth * 100) + '%';
         this.Player.currentTime(this.Player.duration() * (_deg / 360) );
         this.$uiBtnRoundSpan.style.webkitTransform = 'rotate('+_deg+'deg)';
-        this.Play();
+        this.Player.play();
       });
     }
     if(this.$uiBtnRoundSvg !== null){
       let _roundNum = this.$uiBtnRoundSvg.clientWidth * 3.14;
       this.$uiBtnRoundSvg.addEventListener('click', (event) => {
-        this.Player.pause();
+        _that.Pause();
         let _currentWidth      = this.$uiBtnRoundSvg.clientWidth;
         let _currentWidthHalf  = _currentWidth / 2;
         let _clickPositionLeft = this.$uiBtnRoundSvg.getBoundingClientRect().left;
@@ -715,43 +703,25 @@ class PLAYER_MODULE_BRIGHTCOVE {
         }
         this.Player.currentTime(this.Player.duration() * (_deg / 360) );
         this.$uiBtnRoundSvgPath.style.cssText = 'stroke-dashoffset: '+(_roundNum + 10 - _deg / 365 * _roundNum)+';';
-        this.Play();
+        this.Player.play();
       });
     }
   }
   EventChangeVideo(){
+    let _that = this;
     if(this.$uiBtnChange !== null && this.$uiBtnChange.length !== 0){
       for (var j = 0; j < this.$uiBtnChange.length; ++j) {
         this.$uiBtnChange[j].addEventListener('click', (event) => {
-          let id = event.currentTarget.dataset.id;
-
-          // clickイベントの伝播内に一度再生開始処理を走らせる
-          this.Player.play();
-
-          this.Player.catalog.getVideo(id, (error, video) => {
-
-            // プレーヤーの情報を再ロード
-            this.Player.catalog.load(video);
-
-            // 変更後に再生
-            this.Play();
-
-            // Set Video Data
-            this.playerVideo.id          = video.id;
-            this.playerVideo.name        = video.name;
-            this.playerVideo.description = video.description;
-            this.playerVideo.duration    = video.duration;
-            this.playerVideo.thumbnail   = video.thumbnail;
-
-            // Set MediaInfo
-            this.PlayerMediaInfo = this.Player.mediainfo;
-            this.SetInfo();
-          });
+          // 動画IDを取得
+          // -> <data-PMB-id="">
+          let id = event.currentTarget.dataset.pmbId;
+          _that.Change(id);
         });
       }
     }
   }
   Play(){
+    let _that = this;
     if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
       if(this.Player.paused()){
         // 停止状態の場合
@@ -764,7 +734,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
         this.$uiBtnPause.addClass('active');
       } else {
         // 再生状態の場合
-        this.Player.pause();
+        _that.Pause();
         if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
           for (var i = 0; i < this.$uiBtnPlay.length; ++i) {
             this.$uiBtnPlay[i].removeClass('active');
@@ -775,27 +745,63 @@ class PLAYER_MODULE_BRIGHTCOVE {
     }
   }
   Stop(){
-    this.Player.pause();
+    this.Pause();
     this.Player.currentTime(0);
     this.StopAll();
+
+    // 再生中のPLAYボタンのhtml-classを削除
     if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
       for (var i = 0; i < this.$uiBtnPlay.length; ++i) {
         this.$uiBtnPlay[i].removeClass('active');
       }
     }
+
+    // 再生中のPAUSEボタンのhtml-classを削除
     this.$uiBtnPause.removeClass('active');
+
+    // メディア変更ボタンのhtml-classを削除
+    let clickElemAll = Array.prototype.slice.call( document.querySelectorAll('[data-PMB-id]') );
+    clickElemAll.forEach(function(elem,i){
+      elem.removeClass('active');
+    });
+
   }
   Pause(){
+
     this.Player.pause();
+
+    // 再生中のPLAYボタンのhtml-classを削除
     if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
       for (var i = 0; i < this.$uiBtnPlay.length; ++i) {
         this.$uiBtnPlay[i].removeClass('active');
       }
     }
+
+    // 再生中のPAUSEボタンのhtml-classを削除
     this.$uiBtnPause.removeClass('active');
+
+    // メディア変更ボタンのhtml-classを削除
+    let clickElemAll = Array.prototype.slice.call( document.querySelectorAll('[data-PMB-id]') );
+    clickElemAll.forEach(function(elem,i){
+      elem.removeClass('active');
+    });
   }
   Change(id){
+
+    let _that = this;
+
+    // 動画IDが取得出来ない場合は処理を中止
+    if(id == '' || id == null || id == undefined) return
+
+    if(document.querySelector('[data-PMB-id="'+id+'"]')){
+      if(document.querySelector('[data-PMB-id="'+id+'"]').hasClass('active')){
+        _that.Pause();
+        return
+      }
+    }
+
     // clickイベントの伝播内に一度再生開始処理を走らせる
+    this.Player.muted(true);
     this.Player.play();
     this.Player.catalog.getVideo(id, (error, video) => {
 
@@ -804,12 +810,25 @@ class PLAYER_MODULE_BRIGHTCOVE {
 
       // 変更後に再生
       this.Player.play();
+      this.Player.muted(false);
+
+      // Playボタンにhtml-classを付与
       if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
         for (var i = 0; i < this.$uiBtnPlay.length; ++i) {
           this.$uiBtnPlay[i].addClass('active');
         }
       }
+
+      // PAUSEボタンにhtml-classを付与
       this.$uiBtnPause.addClass('active');
+
+      // メディア変更ボタンにhtml-classを付与
+      let clickElemAll = Array.prototype.slice.call( document.querySelectorAll('[data-PMB-id]') );
+      let clickElem = document.querySelector('[data-PMB-id="'+id+'"]');
+      clickElemAll.forEach(function(elem,i){
+        elem.removeClass('active');
+      });
+      clickElem.addClass('active');
 
       // Set Video Data
       this.playerVideo.id          = video.id;
@@ -872,6 +891,8 @@ class PLAYER_MODULE_BRIGHTCOVE {
     this.Player.reset();
   }
 }
+
 window.PLAYER_MODULE_BRIGHTCOVE = PLAYER_MODULE_BRIGHTCOVE || {};
+
 })(window);
 
