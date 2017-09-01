@@ -203,7 +203,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
 }
     `;
 
-    if(options.mode == 'audio'){
+    if(this.config.mode == 'audio'){
       this.config.width  = 1;
       this.config.height = 1;
       this.playerCss += `#${this.config.player_id} { opacity: 0; }`;
