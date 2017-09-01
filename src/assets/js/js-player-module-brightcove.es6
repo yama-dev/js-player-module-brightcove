@@ -24,7 +24,8 @@ class PLAYER_MODULE_BRIGHTCOVE {
       player         : options.player||'default',
       ui_controls    : options.ui_controls == true ? 'controls' : '',
       ui_autoplay    : options.ui_autoplay == true ? 'autoplay' : '',
-      ui_default     : options.ui_default||null,
+      ui_default     : options.ui_default == false ? false : true,
+      ui_default_css : options.ui_default_css == false ? false : true,
       poster         : options.poster||null,
       ui_round       : options.ui_round||null,
       ui_round_num   : options.ui_round_num||146,
@@ -277,6 +278,8 @@ class PLAYER_MODULE_BRIGHTCOVE {
     playerElem.appendChild(playerHtmlDom);
     if(this.config.ui_default){
       playerElem.appendChild(playerUiHtmlDom);
+    }
+    if(this.config.ui_default_css){
       playerElem.appendChild(playerCssDom);
     }
 
@@ -452,6 +455,8 @@ class PLAYER_MODULE_BRIGHTCOVE {
         _that.Stop();
       });
     }
+
+    // windowオブジェクトへインスタンスしたPlayerを配列で管理(Player-IDを文字列で追加)
     if(window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST === undefined){
       window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST = [];
       window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST.push(_that.config.player_id);
