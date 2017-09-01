@@ -1,5 +1,5 @@
 /*!
- * js-player-module-brightcove.js JavaScript Library v1.2.0
+ * js-player-module-brightcove.js JavaScript Library v1.2.1
  * https://github.com/yama-dev/js-player-module-brightcove
  * Copyright yama-dev
  * Licensed under the MIT license.
@@ -761,9 +761,11 @@ class PLAYER_MODULE_BRIGHTCOVE {
 
     // メディア変更ボタンのhtml-classを削除
     let clickElemAll = Array.prototype.slice.call( document.querySelectorAll('[data-PMB-id]') );
-    clickElemAll.forEach(function(elem,i){
-      elem.removeClass('active');
-    });
+    if(clickElemAll){
+      clickElemAll.forEach(function(elem,i){
+        elem.removeClass('active');
+      });
+    }
 
   }
   Pause(){
@@ -782,9 +784,11 @@ class PLAYER_MODULE_BRIGHTCOVE {
 
     // メディア変更ボタンのhtml-classを削除
     let clickElemAll = Array.prototype.slice.call( document.querySelectorAll('[data-PMB-id]') );
-    clickElemAll.forEach(function(elem,i){
-      elem.removeClass('active');
-    });
+    if(clickElemAll){
+      clickElemAll.forEach(function(elem,i){
+        elem.removeClass('active');
+      });
+    }
   }
   Change(id){
 
@@ -825,10 +829,14 @@ class PLAYER_MODULE_BRIGHTCOVE {
       // メディア変更ボタンにhtml-classを付与
       let clickElemAll = Array.prototype.slice.call( document.querySelectorAll('[data-PMB-id]') );
       let clickElem = document.querySelector('[data-PMB-id="'+id+'"]');
-      clickElemAll.forEach(function(elem,i){
-        elem.removeClass('active');
-      });
-      clickElem.addClass('active');
+      if(clickElemAll){
+        clickElemAll.forEach(function(elem,i){
+          elem.removeClass('active');
+        });
+      }
+      if(clickElem){
+        clickElem.addClass('active');
+      }
 
       // Set Video Data
       this.playerVideo.id          = video.id;
