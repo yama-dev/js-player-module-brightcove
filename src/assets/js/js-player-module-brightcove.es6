@@ -1,5 +1,5 @@
 /*!
- * js-player-module-brightcove.js JavaScript Library v1.2.0
+ * js-player-module-brightcove.js JavaScript Library v1.2.1
  * https://github.com/yama-dev/js-player-module-brightcove
  * Copyright yama-dev
  * Licensed under the MIT license.
@@ -19,12 +19,13 @@ class PLAYER_MODULE_BRIGHTCOVE {
       player_id      : options.id+'_player'||'pmb_player',
       videoid        : options.videoid||'',
       account        : options.account||'',
-      width          : options.width||null,
-      height         : options.height||null,
+      width          : options.width||'',
+      height         : options.height||'',
       player         : options.player||'default',
       ui_controls    : options.ui_controls == true ? 'controls' : '',
       ui_autoplay    : options.ui_autoplay == true ? 'autoplay' : '',
-      ui_default     : options.ui_default||null,
+      ui_default     : options.ui_default == false ? false : true,
+      ui_default_css : options.ui_default_css == false ? false : true,
       poster         : options.poster||null,
       ui_round       : options.ui_round||null,
       ui_round_num   : options.ui_round_num||146,
@@ -277,6 +278,8 @@ class PLAYER_MODULE_BRIGHTCOVE {
     playerElem.appendChild(playerHtmlDom);
     if(this.config.ui_default){
       playerElem.appendChild(playerUiHtmlDom);
+    }
+    if(this.config.ui_default_css){
       playerElem.appendChild(playerCssDom);
     }
 
@@ -452,6 +455,8 @@ class PLAYER_MODULE_BRIGHTCOVE {
         _that.Stop();
       });
     }
+
+    // windowオブジェクトへインスタンスしたPlayerを配列で管理(Player-IDを文字列で追加)
     if(window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST === undefined){
       window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST = [];
       window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST.push(_that.config.player_id);
@@ -761,9 +766,11 @@ class PLAYER_MODULE_BRIGHTCOVE {
 
     // メディア変更ボタンのhtml-classを削除
     let clickElemAll = Array.prototype.slice.call( document.querySelectorAll('[data-PMB-id]') );
-    clickElemAll.forEach(function(elem,i){
-      elem.removeClass('active');
-    });
+    if(clickElemAll){
+      clickElemAll.forEach(function(elem,i){
+        elem.removeClass('active');
+      });
+    }
 
   }
   Pause(){
@@ -782,9 +789,11 @@ class PLAYER_MODULE_BRIGHTCOVE {
 
     // メディア変更ボタンのhtml-classを削除
     let clickElemAll = Array.prototype.slice.call( document.querySelectorAll('[data-PMB-id]') );
-    clickElemAll.forEach(function(elem,i){
-      elem.removeClass('active');
-    });
+    if(clickElemAll){
+      clickElemAll.forEach(function(elem,i){
+        elem.removeClass('active');
+      });
+    }
   }
   Change(id){
 
@@ -825,10 +834,14 @@ class PLAYER_MODULE_BRIGHTCOVE {
       // メディア変更ボタンにhtml-classを付与
       let clickElemAll = Array.prototype.slice.call( document.querySelectorAll('[data-PMB-id]') );
       let clickElem = document.querySelector('[data-PMB-id="'+id+'"]');
-      clickElemAll.forEach(function(elem,i){
-        elem.removeClass('active');
-      });
-      clickElem.addClass('active');
+      if(clickElemAll){
+        clickElemAll.forEach(function(elem,i){
+          elem.removeClass('active');
+        });
+      }
+      if(clickElem){
+        clickElem.addClass('active');
+      }
 
       // Set Video Data
       this.playerVideo.id          = video.id;
