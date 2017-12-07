@@ -12,7 +12,7 @@ import gulp from 'gulp';
  */
 gulp.task('deploy', () => {
   return gulp.src(CONFIG.deployFile,{
-      base:CONFIG.outputDirectory.src
+      base:CONFIG.outputDirectory.dev
     })
     .pipe(gulp.dest(CONFIG.outputDirectory.release))
 });

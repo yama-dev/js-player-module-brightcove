@@ -74,6 +74,7 @@ export default {
   ],
   cleanFile: [
     CONFIG_PATH.release + '**/libs',
+    CONFIG_PATH.release + '_**/',
   ],
   SASS_AUTOPREFIXER_BROWSERS: [
     'ie >= 8',
