@@ -18,7 +18,7 @@ For HTML
 Include script.  
 
 ``` html
-<script src="js-player-module-brightcove.js" charset="UTF-8"></script>
+<script src="js-player-module-brightcove.js"></script>
 ```
 
 <br>

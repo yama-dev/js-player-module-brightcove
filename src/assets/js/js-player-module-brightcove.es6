@@ -1,5 +1,5 @@
 /*!
- * js-player-module-brightcove.js JavaScript Library v1.2.1
+ * js-player-module-brightcove.js JavaScript Library v1.3.2
  * https://github.com/yama-dev/js-player-module-brightcove
  * Copyright yama-dev
  * Licensed under the MIT license.
@@ -312,7 +312,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
       let loadEvent = '';
       if (ua.indexOf('msie') != -1 || ua.indexOf('trident') != -1){
         // For MS IE10-11
-        loadNum = '0';
+        loadNum = '4';
         loadEvent = 'loadedmetadata';
       } else if (ua.indexOf('applewebkit') != -1 && ua.indexOf('edge') != -1){
         // For MS Edge
@@ -439,6 +439,8 @@ class PLAYER_MODULE_BRIGHTCOVE {
       videojs(_that.config.player_id).on('timeupdate', function() {
         // 再生時間の更新(分秒)
         _that.$uiDisplayTime.innerHTML = _that.GetTime()+'/'+_that.GetTimeMax();
+        // 再生時間の更新(分秒)
+        _that.$uiDisplayTimeDown.innerHTML = _that.GetTimeDown();
         // 再生時間の更新(％)
         _that.$uiDisplayTimePar.innerHTML = _that.GetTimePar();
         // シークバーの更新(％)
@@ -483,6 +485,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
     this.$uiBtnVolon         = document.querySelector('#'+this.config.id+' .btn_volon')                        ? document.querySelector('#'+this.config.id+' .btn_volon')                        : document.createElement('div');
     this.$uiBtnVoloff        = document.querySelector('#'+this.config.id+' .btn_voloff')                       ? document.querySelector('#'+this.config.id+' .btn_voloff')                       : document.createElement('div');
     this.$uiDisplayTime      = document.querySelector('#'+this.config.id+' .display_time')                     ? document.querySelector('#'+this.config.id+' .display_time')                     : document.createElement('div');
+    this.$uiDisplayTimeDown  = document.querySelector('#'+this.config.id+' .display_time_down')                ? document.querySelector('#'+this.config.id+' .display_time_down')                : document.createElement('div');
     this.$uiDisplayTimePar   = document.querySelector('#'+this.config.id+' .display_time_par')                 ? document.querySelector('#'+this.config.id+' .display_time_par')                 : document.createElement('div');
     this.$uiDisplayPoster    = document.querySelector('#'+this.config.id+' .display_poster')                   ? document.querySelector('#'+this.config.id+' .display_poster')                   : document.createElement('div');
     this.$uiDisplayName      = document.querySelector('#'+this.config.id+' .display_name')                     ? document.querySelector('#'+this.config.id+' .display_name')                     : document.createElement('div');
@@ -502,6 +505,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
   EventPlay(){
     let _that = this;
     if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
+
       for (var j = 0; j < this.$uiBtnPlay.length; ++j) {
         this.$uiBtnPlay[j].addEventListener('click', (event) => {
           if(this.Player.paused()){
@@ -513,6 +517,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
           }
         });
       }
+
     }
   }
   EventPause(){
@@ -807,6 +812,9 @@ class PLAYER_MODULE_BRIGHTCOVE {
         _that.Pause();
         return
       }
+
+      this.$uiDisplayTime = document.querySelector('[data-PMB-id="'+id+'"]'+' .display_time') ? document.querySelector('[data-PMB-id="'+id+'"]'+' .display_time') : document.createElement('div');
+      this.$uiDisplayTimeDown = document.querySelector('[data-PMB-id="'+id+'"]'+' .display_time_down') ? document.querySelector('[data-PMB-id="'+id+'"]'+' .display_time_down') : document.createElement('div');
     }
 
     // clickイベントの伝播内に一度再生開始処理を走らせる
@@ -871,6 +879,17 @@ class PLAYER_MODULE_BRIGHTCOVE {
     let _m = parseNumber(Math.floor(this.Player.currentTime()/60));
     let _s = parseNumber(Math.floor(this.Player.currentTime()%60));
     return _m+':'+_s;
+  }
+  GetTimeDown(){
+    function parseNumber(num) {
+      if(typeof(num) === 'number') num = String(num);
+      if (num < 10) return '0'+num;
+      if (num >= 10) return num;
+    }
+    let _countDownTime = this.Player.duration() - this.Player.currentTime();
+    let _m_down        = parseNumber(Math.floor(_countDownTime / 60));
+    let _s_down        = parseNumber(Math.floor(_countDownTime % 60));
+    return _m_down+':'+_s_down;
   }
   GetTimeMax(){
     function parseNumber(num) {
