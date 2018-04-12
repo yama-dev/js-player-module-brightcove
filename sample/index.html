@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no">
+  <title>js-player-module-brightcove.js | yama-dev</title>
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js" charset="UTF-8"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+  <script src="../dist/js-player-module-brightcove.js"></script>
+  <script src="/ga.js"></script>
+</head>
+<body>
+<div class="container-fluid">
+  <div class="row mt10">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+      <h2>js player module brightcove.js v2.0.0</h2>
+      <hr>
+      <h3>Simple Player</h3>
+      <div id="brightcovePlayer1">
+        <script>
+          new PLAYER_MODULE_BRIGHTCOVE({
+            id:'brightcovePlayer1',
+            videoid:'4217352666001',
+            account:'20318290001',
+            ui_controls:true,
+            ui_default:true
+          });
+        </script>
+        <pre class="prettyprint lang-html">
+        <code>
+          &lt;div id="player01"&gt;
+            &lt;script&gt;
+              new PLAYER_MODULE_BRIGHTCOVE({
+                id:'player01',
+                videoid:'4217352666001',
+                account:'20318290001',
+                ui_controls:true,
+                ui_default:true
+              });
+            &lt;/script&gt;
+          &lt;/div&gt;</code>
+        </pre>
+      </div>
+
+      <hr>
+
+      <h3>Simple Player(original images)</h3>
+      <div id="player01">
+        <script>
+          new PLAYER_MODULE_BRIGHTCOVE({
+            id:'player01',
+            videoid:'4217352666001',
+            account:'20318290001'
+          });
+        </script>
+        <div class="player__btn">
+          <div class="btn_play"><img class="on" src="http://placehold.jp/14/333/ddd/120x30.png?text=PLAY" alt=""><img class="off" src="http://placehold.jp/14/ddd/333/120x30.png?text=PLAY" alt=""></div>
+          <div class="btn_pause"><img class="on" src="http://placehold.jp/14/333/ddd/120x30.png?text=PAUSE" alt=""><img class="off" src="http://placehold.jp/14/ddd/333/120x30.png?text=PAUSE" alt=""></div>
+          <div class="btn_stop"><img class="on" src="http://placehold.jp/14/333/ddd/120x30.png?text=STOP" alt=""><img class="off" src="http://placehold.jp/14/ddd/333/120x30.png?text=STOP" alt=""></div>
+          <div class="btn_mute"><img class="on" src="http://placehold.jp/14/333/ddd/120x30.png?text=MUTE" alt=""><img class="off" src="http://placehold.jp/14/ddd/333/120x30.png?text=MUTE" alt=""></div>
+        </div>
+        <pre class="prettyprint lang-html">
+        <code>
+          &lt;div id="player01"&gt;
+            &lt;script&gt;
+              new PLAYER_MODULE_BRIGHTCOVE({
+                id:'player01',
+                videoid:'4217352666001',
+                account:'20318290001'
+              });
+            &lt;/script&gt;
+            &lt;div class="player__btn"&gt;
+              &lt;div class="btn_play"&gt;
+                &lt;img class="on" src="http://placehold.jp/14/333/ddd/120x30.png?text=PLAY" alt=""&gt;
+                &lt;img class="off" src="http://placehold.jp/14/ddd/333/120x30.png?text=PLAY" alt=""&gt;
+              &lt;/div&gt;
+              &lt;div class="btn_pause"&gt;
+                &lt;img class="on" src="http://placehold.jp/14/333/ddd/120x30.png?text=PAUSE" alt=""&gt;
+                &lt;img class="off" src="http://placehold.jp/14/ddd/333/120x30.png?text=PAUSE" alt=""&gt;
+              &lt;/div&gt;
+              &lt;div class="btn_stop"&gt;
+                &lt;img class="on" src="http://placehold.jp/14/333/ddd/120x30.png?text=STOP" alt=""&gt;
+                &lt;img class="off" src="http://placehold.jp/14/ddd/333/120x30.png?text=STOP" alt=""&gt;
+              &lt;/div&gt;
+              &lt;div class="btn_mute"&gt;
+                &lt;img class="on" src="http://placehold.jp/14/333/ddd/120x30.png?text=MUTE" alt=""&gt;
+                &lt;img class="off" src="http://placehold.jp/14/ddd/333/120x30.png?text=MUTE" alt=""&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;</code>
+        </pre>
+      </div>
+
+      <hr>
+
+      <h3>Custom Player</h3>
+      <div id="player02">
+        <script>
+          var PMB = new PLAYER_MODULE_BRIGHTCOVE({
+            id:'player02',
+            ui_controls:true,
+            ui_default:true,
+            videoid:'4217352666001',
+            account:'20318290001',
+            width: '480px',
+            height: '300px',
+          });
+        </script>
+        <button class="btn_change btn btn-default" data-PMB-id="4217352666001">楽曲変更 id=4217352666001</button>
+        <button class="btn btn-default" data-PMB-id="4217352666001" onclick="PMB.Change('4217352666001')">楽曲変更 id=4217352666001</button>
+        <pre class="prettyprint lang-html">
+        <code>
+          &lt;div id="player02"&gt;
+            &lt;script&gt;
+              var PMB = new PLAYER_MODULE_BRIGHTCOVE({
+                id:'player02',
+                ui_controls:true,
+                ui_default:true,
+                videoid:'4217352666001',
+                account:'20318290001',
+                width: '480px',
+                height: '300px',
+              });
+            &lt;/script&gt;
+            &lt;button class="btn_change btn btn-default" data-PMB-id="4217352666001"&gt;楽曲変更 id=4217352666001&lt;/button&gt;
+            &lt;button class="btn btn-default" data-PMB-id="4217352666001" onclick="PMB.Change('4217352666001')"&gt;楽曲変更 id=4217352666001&lt;/button&gt;
+          &lt;/div&gt;
+        </code>
+        </pre>
+      </div>
+
+      <hr>
+
+      <h3>Audio Player</h3>
+      <div id="player03">
+        <script>
+          new PLAYER_MODULE_BRIGHTCOVE({
+            mode: 'audio',
+            id:'player03',
+            ui_controls:true,
+            ui_default:true,
+            videoid:'4217352666001',
+            account:'20318290001',
+          });
+        </script>
+        <pre class="prettyprint lang-html">
+        <code>
+          &lt;div id="player03"&gt;
+            &lt;script&gt;
+              new PLAYER_MODULE_BRIGHTCOVE({
+                mode: 'audio',
+                id:'player03',
+                ui_controls:true,
+                ui_default:true,
+                videoid:'4217352666001',
+                account:'20318290001',
+              });
+            &lt;/script&gt;
+          &lt;/div&gt;
+        </code>
+        </pre>
+      </div>
+      <hr>
+    </div>
+    <div class="col-md-1"></div>
+  </div>
+</div>
+
+<a href="https://github.com/yama-dev/js-player-module-brightcove" target="_blank"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
+
+</body>
+</html>

@@ -1,5 +1,19 @@
+# config
 .DS_Store
-node_modules
 .sass-cache
-_*.html
-_*
+.svn/
+tmp/
+
+# Editor.
+*.swp
+
+# design data.
+*.psd
+*.ai
+
+# node.js
+node_modules/
+package-lock.json
+
+# Development environment.
+_*/
