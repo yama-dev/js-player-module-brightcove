@@ -48,8 +48,6 @@ Brightcove Player API を使用した BrightcoveカスタムPlayerです。
 
 <img src="https://raw.githubusercontent.com/yama-dev/assets/master/images/js-player-module-brightcove/brightcovePlayer1.png" style="width: 100%; max-width: 520px; border: 1px solid #eee;" alt="">
 
-**サンプルコード**
-
 ``` html
 <div id="brightcovePlayer1">
   <script>
@@ -65,8 +63,6 @@ Brightcove Player API を使用した BrightcoveカスタムPlayerです。
 ```
 
 ### ②AUDIO Player
-
-**サンプルコード**
 
 ``` html
 <div id="brightcovePlayer2">
