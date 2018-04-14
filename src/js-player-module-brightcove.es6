@@ -1,12 +1,21 @@
 /*!
- * js-player-module-brightcove.js JavaScript Library v1.3.2
- * https://github.com/yama-dev/js-player-module-brightcove
+ * @license
+ *
+ * JS PLAYER MODULE BRIGHTCOVE (JavaScript Library)
+ *   js-player-module-brightcove[.min].js
+ *
+ * versoin 2.0.0
+ * Repository https://github.com/yama-dev/js-player-module-brightcove
  * Copyright yama-dev
  * Licensed under the MIT license.
- * Date: 2017-03-14
+ * Release 2018-04-12
+ *
+ * Instance
+ *   new PLAYER_MODULE_BRIGHTCOVE({ options });
+ *
  */
-(function(){
 class PLAYER_MODULE_BRIGHTCOVE {
+
   constructor(options = {}){
     // 設定
     if(!window.console) {window.console = { log: function(msg){} };}
@@ -289,6 +298,18 @@ class PLAYER_MODULE_BRIGHTCOVE {
     });
 
   }
+
+  DebugMode(){
+    console.log(this);
+  }
+
+  DebugModePlayer(){
+    console.log(
+      'player_id  -> '+this.config.player_id+'\n'+
+      'readyState -> '+this.Player.readyState()+'\n'
+    );
+  }
+
   SetPlayer(){
     let _that = this;
 
@@ -305,87 +326,6 @@ class PLAYER_MODULE_BRIGHTCOVE {
     // SetPlayerEvent
     function SetPlayerEvent(){
 
-      // Set Load Event
-      let ua  = window.navigator.userAgent.toLowerCase();
-      let ver = window.navigator.appVersion.toLowerCase();
-      let loadNum = '0';
-      let loadEvent = '';
-      if (ua.indexOf('msie') != -1 || ua.indexOf('trident') != -1){
-        // For MS IE10-11
-        loadNum = '4';
-        loadEvent = 'loadedmetadata';
-      } else if (ua.indexOf('applewebkit') != -1 && ua.indexOf('edge') != -1){
-        // For MS Edge
-        loadNum = '4';
-        loadEvent = 'loadedmetadata';
-      } else if (ua.indexOf('chrome') != -1){
-        // For Chrome
-        loadNum = '1';
-        loadEvent = 'loadedmetadata';
-
-        // スマホのブラウザ判定
-        if (ua.indexOf('iphone') > 0 || ua.indexOf('ipad') > 0 ) {
-          // iOS
-          loadNum = '4'; // Chrome
-          loadEvent = 'loadedmetadata';
-        } else if (ua.indexOf('android') > 0 || ua.indexOf('android') > 0 && ua.indexOf('mobile') > 0) {
-          // Android
-          if (
-            /android/.test(ua) && /linux\; u\;/.test(ua) && !/chrome/.test(ua) ||
-            /android/.test(ua) && /chrome/.test(ua) && /version/.test(ua) ||
-            /android/.test(ua) && /chrome/.test(ua) && /samsungbrowser/.test(ua)
-          ) {
-            // Android 標準ブラウザを判定
-            loadNum = '4';
-            loadEvent = 'loadedmetadata';
-            if ( /so-04f/.test(ua) ) {
-              loadNum = '2';
-              loadEvent = 'loadedmetadata';
-            }
-          } else {
-            // Android Chrome
-            loadNum = '1';
-            loadEvent = 'loadedmetadata';
-          }
-        }
-      } else if (ua.indexOf('safari') != -1){
-        loadNum = '1';
-        loadEvent = 'loadedmetadata';
-        if (ua.indexOf('iphone') > 0 || ua.indexOf('ipad') > 0) {
-          // iPhone iOS 10.3.1
-          loadNum = '1';
-          loadEvent = 'loadedmetadata';
-        } else if (ua.indexOf('android') > 0 || ua.indexOf('android') > 0 && ua.indexOf('mobile') > 0) {
-          // Android
-          if (
-            /android/.test(ua) && /linux\; u\;/.test(ua) && !/chrome/.test(ua) ||
-            /android/.test(ua) && /chrome/.test(ua) && /version/.test(ua) ||
-            /android/.test(ua) && /chrome/.test(ua) && /samsungbrowser/.test(ua)
-          ) {
-            // Android 標準ブラウザを判定
-            loadNum = '4';
-            loadEvent = 'loadedmetadata';
-            if ( /so-04f/.test(ua) ) {
-              loadNum = '2';
-              loadEvent = 'loadedmetadata';
-            }
-          } else {
-            // Android Chrome
-            loadNum = '1';
-            loadEvent = 'loadedmetadata';
-          }
-        }
-      } else if (ua.indexOf('opera') != -1){
-        loadNum = '0';
-        loadEvent = 'loadedmetadata';
-      } else if (ua.indexOf('firefox') != -1){
-        loadNum = '3';
-        loadEvent = 'loadeddata';
-      } else {
-        loadNum = '1';
-        loadEvent = 'loadedmetadata';
-      }
-
       // Set Load Flg
       _that.PlayerLoadFlg = false;
 
@@ -394,48 +334,54 @@ class PLAYER_MODULE_BRIGHTCOVE {
         console.log(this.error().code);
       });
 
-      // TODO:test ready-event
-      // -> There are faulty models with ready-evnt
-      //    `videojs().ready()`
-      videojs(_that.config.player_id).on( loadEvent , function() {
+      // TODO: Add LimitInterval.
+      let checkPlayer = setInterval(function(){
 
-        // Set Instance
-        _that.Player = this;
+        if(videojs(_that.config.player_id).mediainfo){
 
-        // Set PlayerJson
-        _that.PlayerJson = _that.Player.toJSON();
+          clearInterval(checkPlayer);
 
-        // Set MediaInfo
-        _that.PlayerMediaInfo = _that.Player.mediainfo;
+          // Set Instance
+          _that.Player = videojs(_that.config.player_id);
 
-        // DebugMode
-        if(_that.currentUrl.search(/localhost/) !== -1 || _that.currentUrl.search(/192.168/) !== -1){
-          _that.DebugModePlayer(loadEvent,loadNum);
-        } else { }
+          // Set PlayerJson
+          _that.PlayerJson = _that.Player.toJSON();
 
-        if(_that.config.poster){
-          _that.Player.poster(_that.config.poster);
-          _that.$uiDisplayPoster.innerHTML = '<img src="' + _that.config.poster + '" alt="">';
+          // Set MediaInfo
+          _that.PlayerMediaInfo = _that.Player.mediainfo;
+
+          // DebugMode
+          if(_that.currentUrl.search(/localhost/) !== -1 || _that.currentUrl.search(/192.168/) !== -1){
+            _that.DebugModePlayer();
+          } else { }
+
+          if(_that.config.poster){
+            _that.Player.poster(_that.config.poster);
+            _that.$uiDisplayPoster.innerHTML = '<img src="' + _that.config.poster + '" alt="">';
+          }
+
+          // ロードイベントが複数掛からないためのハック
+          if(_that.PlayerLoadFlg === true) return false;
+
+          // Set Load Flg
+          _that.PlayerLoadFlg = true;
+
+          _that.SetInfo();
+          _that.EventPlay();
+          _that.EventPause();
+          _that.EventStop();
+          _that.EventMute();
+          _that.EventVolon();
+          _that.EventVoloff();
+          _that.EventBtnFull();
+          _that.EventSeekbarVol();
+          _that.EventSeekbarTime();
+          _that.EventChangeVideo();
+
         }
 
-        // ロードイベントが複数掛からないためのハック
-        if(String(_that.Player.readyState()) !== loadNum || _that.PlayerLoadFlg === true) return false;
+      }, 100);
 
-        // Set Load Flg
-        _that.PlayerLoadFlg = true;
-
-        _that.SetInfo();
-        _that.EventPlay();
-        _that.EventPause();
-        _that.EventStop();
-        _that.EventMute();
-        _that.EventVolon();
-        _that.EventVoloff();
-        _that.EventBtnFull();
-        _that.EventSeekbarVol();
-        _that.EventSeekbarTime();
-        _that.EventChangeVideo();
-      });
       videojs(_that.config.player_id).on('timeupdate', function() {
         // 再生時間の更新(分秒)
         _that.$uiDisplayTime.innerHTML = _that.GetTime()+'/'+_that.GetTimeMax();
@@ -461,26 +407,22 @@ class PLAYER_MODULE_BRIGHTCOVE {
     // windowオブジェクトへインスタンスしたPlayerを配列で管理(Player-IDを文字列で追加)
     if(window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST === undefined){
       window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST = [];
-      window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST.push(_that.config.player_id);
+      window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST.push({
+        id: _that.config.id,
+        player_id: _that.config.player_id
+      });
     }else{
-      window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST.push(_that.config.player_id);
+      window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST.push({
+        id: _that.config.id,
+        player_id: _that.config.player_id
+      });
     }
   }
-  DebugMode(){
-    console.log(this);
-  }
-  DebugModePlayer(loadEvent,loadNum){
-    console.log(
-      'player_id  -> '+this.config.player_id+'\n'+
-      'readyState -> '+this.Player.readyState()+'\n'+
-      'loadNum    -> '+loadNum+'\n'+
-      'loadEvent  -> '+loadEvent+'\n'
-    );
-  }
+
   CacheElement(){
     this.$uiBtnPlay          = document.querySelectorAll('#'+this.config.id+' .btn_play')                      ? document.querySelectorAll('#'+this.config.id+' .btn_play')                      : document.createElement('div');
-    this.$uiBtnStop          = document.querySelector('#'+this.config.id+' .btn_stop')                         ? document.querySelector('#'+this.config.id+' .btn_stop')                         : document.createElement('div');
-    this.$uiBtnPause         = document.querySelector('#'+this.config.id+' .btn_pause')                        ? document.querySelector('#'+this.config.id+' .btn_pause')                        : document.createElement('div');
+    this.$uiBtnStop          = document.querySelectorAll('#'+this.config.id+' .btn_stop')                      ? document.querySelectorAll('#'+this.config.id+' .btn_stop')                      : document.createElement('div');
+    this.$uiBtnPause         = document.querySelectorAll('#'+this.config.id+' .btn_pause')                     ? document.querySelectorAll('#'+this.config.id+' .btn_pause')                     : document.createElement('div');
     this.$uiBtnMute          = document.querySelector('#'+this.config.id+' .btn_mute')                         ? document.querySelector('#'+this.config.id+' .btn_mute')                         : document.createElement('div');
     this.$uiBtnVolon         = document.querySelector('#'+this.config.id+' .btn_volon')                        ? document.querySelector('#'+this.config.id+' .btn_volon')                        : document.createElement('div');
     this.$uiBtnVoloff        = document.querySelector('#'+this.config.id+' .btn_voloff')                       ? document.querySelector('#'+this.config.id+' .btn_voloff')                       : document.createElement('div');
@@ -502,6 +444,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
     this.$uiBtnRoundSvg      = document.querySelector('#'+this.config.id+' .btn_roundsvg')                     ? document.querySelector('#'+this.config.id+' .btn_roundsvg')                     : document.createElement('div');
     this.$uiBtnRoundSvgPath  = document.querySelector('#'+this.config.id+' .btn_roundsvg .btn_roundsvg__path') ? document.querySelector('#'+this.config.id+' .btn_roundsvg .btn_roundsvg__path') : document.createElement('div');
   }
+
   EventPlay(){
     let _that = this;
     if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
@@ -520,22 +463,34 @@ class PLAYER_MODULE_BRIGHTCOVE {
 
     }
   }
+
   EventPause(){
     let _that = this;
-    if(this.$uiBtnPause !== null){
-      this.$uiBtnPause.addEventListener('click', (event) => {
-        _that.Pause();
-      });
+    if(this.$uiBtnPause !== null && this.$uiBtnPause.length !== 0){
+      for (var j = 0; j < this.$uiBtnPause.length; ++j) {
+        this.$uiBtnPause[j].addEventListener('click', (event) => {
+          _that.Pause();
+        });
+      }
     }
   }
+
   EventStop(){
     let _that = this;
-    if(this.$uiBtnStop !== null){
-      this.$uiBtnStop.addEventListener('click', (event) => {
-        _that.Stop();
-      });
+    if(this.$uiBtnStop !== null && this.$uiBtnStop.length !== 0){
+      for (var j = 0; j < this.$uiBtnStop.length; ++j) {
+        this.$uiBtnStop[j].addEventListener('click', (event) => {
+          _that.Stop();
+        });
+      }
     }
   }
+
+  EventStopAll(){
+    // TODO: Modify StopAll function.
+    this.StopAll();
+  }
+
   EventMute(){
     if(this.$uiBtnMute !== null){
       this.$uiBtnMute.addEventListener('click', (event) => {
@@ -553,6 +508,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
       });
     }
   }
+
   EventVolon(){
     if(this.$uiBtnVolon !== null){
       this.$uiBtnVolon.addEventListener('click', (event) => {
@@ -563,6 +519,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
       });
     }
   }
+
   EventVoloff(){
     if(this.$uiBtnVoloff !== null){
       this.$uiBtnVoloff.addEventListener('click', (event) => {
@@ -573,6 +530,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
       });
     }
   }
+
   EventBtnFull(){
     if(this.$uiBtnFull !== null){
       this.$uiBtnFull.addEventListener('click', (event) => {
@@ -580,6 +538,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
       });
     }
   }
+
   EventSeekbarVol(){
     if(this.$uiSeekbarVol !== null){
       let _flag = false;
@@ -607,6 +566,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
       });
     }
   }
+
   EventSeekbarTime(){
     let _that = this;
 
@@ -636,7 +596,11 @@ class PLAYER_MODULE_BRIGHTCOVE {
               this.$uiBtnPlay[i].addClass('active');
             }
           }
-          this.$uiBtnPause.addClass('active');
+          if(this.$uiBtnPause !== null && this.$uiBtnPause.length !== 0){
+            for (var i = 0; i < this.$uiBtnPause.length; ++i) {
+              this.$uiBtnPause[i].addClass('active');
+            }
+          }
         }
         _flag = false;
       });
@@ -649,7 +613,11 @@ class PLAYER_MODULE_BRIGHTCOVE {
               this.$uiBtnPlay[i].addClass('active');
             }
           }
-          this.$uiBtnPause.addClass('active');
+          if(this.$uiBtnPause !== null && this.$uiBtnPause.length !== 0){
+            for (var i = 0; i < this.$uiBtnPause.length; ++i) {
+              this.$uiBtnPause[i].addClass('active');
+            }
+          }
         }
         _flag = false;
       });
@@ -717,6 +685,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
       });
     }
   }
+
   EventChangeVideo(){
     let _that = this;
     if(this.$uiBtnChange !== null && this.$uiBtnChange.length !== 0){
@@ -730,6 +699,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
       }
     }
   }
+
   Play(){
     let _that = this;
     if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
@@ -741,7 +711,11 @@ class PLAYER_MODULE_BRIGHTCOVE {
             this.$uiBtnPlay[i].addClass('active');
           }
         }
-        this.$uiBtnPause.addClass('active');
+        if(this.$uiBtnPause !== null && this.$uiBtnPause.length !== 0){
+          for (var i = 0; i < this.$uiBtnPause.length; ++i) {
+            this.$uiBtnPause[i].addClass('active');
+          }
+        }
       } else {
         // 再生状態の場合
         _that.Pause();
@@ -750,14 +724,18 @@ class PLAYER_MODULE_BRIGHTCOVE {
             this.$uiBtnPlay[i].removeClass('active');
           }
         }
-        this.$uiBtnPause.removeClass('active');
+        if(this.$uiBtnPause !== null && this.$uiBtnPause.length !== 0){
+          for (var i = 0; i < this.$uiBtnPause.length; ++i) {
+            this.$uiBtnPause[i].removeClass('active');
+          }
+        }
       }
     }
   }
+
   Stop(){
     this.Pause();
     this.Player.currentTime(0);
-    this.StopAll();
 
     // 再生中のPLAYボタンのhtml-classを削除
     if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
@@ -767,7 +745,11 @@ class PLAYER_MODULE_BRIGHTCOVE {
     }
 
     // 再生中のPAUSEボタンのhtml-classを削除
-    this.$uiBtnPause.removeClass('active');
+    if(this.$uiBtnPause !== null && this.$uiBtnPause.length !== 0){
+      for (var i = 0; i < this.$uiBtnPause.length; ++i) {
+        this.$uiBtnPause[i].removeClass('active');
+      }
+    }
 
     // メディア変更ボタンのhtml-classを削除
     let clickElemAll = Array.prototype.slice.call( document.querySelectorAll('[data-PMB-id]') );
@@ -778,6 +760,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
     }
 
   }
+
   Pause(){
 
     this.Player.pause();
@@ -790,7 +773,11 @@ class PLAYER_MODULE_BRIGHTCOVE {
     }
 
     // 再生中のPAUSEボタンのhtml-classを削除
-    this.$uiBtnPause.removeClass('active');
+    if(this.$uiBtnPause !== null && this.$uiBtnPause.length !== 0){
+      for (var i = 0; i < this.$uiBtnPause.length; ++i) {
+        this.$uiBtnPause[i].removeClass('active');
+      }
+    }
 
     // メディア変更ボタンのhtml-classを削除
     let clickElemAll = Array.prototype.slice.call( document.querySelectorAll('[data-PMB-id]') );
@@ -800,6 +787,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
       });
     }
   }
+
   Change(id){
 
     let _that = this;
@@ -837,7 +825,11 @@ class PLAYER_MODULE_BRIGHTCOVE {
       }
 
       // PAUSEボタンにhtml-classを付与
-      this.$uiBtnPause.addClass('active');
+      if(this.$uiBtnPause !== null && this.$uiBtnPause.length !== 0){
+        for (var i = 0; i < this.$uiBtnPause.length; ++i) {
+          this.$uiBtnPause[i].addClass('active');
+        }
+      }
 
       // メディア変更ボタンにhtml-classを付与
       let clickElemAll = Array.prototype.slice.call( document.querySelectorAll('[data-PMB-id]') );
@@ -864,12 +856,32 @@ class PLAYER_MODULE_BRIGHTCOVE {
     });
 
   }
+
   StopAll(){
     for (var _i in window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST) {
-      videojs(window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST[_i]).pause();
-      videojs(window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST[_i]).currentTime(0);
+      videojs(window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST[_i].player_id).pause();
+      videojs(window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST[_i].player_id).currentTime(0);
+      this.$uiBtnPlayAll  = document.querySelectorAll('#'+window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST[_i].id+' .btn_play')  ? document.querySelectorAll('#'+window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST[_i].id+' .btn_play')  : document.createElement('div');
+      this.$uiBtnStopAll  = document.querySelectorAll('#'+window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST[_i].id+' .btn_stop')  ? document.querySelectorAll('#'+window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST[_i].id+' .btn_stop')  : document.createElement('div');
+      this.$uiBtnPauseAll = document.querySelectorAll('#'+window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST[_i].id+' .btn_pause') ? document.querySelectorAll('#'+window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST[_i].id+' .btn_pause') : document.createElement('div');
+      if(this.$uiBtnPlayAll !== null && this.$uiBtnPlayAll.length !== 0){
+        for (var i = 0; i < this.$uiBtnPlayAll.length; ++i) {
+          this.$uiBtnPlayAll[i].removeClass('active');
+        }
+      }
+      if(this.$uiBtnStopAll !== null && this.$uiBtnStopAll.length !== 0){
+        for (var i = 0; i < this.$uiBtnStopAll.length; ++i) {
+          this.$uiBtnStopAll[i].removeClass('active');
+        }
+      }
+      if(this.$uiBtnPauseAll !== null && this.$uiBtnPauseAll.length !== 0){
+        for (var i = 0; i < this.$uiBtnPauseAll.length; ++i) {
+          this.$uiBtnPauseAll[i].removeClass('active');
+        }
+      }
     }
   }
+
   GetTime(){
     function parseNumber(num) {
       if(typeof(num) === 'number') num = String(num);
@@ -880,6 +892,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
     let _s = parseNumber(Math.floor(this.Player.currentTime()%60));
     return _m+':'+_s;
   }
+
   GetTimeDown(){
     function parseNumber(num) {
       if(typeof(num) === 'number') num = String(num);
@@ -891,6 +904,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
     let _s_down        = parseNumber(Math.floor(_countDownTime % 60));
     return _m_down+':'+_s_down;
   }
+
   GetTimeMax(){
     function parseNumber(num) {
       if(typeof(num) === 'number') num = String(num);
@@ -901,30 +915,33 @@ class PLAYER_MODULE_BRIGHTCOVE {
     let _s_max = parseNumber(Math.floor(this.Player.duration()%60));
     return _m_max+':'+_s_max;
   }
+
   GetInfo(){
     return this.PlayerMediaInfo;
   }
+
   GetTimeRatio(){
     return Math.floor(this.Player.currentTime() / this.Player.duration() * 1000) / 1000;
   }
+
   GetTimePar(){
     return (Math.floor(this.Player.currentTime() / this.Player.duration() * 1000) / 10) + '%';
   }
+
   GetUrlPoster(){
     return this.Player.poster();
   }
+
   SetInfo(){
     this.$uiDisplayPoster.innerHTML = this.PlayerMediaInfo.name;
   }
+
   SetUrlPoster(url){
     this.Player.poster(url);
   }
+
   Destroy(){
     this.Player.reset();
   }
+
 }
-
-window.PLAYER_MODULE_BRIGHTCOVE = PLAYER_MODULE_BRIGHTCOVE || {};
-
-})(window);
-

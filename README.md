@@ -1,37 +1,52 @@
-# js-player-module-brightcove
+# JS PLAYER MODULE BRIGHTCOVE
 
-## 概要
+## Feature
 
-Brightcoveプレーヤーのライブラリ
+Brightcove Player API を使用した BrightcoveカスタムPlayerです。
+公式ドキュメントはこちら。https://brightcovelearning.github.io/Brightcove-API-References/
 
 <br>
 
-## インストール(Install)
+## Installation
 
-### 1. ライブラリのダウンロード
+- npm -> coming soon...
+
+- Standalone -> [link](https://raw.githubusercontent.com/yama-dev/js-player-module-brightcove/master/dist/js-player-module-brightcove.min.js)
+
+<br>
+
+## DownLoad
 
 #### ダウンロードURL [yama-dev/js-player-module-brightcove](https://github.com/yama-dev/js-player-module-brightcove/releases/latest)
 
-### 2. ファイルの読み込み
+<br>
 
-For HTML  
-Include script.  
+## Using
+
+### Basic Standalone Usage
 
 ``` html
-<script src="js-player-module-brightcove.js"></script>
+<script src="./js-player-module-brightcove.js"></script>
+<div id="brightcovePlayer1">
+  <script>
+    new PLAYER_MODULE_BRIGHTCOVE({
+      id:'brightcovePlayer1',
+      videoid:'4217352666001',
+      account:'20318290001',
+    });
+  </script>
+</div>
 ```
 
 <br>
 
-## 使い方(Using)
+## Sample Code
 
 ### ①BASIC Player
 
 **UI**
 
 <img src="https://raw.githubusercontent.com/yama-dev/assets/master/images/js-player-module-brightcove/brightcovePlayer1.png" style="width: 100%; max-width: 520px; border: 1px solid #eee;" alt="">
-
-**サンプルコード**
 
 ``` html
 <div id="brightcovePlayer1">
@@ -48,8 +63,6 @@ Include script.
 ```
 
 ### ②AUDIO Player
-
-**サンプルコード**
 
 ``` html
 <div id="brightcovePlayer2">
@@ -106,9 +119,9 @@ ui_default //false
 <br>
 
 
-## ブラウザサポート(Browser support)
+## Browser support
 
-| ブラウザ          | バージョンなど | 
+| Browser          | OS、version | 
 | ---               | ---            | 
 | Internet Explorer | 11+            | 
 | Chrome            | 最新           | 
@@ -117,13 +130,19 @@ ui_default //false
 | Android           | 5.0+ Chrome    | 
 | iOS               | 10.0+ safari   | 
 
+[Useble Browser version LIST](./docs/device-check.md)
+
 <br>
 
-## 依存ライブラリ(Dependencies)
+## Dependencies
 
 none
 
-<br>
+<br><br><br>
+
+___
+
+**For Developer**
 
 ## Contribution
 
@@ -137,7 +156,7 @@ none
 
 ## Develop
 
-### At Development
+### at Development
 
 Install node modules.
 
@@ -145,18 +164,18 @@ Install node modules.
 $ npm install
 ```
 
-Run Gulp default-task.
+Run npm script 'develop'
 
 ``` bash
-$ gulp --babel
+$ npm run develop
 ```
 
-### At Release
+### at Production
 
-Run Gulp release-task.
+Run npm script 'production'
 
 ``` bash
-$ gulp release --babel --min
+$ npm run production
 ```
 
 <br>
