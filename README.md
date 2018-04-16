@@ -46,7 +46,7 @@ Brightcove Player API を使用した BrightcoveカスタムPlayerです。
 
 ### ①BASIC Player
 
-<img src="https://raw.githubusercontent.com/yama-dev/assets/master/images/js-player-module-brightcove/brightcovePlayer1.png" style="width: 100%; max-width: 520px; border: 1px solid #eee;" alt="">
+<img src="https://raw.githubusercontent.com/yama-dev/assets/master/images/js-player-module-brightcove/sample_player1.png" style="width: 100%; max-width: 520px; border: 1px solid #eee;" alt="">
 
 ``` html
 <div id="brightcovePlayer1">
@@ -60,7 +60,32 @@ Brightcove Player API を使用した BrightcoveカスタムPlayerです。
 </div>
 ```
 
-### ②AUDIO Player
+### ②Original image Player
+
+<img src="https://raw.githubusercontent.com/yama-dev/assets/master/images/js-player-module-brightcove/sample_player_original-image.png" style="width: 100%; max-width: 520px; border: 1px solid #eee;" alt="">
+
+``` html
+<div id="brightcovePlayerOriginalimage">
+  <script>
+    new PLAYER_MODULE_BRIGHTCOVE({
+      id: 'brightcovePlayerOriginalimage',
+      videoid: '4217352666001',
+      account: '20318290001',
+      ui_default: false
+    });
+  </script>
+  <div class="player__btn">
+    <div class="btn_play"><img class="on" src="http://placehold.jp/14/333/ddd/120x30.png?text=PLAY" alt=""><img class="off" src="http://placehold.jp/14/ddd/333/120x30.png?text=PLAY" alt=""></div>
+    <div class="btn_pause"><img class="on" src="http://placehold.jp/14/333/ddd/120x30.png?text=PAUSE" alt=""><img class="off" src="http://placehold.jp/14/ddd/333/120x30.png?text=PAUSE" alt=""></div>
+    <div class="btn_stop"><img class="on" src="http://placehold.jp/14/333/ddd/120x30.png?text=STOP" alt=""><img class="off" src="http://placehold.jp/14/ddd/333/120x30.png?text=STOP" alt=""></div>
+    <div class="btn_mute"><img class="on" src="http://placehold.jp/14/333/ddd/120x30.png?text=MUTE" alt=""><img class="off" src="http://placehold.jp/14/ddd/333/120x30.png?text=MUTE" alt=""></div>
+  </div>
+</div>
+```
+
+### ③AUDIO Player
+
+<img src="https://raw.githubusercontent.com/yama-dev/assets/master/images/js-player-module-brightcove/sample_audio.png" style="width: 100%; max-width: 520px; border: 1px solid #eee;" alt="">
 
 ``` html
 <div id="brightcovePlayerAudio">
