@@ -26,9 +26,7 @@
           new PLAYER_MODULE_BRIGHTCOVE({
             id:'brightcovePlayer1',
             videoid:'4217352666001',
-            account:'20318290001',
-            ui_controls:true,
-            ui_default:true
+            account:'20318290001'
           });
         </script>
         <pre class="prettyprint lang-html">
@@ -38,9 +36,7 @@
               new PLAYER_MODULE_BRIGHTCOVE({
                 id:'player01',
                 videoid:'4217352666001',
-                account:'20318290001',
-                ui_controls:true,
-                ui_default:true
+                account:'20318290001'
               });
             &lt;/script&gt;
           &lt;/div&gt;</code>
@@ -49,13 +45,14 @@
 
       <hr>
 
-      <h3>Simple Player(original images)</h3>
-      <div id="player01">
+      <h3>Simple Player(original image)</h3>
+      <div id="brightcovePlayerOriginalimage">
         <script>
           new PLAYER_MODULE_BRIGHTCOVE({
-            id:'player01',
-            videoid:'4217352666001',
-            account:'20318290001'
+            id: 'brightcovePlayerOriginalimage',
+            videoid: '4217352666001',
+            account: '20318290001',
+            ui_default: false
           });
         </script>
         <div class="player__btn">
@@ -66,12 +63,13 @@
         </div>
         <pre class="prettyprint lang-html">
         <code>
-          &lt;div id="player01"&gt;
+          &lt;div id="brightcovePlayerOriginalimage"&gt;
             &lt;script&gt;
               new PLAYER_MODULE_BRIGHTCOVE({
-                id:'player01',
-                videoid:'4217352666001',
-                account:'20318290001'
+                id: 'brightcovePlayerOriginalimage',
+                videoid: '4217352666001',
+                account: '20318290001',
+                ui_default: false
               });
             &lt;/script&gt;
             &lt;div class="player__btn"&gt;
@@ -99,10 +97,10 @@
       <hr>
 
       <h3>Custom Player</h3>
-      <div id="player02">
+      <div id="brightcovePlayerCustom">
         <script>
           var PMB = new PLAYER_MODULE_BRIGHTCOVE({
-            id:'player02',
+            id:'brightcovePlayerCustom',
             ui_controls:true,
             ui_default:true,
             videoid:'4217352666001',
@@ -115,10 +113,10 @@
         <button class="btn btn-default" data-PMB-id="4217352666001" onclick="PMB.Change('4217352666001')">楽曲変更 id=4217352666001</button>
         <pre class="prettyprint lang-html">
         <code>
-          &lt;div id="player02"&gt;
+          &lt;div id="brightcovePlayerCustom"&gt;
             &lt;script&gt;
               var PMB = new PLAYER_MODULE_BRIGHTCOVE({
-                id:'player02',
+                id:'brightcovePlayerCustom',
                 ui_controls:true,
                 ui_default:true,
                 videoid:'4217352666001',
@@ -137,11 +135,11 @@
       <hr>
 
       <h3>Audio Player</h3>
-      <div id="player03">
+      <div id="brightcovePlayerAudio">
         <script>
           new PLAYER_MODULE_BRIGHTCOVE({
             mode: 'audio',
-            id:'player03',
+            id:'brightcovePlayerAudio',
             ui_controls:true,
             ui_default:true,
             videoid:'4217352666001',
@@ -150,11 +148,11 @@
         </script>
         <pre class="prettyprint lang-html">
         <code>
-          &lt;div id="player03"&gt;
+          &lt;div id="brightcovePlayerAudio"&gt;
             &lt;script&gt;
               new PLAYER_MODULE_BRIGHTCOVE({
                 mode: 'audio',
-                id:'player03',
+                id:'brightcovePlayerAudio',
                 ui_controls:true,
                 ui_default:true,
                 videoid:'4217352666001',
