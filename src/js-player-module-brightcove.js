@@ -2,7 +2,7 @@
  * @license
  *
  * JS PLAYER MODULE BRIGHTCOVE (JavaScript Library)
- *   js-player-module-brightcove[.min].js
+ *   js-player-module-brightcove.js
  *
  * versoin 2.0.0
  * Repository https://github.com/yama-dev/js-player-module-brightcove
@@ -14,14 +14,20 @@
  *   new PLAYER_MODULE_BRIGHTCOVE({ options });
  *
  */
+
+import { viewPlayerScriptcode, viewPlayer, viewPlayerUi, viewPlayerStyle } from './view.js';
+
 class PLAYER_MODULE_BRIGHTCOVE {
 
   constructor(options = {}){
-    // 設定
-    if(!window.console) {window.console = { log: function(msg){} };}
-    // URLでの判別に利用
+
+    // Set Version.
+    this.VERSION = '2.0.0';
+
+    // Use for discrimination by URL.
     this.currentUrl = location.href;
-    // オプション設定用
+
+    // Set config, options.
     this.config = {
       mode           : options.mode||'movie',
       id             : options.id||'pmb',
@@ -41,6 +47,8 @@ class PLAYER_MODULE_BRIGHTCOVE {
       ui_round_color : options.ui_round_color||'#696969',
       style_text     : options.style_text||'',
     }
+
+    // BrightcovePlayer Information.
     this.playerVideo = {
       id          : '',
       name        : '',
@@ -49,170 +57,16 @@ class PLAYER_MODULE_BRIGHTCOVE {
       thumbnail   : '',
     }
 
+    // BrightcovePlayer Instance.
     this.Player = '';
 
-    this.playerHtml = `
-      <video id="${this.config.player_id}"
-        data-video-id="{{ videoid }}"
-        data-account="{{ account }}"
-        data-player="{{ player }}"
-        data-embed="default"
-        data-application-id
-        class="video-js"
-        width="{{ width }}"
-        height="{{ height }}"
-        {{ui_controls}}
-        {{ui_autoplay}}
-        ></video>
-    `;
+    // Import Views.
+    this.playerHtml       = viewPlayer;
+    this.playerUiHtml     = viewPlayerUi;
+    this.playerCss        = viewPlayerStyle;
+    this.playerScriptCode = viewPlayerScriptcode;
 
-    this.playerUiHtml = `
-      <div class="display_time">00:00</div>
-      <div class="display_time_par">0%</div>
-      <button class="btn_play btn btn-default">play</button>
-      <button class="btn_pause btn btn-default">pause</button>
-      <button class="btn_stop btn btn-default">stop</button>
-      <button class="btn_mute btn btn-default">mute</button>
-      <div class="seekbar_time"><div class="seekbar_time_bg"></div><span></span></div>
-      <div class="seekbar_vol"><div class="seekbar_vol_bg"></div><span></span></div>
-      <button class="btn_full btn btn-default">full screen</button>
-      <div class="display_poster"><img src="" alt=""></div>
-      <div class="display_name"></div>
-    `;
-
-    this.playerScriptCode = '//players.brightcove.net/{{ account }}/{{ player }}_default/index.min.js';
-
-    this.playerCss = `
-#${this.config.id} {
-  position: relative;
-}
-#${this.config.id} .on {
-  display: none;
-}
-#${this.config.id} .off {
-  display: block;
-}
-#${this.config.id} .btn_play {
-  width: 120px;
-  height: 30px;
-  // position: absolute;
-  // top: 8px;
-  // left: 10px;
-  display: block;
-  cursor: pointer;
-}
-#${this.config.id} .btn_play.active {
-  display: none;
-}
-#${this.config.id} .btn_play:hover .on {
-  display: block;
-}
-#${this.config.id} .btn_play:hover .off {
-  display: none;
-}
-#${this.config.id} .btn_pause {
-  width: 120px;
-  height: 30px;
-  // position: absolute;
-  // top: 8px;
-  // left: 10px;
-  display: none;
-  cursor: pointer;
-}
-#${this.config.id} .btn_pause.active {
-  display: block;
-}
-#${this.config.id} .btn_pause:hover .on {
-  display: block;
-}
-#${this.config.id} .btn_pause:hover .off {
-  display: none;
-}
-#${this.config.id} .btn_stop {
-  width: 120px;
-  height: 30px;
-  // position: absolute;
-  // top: 8px;
-  // left: 10px;
-  cursor: pointer;
-}
-#${this.config.id} .btn_stop.active {
-  display: block;
-}
-#${this.config.id} .btn_stop:hover .on {
-  display: block;
-}
-#${this.config.id} .btn_stop:hover .off {
-  display: none;
-}
-#${this.config.id} .btn_mute {
-  width: 120px;
-  height: 30px;
-  // position: absolute;
-  // top: 6px;
-  // left: 110px;
-  cursor: pointer;
-}
-#${this.config.id} .btn_mute.active .on {
-  display: block;
-}
-#${this.config.id} .btn_mute.active .off {
-  display: none;
-}
-#${this.config.id} .seekbar_vol {
-  width: 100%;
-  height: 9px;
-  padding: 2px 0;
-  position: relative;
-  cursor: pointer;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-}
-#${this.config.id} .seekbar_vol .seekbar_vol_bg {
-  width: 100%;
-  height: 5px;
-  background: #ddd;
-  position: absolute;
-  top: 0;
-  left: 0;
-  margin: 2px 0;
-}
-#${this.config.id} .seekbar_vol span {
-  display: block;
-  width: 0%;
-  height: 100%;
-  background: #666;
-  position: relative;
-}
-#${this.config.id} .seekbar_time {
-  width: 100%;
-  height: 9px;
-  padding: 2px 0;
-  position: relative;
-  cursor: pointer;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-}
-#${this.config.id} .seekbar_time .seekbar_time_bg {
-  width: 100%;
-  height: 5px;
-  background: #ddd;
-  position: absolute;
-  top: 0;
-  left: 0;
-  margin: 2px 0;
-}
-#${this.config.id} .seekbar_time span {
-  display: block;
-  width: 0%;
-  height: 100%;
-  background: #666;
-  position: relative;
-}
-    `;
-
+    // Check Audio mode.
     if(this.config.mode == 'audio'){
       this.config.width  = 1;
       this.config.height = 1;
@@ -329,13 +183,18 @@ class PLAYER_MODULE_BRIGHTCOVE {
       // Set Load Flg
       _that.PlayerLoadFlg = false;
 
-      // For Error
-      videojs(_that.config.player_id).on( 'error' , function(err) {
-        console.log(this.error().code);
-      });
-
-      // TODO: Add LimitInterval.
+      // Check Player try loaded.
+      let checkPlayerCount      = 0;
+      let checkPlayerLimitCount = 100;
       let checkPlayer = setInterval(function(){
+
+        // Check upper limit of action to try.
+        if(checkPlayerCount >= checkPlayerLimitCount){
+          clearInterval(checkPlayer);
+          console.log('ERROR: not movie loaded.');
+        } else {
+          checkPlayerCount++;
+        }
 
         if(videojs(_that.config.player_id).mediainfo){
 
@@ -382,6 +241,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
 
       }, 100);
 
+      // For Timeupdate.
       videojs(_that.config.player_id).on('timeupdate', function() {
         // 再生時間の更新(分秒)
         _that.$uiDisplayTime.innerHTML = _that.GetTime()+'/'+_that.GetTimeMax();
@@ -395,13 +255,23 @@ class PLAYER_MODULE_BRIGHTCOVE {
         let _roundNum = _that.$uiBtnRoundSvg.clientWidth * 3.14 !== 0 ? _that.$uiBtnRoundSvg.clientWidth * 3.14 : _that.config.ui_round_num  * 3.14;
         _that.$uiBtnRoundSvgPath.style.cssText = 'stroke-dashoffset: '+(_roundNum + 10 - (360 * _that.GetTimeRatio()) / 365 * _roundNum)+';';
       });
+
+      // For Volume change.
       videojs(_that.config.player_id).on('volumechange', function() {
         // 音量バーの更新(％)
         _that.$uiSeekbarVolCover.style.width = (_that.Player.volume() * 100) + '%';
       });
+
+      // For Ended movie paly.
       videojs(_that.config.player_id).on('ended', function() {
         _that.Stop();
       });
+
+      // For Error
+      videojs(_that.config.player_id).on( 'error' , function(err) {
+        console.log(this.error().code);
+      });
+
     }
 
     // windowオブジェクトへインスタンスしたPlayerを配列で管理(Player-IDを文字列で追加)
@@ -945,3 +815,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
   }
 
 }
+
+export default PLAYER_MODULE_BRIGHTCOVE;
+
+window.PLAYER_MODULE_BRIGHTCOVE = PLAYER_MODULE_BRIGHTCOVE;

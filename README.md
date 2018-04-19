@@ -11,7 +11,7 @@ Brightcove Player API を使用した BrightcoveカスタムPlayerです。
 
 ## Installation
 
-- npm -> coming soon...
+- npm -> [link](https://www.npmjs.com/package/js-player-module-brightcove)
 
 - Standalone -> [link](https://raw.githubusercontent.com/yama-dev/js-player-module-brightcove/master/dist/js-player-module-brightcove.min.js)
 
