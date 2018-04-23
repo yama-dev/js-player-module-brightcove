@@ -4,11 +4,11 @@
  * JS PLAYER MODULE BRIGHTCOVE (JavaScript Library)
  *   js-player-module-brightcove.js
  *
- * versoin 2.0.0
+ * versoin 2.0.1
  * Repository https://github.com/yama-dev/js-player-module-brightcove
  * Copyright yama-dev
  * Licensed under the MIT license.
- * Release 2018-04-12
+ * Release 2018-04-23
  *
  * Instance
  *   new PLAYER_MODULE_BRIGHTCOVE({ options });
