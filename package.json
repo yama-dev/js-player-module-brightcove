@@ -1,7 +1,7 @@
 {
   "name": "js-player-module-brightcove",
   "version": "2.0.0",
-  "description": "Brightcove Player API を使用した BrightcoveカスタムPlayerです",
+  "description": "Brightcove custom player using the Brightcove Player API.",
   "author": "yama-dev",
   "license": "MIT",
   "main": "./dist/js-player-module-brightcove.js",
