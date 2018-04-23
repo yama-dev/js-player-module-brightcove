@@ -4,22 +4,22 @@
 
 ## Feature
 
-Brightcove Player API を使用した BrightcoveカスタムPlayerです。  
-公式ドキュメントはこちら。https://brightcovelearning.github.io/Brightcove-API-References/
+Brightcove custom player using the Brightcove Player API.  
+The official document is here. -> https://brightcovelearning.github.io/Brightcove-API-References/
 
 <br>
 
 ## Installation
 
-- npm -> coming soon...
+- npm -> [link](https://www.npmjs.com/package/js-player-module-brightcove)
 
 - Standalone -> [link](https://raw.githubusercontent.com/yama-dev/js-player-module-brightcove/master/dist/js-player-module-brightcove.min.js)
 
 <br>
 
-## DownLoad
+## Download
 
-ダウンロードURL [yama-dev/js-player-module-brightcove](https://github.com/yama-dev/js-player-module-brightcove/releases/latest)
+DownloadURL -> [yama-dev/js-player-module-brightcove](https://github.com/yama-dev/js-player-module-brightcove/releases/latest)
 
 <br>
 
