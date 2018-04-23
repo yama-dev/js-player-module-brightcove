@@ -9,21 +9,29 @@ The official document is here. -> https://brightcovelearning.github.io/Brightcov
 
 <br>
 
-## Installation
+## Installation,Download
 
-- npm -> [link](https://www.npmjs.com/package/js-player-module-brightcove)
+- npm -> [https://www.npmjs.com/package/js-player-module-brightcove](https://www.npmjs.com/package/js-player-module-brightcove)
 
-- Standalone -> [link](https://raw.githubusercontent.com/yama-dev/js-player-module-brightcove/master/dist/js-player-module-brightcove.min.js)
+- Standalone(CDN) -> [https://cdn.rawgit.com/yama-dev/js-player-module-brightcove/980f6f63/dist/js-player-module-brightcove.js](https://cdn.rawgit.com/yama-dev/js-player-module-brightcove/980f6f63/dist/js-player-module-brightcove.js)
 
-<br>
-
-## Download
-
-DownloadURL -> [yama-dev/js-player-module-brightcove](https://github.com/yama-dev/js-player-module-brightcove/releases/latest)
+- Zip -> [yama-dev/js-player-module-brightcove](https://github.com/yama-dev/js-player-module-brightcove/releases/latest)
 
 <br>
 
 ## Using
+
+### NPM Usage
+
+``` bash
+# install npm.
+npm install --save-dev js-player-module-brightcove
+```
+
+``` bash
+# install npm.
+npm install --save-dev js-player-module-brightcove
+```
 
 ### Basic Standalone Usage
 
