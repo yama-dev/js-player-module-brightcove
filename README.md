@@ -28,9 +28,9 @@ The official document is here. -> https://brightcovelearning.github.io/Brightcov
 npm install --save-dev js-player-module-brightcove
 ```
 
-``` bash
-# install npm.
-npm install --save-dev js-player-module-brightcove
+``` javascript.
+// import.
+import PLAYER_MODULE_BRIGHTCOVE from 'js-player-module-brightcove';
 ```
 
 ### Basic Standalone Usage
