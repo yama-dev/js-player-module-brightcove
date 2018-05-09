@@ -1,6 +1,4 @@
 /*!
- * @license
- *
  * JS PLAYER MODULE BRIGHTCOVE (JavaScript Library)
  *   js-player-module-brightcove.js
  *
@@ -9,10 +7,6 @@
  * Copyright yama-dev
  * Licensed under the MIT license.
  * Release 2018-04-23
- *
- * Instance
- *   new PLAYER_MODULE_BRIGHTCOVE({ options });
- *
  */
 
 import { viewPlayerScriptcode, viewPlayer, viewPlayerUi, viewPlayerStyle } from './view.js';

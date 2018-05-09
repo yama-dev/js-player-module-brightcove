@@ -25,8 +25,7 @@
     "url": "https://github.com/yama-dev/js-player-module-brightcove"
   },
   "bugs": {
-    "url" : "https://github.com/yama-dev/js-player-module-brightcove/issues",
-    "email" : "tatsuya.yamamoto69@gmail.com"
+    "url" : "https://github.com/yama-dev/js-player-module-brightcove/issues"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
