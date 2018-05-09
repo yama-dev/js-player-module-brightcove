@@ -1,18 +1,12 @@
 /*!
- * @license
- *
  * JS PLAYER MODULE BRIGHTCOVE (JavaScript Library)
  *   js-player-module-brightcove.js
  *
- * versoin 2.0.1
+ * versoin 2.0.3
  * Repository https://github.com/yama-dev/js-player-module-brightcove
  * Copyright yama-dev
  * Licensed under the MIT license.
  * Release 2018-04-23
- *
- * Instance
- *   new PLAYER_MODULE_BRIGHTCOVE({ options });
- *
  */
 
 import { viewPlayerScriptcode, viewPlayer, viewPlayerUi, viewPlayerStyle } from './view.js';
@@ -22,7 +16,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
   constructor(options = {}){
 
     // Set Version.
-    this.VERSION = '2.0.0';
+    this.VERSION = '2.0.3';
 
     // Use for discrimination by URL.
     this.currentUrl = location.href;
@@ -37,10 +31,11 @@ class PLAYER_MODULE_BRIGHTCOVE {
       width          : options.width||'',
       height         : options.height||'',
       player         : options.player||'default',
-      ui_controls    : options.ui_controls == true ? 'controls' : '',
-      ui_autoplay    : options.ui_autoplay == true ? 'autoplay' : '',
-      ui_default     : options.ui_default == false ? false : true,
-      ui_default_css : options.ui_default_css == false ? false : true,
+      playsinline    : options.playsinline !== false ? 'webkit-playsinline playsinline' : '',
+      ui_controls    : options.ui_controls === true ? 'controls' : '',
+      ui_autoplay    : options.ui_autoplay === true ? 'autoplay' : '',
+      ui_default     : options.ui_default === false ? false : true,
+      ui_default_css : options.ui_default_css === false ? false : true,
       poster         : options.poster||null,
       ui_round       : options.ui_round||null,
       ui_round_num   : options.ui_round_num||146,

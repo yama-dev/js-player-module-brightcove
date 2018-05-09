@@ -115,21 +115,22 @@ import PLAYER_MODULE_BRIGHTCOVE from 'js-player-module-brightcove';
 ### Default
 
 | Parameter | Type   | Default      | Description                                | 
-| ---       | ---    | ---          | ---                                        | 
+| :---      | :---:  | :---:        | :---                                       | 
 | id        | string | - ※省略不可 | プレーヤーを出力する要素のidを設定します。 | 
 | videoid   | string | - ※省略不可 | 動画のvideoidを設定します。                | 
 | account   | string | - ※省略不可 | BrightcovePlayerのaccountを設定します。    | 
 
 ### Options
 
-| Parameter      | Type    | Default | Description                                                                                                                                       | 
-| ---            | ---     | ---     | ---                                                                                                                                               | 
-| ui_controls    | boolean | false   | `control`を表示するかしないかを指定します。<br>デフォルトでは、表示されません。                                                                   | 
-| ui_default     | boolean | true    | ライブラリであらかじめ用意したUIパーツを表示するかしないかを指定します。<br>デフォルトは、表示されます。<br>※`false`を指定すると出力されません。 | 
-| ui_default_css | boolean | true    | ライブラリであらかじめ用意したCSSを出力するかしないかを指定します。<br>デフォルトは、CSSを出力します。<br>※`false`を指定すると出力されません。   | 
-| ui_autoplay    | boolean | false   | 自動再生をするか指定します。<br>デフォルトでは、自動再生はされません。<br>※`true`を設定すると、動画のロードが完了すると自動再生を開始します。    | 
+| Parameter      | Type    | Default | Description                                                                                                                                                                                        | 
+| :---           | :---:   | :---:   | :---                                                                                                                                                                                               | 
+| playsinline    | boolean | true    | iOS10+でインライン再生をするかを指定します。<br>デフォルトでは、`playsinline`属性が設定され、インライン再生されます。<br>※`false`を指定するとiOS10+では全画面にプレーヤーが立ち上がります。       | 
+| ui_controls    | boolean | false   | `control`を表示するかしないかを指定します。<br>デフォルトでは、表示されません。                                                                                                                    | 
+| ui_default     | boolean | true    | ライブラリであらかじめ用意したUIパーツを表示するかしないかを指定します。<br>デフォルトは、表示されます。<br>※`false`を指定すると出力されません。                                                  | 
+| ui_default_css | boolean | true    | ライブラリであらかじめ用意したCSSを出力するかしないかを指定します。<br>デフォルトは、CSSを出力します。<br>※`false`を指定すると出力されません。                                                    | 
+| ui_autoplay    | boolean | false   | 自動再生をするか指定します。<br>デフォルトでは、自動再生はされません。<br>※`true`を設定すると、動画のロードが完了すると自動再生を開始します。                                                     | 
 | mode           | string  | 'movie' | `'movie'` -> 動画モード<br>`'audio` -> 音声モード<br><br>デフォルトでは、動画モードになります。<br>動画か音声のみかを簡単に切り替えが出来ます。<br>※`'audio'`を設定すると、動画が表示されません。 | 
-| poster         | string  | null    | 動画のポスター画像を設定できます。<br>画像のパスを設定することで、サムネイルとして読み込まれます。 | 
+| poster         | string  | null    | 動画のポスター画像を設定できます。<br>画像のパスを設定することで、サムネイルとして読み込まれます。                                                                                                 | 
 
 <br>
 
@@ -137,7 +138,7 @@ import PLAYER_MODULE_BRIGHTCOVE from 'js-player-module-brightcove';
 ## Browser support
 
 | Browser           | OS、version | 
-| ---               | ---         | 
+| :---              | :---        | 
 | Internet Explorer | 11+         | 
 | Chrome            | 最新        | 
 | Firefox           | 最新        | 
@@ -183,14 +184,6 @@ Run npm script 'develop'
 
 ``` bash
 $ npm run develop
-```
-
-### at Production
-
-Run npm script 'production'
-
-``` bash
-$ npm run production
 ```
 
 <br>

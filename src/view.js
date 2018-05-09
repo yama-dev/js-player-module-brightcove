@@ -21,6 +21,7 @@ export let viewPlayer = `
   height="{{ height }}"
   {{ui_controls}}
   {{ui_autoplay}}
+  {{playsinline}}
 ></video>
 `;
 
