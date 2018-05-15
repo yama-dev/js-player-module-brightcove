@@ -1,7 +1,9 @@
+const env = process.env.NODE_ENV;
+
 const webpack = require('webpack');
 
 const config = {
-  mode: 'production',
+  mode: env || 'development',
   entry: './src/js-player-module-brightcove.js',
   output: {
     path: `${__dirname}/dist`,

@@ -18,7 +18,7 @@
   <div class="row mt10">
     <div class="col-md-1"></div>
     <div class="col-md-10">
-      <h2>js player module brightcove.js v2.0.3</h2>
+      <h2>js player module brightcove.js v2.0.4</h2>
       <hr>
       <h3>Simple Player</h3>
       <div id="brightcovePlayer1">
@@ -109,26 +109,37 @@
             height: '300px',
           });
         </script>
-        <button class="btn_change btn btn-default" data-PMB-id="4217352666001">楽曲変更 id=4217352666001</button>
-        <button class="btn btn-default" data-PMB-id="4217352666001" onclick="PMB.Change('4217352666001')">楽曲変更 id=4217352666001</button>
+        <button class="btn btn-default" data-PMB-id="4217352666001" onclick="PMB.Change('4217352666001')">曲変更 id=4217352666001</button>
+        <button class="btn_change btn btn-default" data-PMB-id="4230322585001">曲変更 id=4230322585001</button>
+        <div class="btn_change btn btn-default" data-PMB-id="4231692338001" onclick="PMB.Change('4231692338001')">
+          曲変更 id=4231692338001
+          <p class="display_time_down">00:00</p>
+        </div>
+
         <pre class="prettyprint lang-html">
-        <code>
-          &lt;div id="brightcovePlayerCustom"&gt;
-            &lt;script&gt;
-              var PMB = new PLAYER_MODULE_BRIGHTCOVE({
-                id:'brightcovePlayerCustom',
-                ui_controls:true,
-                ui_default:true,
-                videoid:'4217352666001',
-                account:'20318290001',
-                width: '480px',
-                height: '300px',
-              });
-            &lt;/script&gt;
-            &lt;button class="btn_change btn btn-default" data-PMB-id="4217352666001"&gt;楽曲変更 id=4217352666001&lt;/button&gt;
-            &lt;button class="btn btn-default" data-PMB-id="4217352666001" onclick="PMB.Change('4217352666001')"&gt;楽曲変更 id=4217352666001&lt;/button&gt;
+          <code>
+          &lt;script&gt;
+            var PMB = new PLAYER_MODULE_BRIGHTCOVE({
+              id:&#039;brightcovePlayerCustom&#039;,
+              ui_controls:true,
+              ui_default:true,
+              videoid:&#039;4217352666001&#039;,
+              account:&#039;20318290001&#039;,
+              width: &#039;480px&#039;,
+              height: &#039;300px&#039;,
+            });
+          &lt;/script&gt;
+          &lt;button class=&quot;btn btn-default&quot; data-PMB-id=&quot;4217352666001&quot; onclick=&quot;PMB.Change(&#039;4217352666001&#039;)&quot;&gt;
+            曲変更 id=4217352666001
+          &lt;/button&gt;
+          &lt;button class=&quot;btn_change btn btn-default&quot; data-PMB-id=&quot;4230322585001&quot;&gt;
+            曲変更 id=4230322585001
+          &lt;/button&gt;
+          &lt;div class=&quot;btn_change btn btn-default&quot; data-PMB-id=&quot;4231692338001&quot; onclick=&quot;PMB.Change(&#039;4231692338001&#039;)&quot;&gt;
+            曲変更 id=4231692338001
+            &lt;p class=&quot;display_time_down&quot;&gt;00:00&lt;/p&gt;
           &lt;/div&gt;
-        </code>
+          </code>
         </pre>
       </div>
 
@@ -140,8 +151,6 @@
           new PLAYER_MODULE_BRIGHTCOVE({
             mode: 'audio',
             id:'brightcovePlayerAudio',
-            ui_controls:true,
-            ui_default:true,
             videoid:'4217352666001',
             account:'20318290001',
           });
@@ -153,8 +162,6 @@
               new PLAYER_MODULE_BRIGHTCOVE({
                 mode: 'audio',
                 id:'brightcovePlayerAudio',
-                ui_controls:true,
-                ui_default:true,
                 videoid:'4217352666001',
                 account:'20318290001',
               });

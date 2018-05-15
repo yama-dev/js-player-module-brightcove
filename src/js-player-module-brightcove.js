@@ -1,12 +1,10 @@
 /*!
  * JS PLAYER MODULE BRIGHTCOVE (JavaScript Library)
  *   js-player-module-brightcove.js
- *
- * versoin 2.0.3
+ * Versoin 2.0.4
  * Repository https://github.com/yama-dev/js-player-module-brightcove
  * Copyright yama-dev
  * Licensed under the MIT license.
- * Release 2018-04-23
  */
 
 import { viewPlayerScriptcode, viewPlayer, viewPlayerUi, viewPlayerStyle } from './view.js';
@@ -16,7 +14,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
   constructor(options = {}){
 
     // Set Version.
-    this.VERSION = '2.0.3';
+    this.VERSION = '2.0.4';
 
     // Use for discrimination by URL.
     this.currentUrl = location.href;
@@ -238,17 +236,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
 
       // For Timeupdate.
       videojs(_that.config.player_id).on('timeupdate', function() {
-        // 再生時間の更新(分秒)
-        _that.$uiDisplayTime.innerHTML = _that.GetTime()+'/'+_that.GetTimeMax();
-        // 再生時間の更新(分秒)
-        _that.$uiDisplayTimeDown.innerHTML = _that.GetTimeDown();
-        // 再生時間の更新(％)
-        _that.$uiDisplayTimePar.innerHTML = _that.GetTimePar();
-        // シークバーの更新(％)
-        _that.$uiSeekbarTimeCover.style.width = _that.GetTimePar();
-        _that.$uiBtnRoundSpan.style.webkitTransform = 'rotate('+(360 * _that.GetTimeRatio())+'deg)';
-        let _roundNum = _that.$uiBtnRoundSvg.clientWidth * 3.14 !== 0 ? _that.$uiBtnRoundSvg.clientWidth * 3.14 : _that.config.ui_round_num  * 3.14;
-        _that.$uiBtnRoundSvgPath.style.cssText = 'stroke-dashoffset: '+(_roundNum + 10 - (360 * _that.GetTimeRatio()) / 365 * _roundNum)+';';
+        _that.Update();
       });
 
       // For Volume change.
@@ -285,29 +273,31 @@ class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   CacheElement(){
-    this.$uiBtnPlay          = document.querySelectorAll('#'+this.config.id+' .btn_play')                      ? document.querySelectorAll('#'+this.config.id+' .btn_play')                      : document.createElement('div');
-    this.$uiBtnStop          = document.querySelectorAll('#'+this.config.id+' .btn_stop')                      ? document.querySelectorAll('#'+this.config.id+' .btn_stop')                      : document.createElement('div');
-    this.$uiBtnPause         = document.querySelectorAll('#'+this.config.id+' .btn_pause')                     ? document.querySelectorAll('#'+this.config.id+' .btn_pause')                     : document.createElement('div');
-    this.$uiBtnMute          = document.querySelector('#'+this.config.id+' .btn_mute')                         ? document.querySelector('#'+this.config.id+' .btn_mute')                         : document.createElement('div');
-    this.$uiBtnVolon         = document.querySelector('#'+this.config.id+' .btn_volon')                        ? document.querySelector('#'+this.config.id+' .btn_volon')                        : document.createElement('div');
-    this.$uiBtnVoloff        = document.querySelector('#'+this.config.id+' .btn_voloff')                       ? document.querySelector('#'+this.config.id+' .btn_voloff')                       : document.createElement('div');
-    this.$uiDisplayTime      = document.querySelector('#'+this.config.id+' .display_time')                     ? document.querySelector('#'+this.config.id+' .display_time')                     : document.createElement('div');
-    this.$uiDisplayTimeDown  = document.querySelector('#'+this.config.id+' .display_time_down')                ? document.querySelector('#'+this.config.id+' .display_time_down')                : document.createElement('div');
-    this.$uiDisplayTimePar   = document.querySelector('#'+this.config.id+' .display_time_par')                 ? document.querySelector('#'+this.config.id+' .display_time_par')                 : document.createElement('div');
-    this.$uiDisplayPoster    = document.querySelector('#'+this.config.id+' .display_poster')                   ? document.querySelector('#'+this.config.id+' .display_poster')                   : document.createElement('div');
-    this.$uiDisplayName      = document.querySelector('#'+this.config.id+' .display_name')                     ? document.querySelector('#'+this.config.id+' .display_name')                     : document.createElement('div');
-    this.$uiBtnFull          = document.querySelector('#'+this.config.id+' .btn_full')                         ? document.querySelector('#'+this.config.id+' .btn_full')                         : document.createElement('div');
-    this.$uiSeekbarVol       = document.querySelector('#'+this.config.id+' .seekbar_vol')                      ? document.querySelector('#'+this.config.id+' .seekbar_vol')                      : document.createElement('div');
-    this.$uiSeekbarVolBg     = document.querySelector('#'+this.config.id+' .seekbar_vol .seekbar_vol_bg')      ? document.querySelector('#'+this.config.id+' .seekbar_vol .seekbar_vol_bg')      : document.createElement('div');
-    this.$uiSeekbarVolCover  = document.querySelector('#'+this.config.id+' .seekbar_vol span')                 ? document.querySelector('#'+this.config.id+' .seekbar_vol span')                 : document.createElement('div');
-    this.$uiSeekbarTime      = document.querySelector('#'+this.config.id+' .seekbar_time')                     ? document.querySelector('#'+this.config.id+' .seekbar_time')                     : document.createElement('div');
-    this.$uiSeekbarTimeBg    = document.querySelector('#'+this.config.id+' .seekbar_time .seekbar_time_bg')    ? document.querySelector('#'+this.config.id+' .seekbar_time .seekbar_time_bg')    : document.createElement('div');
-    this.$uiSeekbarTimeCover = document.querySelector('#'+this.config.id+' .seekbar_time span')                ? document.querySelector('#'+this.config.id+' .seekbar_time span')                : document.createElement('div');
-    this.$uiBtnChange        = document.querySelectorAll('#'+this.config.id+' .btn_change')                    ? document.querySelectorAll('#'+this.config.id+' .btn_change')                    : document.createElement('div');
-    this.$uiBtnRound         = document.querySelector('#'+this.config.id+' .btn_round')                        ? document.querySelector('#'+this.config.id+' .btn_round')                        : document.createElement('div');
-    this.$uiBtnRoundSpan     = document.querySelector('#'+this.config.id+' .btn_round span')                   ? document.querySelector('#'+this.config.id+' .btn_round span')                   : document.createElement('div');
-    this.$uiBtnRoundSvg      = document.querySelector('#'+this.config.id+' .btn_roundsvg')                     ? document.querySelector('#'+this.config.id+' .btn_roundsvg')                     : document.createElement('div');
-    this.$uiBtnRoundSvgPath  = document.querySelector('#'+this.config.id+' .btn_roundsvg .btn_roundsvg__path') ? document.querySelector('#'+this.config.id+' .btn_roundsvg .btn_roundsvg__path') : document.createElement('div');
+    this.$uiBtnPlay                  = document.querySelectorAll('#'+this.config.id+' .btn_play')                      ? document.querySelectorAll('#'+this.config.id+' .btn_play')                      : document.createElement('div');
+    this.$uiBtnStop                  = document.querySelectorAll('#'+this.config.id+' .btn_stop')                      ? document.querySelectorAll('#'+this.config.id+' .btn_stop')                      : document.createElement('div');
+    this.$uiBtnPause                 = document.querySelectorAll('#'+this.config.id+' .btn_pause')                     ? document.querySelectorAll('#'+this.config.id+' .btn_pause')                     : document.createElement('div');
+    this.$uiBtnMute                  = document.querySelector('#'+this.config.id+' .btn_mute')                         ? document.querySelector('#'+this.config.id+' .btn_mute')                         : document.createElement('div');
+    this.$uiBtnVolon                 = document.querySelector('#'+this.config.id+' .btn_volon')                        ? document.querySelector('#'+this.config.id+' .btn_volon')                        : document.createElement('div');
+    this.$uiBtnVoloff                = document.querySelector('#'+this.config.id+' .btn_voloff')                       ? document.querySelector('#'+this.config.id+' .btn_voloff')                       : document.createElement('div');
+    this.$uiDisplayTime              = document.querySelector('#'+this.config.id+' .display_time')                     ? document.querySelector('#'+this.config.id+' .display_time')                     : document.createElement('div');
+    this.$uiDisplayTimeDown          = document.querySelector('#'+this.config.id+' .display_time_down')                ? document.querySelector('#'+this.config.id+' .display_time_down')                : document.createElement('div');
+    this.$uiDisplayTimePar           = document.querySelector('#'+this.config.id+' .display_time_par')                 ? document.querySelector('#'+this.config.id+' .display_time_par')                 : document.createElement('div');
+    this.$uiDisplayPoster            = document.querySelector('#'+this.config.id+' .display_poster')                   ? document.querySelector('#'+this.config.id+' .display_poster')                   : document.createElement('div');
+    this.$uiDisplayName              = document.querySelector('#'+this.config.id+' .display_name')                     ? document.querySelector('#'+this.config.id+' .display_name')                     : document.createElement('div');
+    this.$uiBtnFull                  = document.querySelector('#'+this.config.id+' .btn_full')                         ? document.querySelector('#'+this.config.id+' .btn_full')                         : document.createElement('div');
+    this.$uiSeekbarVol               = document.querySelector('#'+this.config.id+' .seekbar_vol')                      ? document.querySelector('#'+this.config.id+' .seekbar_vol')                      : document.createElement('div');
+    this.$uiSeekbarVolBg             = document.querySelector('#'+this.config.id+' .seekbar_vol .seekbar_vol_bg')      ? document.querySelector('#'+this.config.id+' .seekbar_vol .seekbar_vol_bg')      : document.createElement('div');
+    this.$uiSeekbarVolCover          = document.querySelector('#'+this.config.id+' .seekbar_vol span')                 ? document.querySelector('#'+this.config.id+' .seekbar_vol span')                 : document.createElement('div');
+    this.$uiSeekbarTime              = document.querySelector('#'+this.config.id+' .seekbar_time')                     ? document.querySelector('#'+this.config.id+' .seekbar_time')                     : document.createElement('div');
+    this.$uiSeekbarTimeBg            = document.querySelector('#'+this.config.id+' .seekbar_time .seekbar_time_bg')    ? document.querySelector('#'+this.config.id+' .seekbar_time .seekbar_time_bg')    : document.createElement('div');
+    this.$uiSeekbarTimeCover         = document.querySelector('#'+this.config.id+' .seekbar_time span')                ? document.querySelector('#'+this.config.id+' .seekbar_time span')                : document.createElement('div');
+    this.$uiBtnChange                = document.querySelectorAll('#'+this.config.id+' .btn_change')                    ? document.querySelectorAll('#'+this.config.id+' .btn_change')                    : document.createElement('div');
+    this.$uiBtnChangeDisplayTime     = document.querySelector('#'+this.config.id+' .display_time')                     ? document.querySelector('#'+this.config.id+' .display_time')                     : document.createElement('div');
+    this.$uiBtnChangeDisplayTimeDown = document.querySelector('#'+this.config.id+' .display_time_down')                ? document.querySelector('#'+this.config.id+' .display_time_down')                : document.createElement('div');
+    this.$uiBtnRound                 = document.querySelector('#'+this.config.id+' .btn_round')                        ? document.querySelector('#'+this.config.id+' .btn_round')                        : document.createElement('div');
+    this.$uiBtnRoundSpan             = document.querySelector('#'+this.config.id+' .btn_round span')                   ? document.querySelector('#'+this.config.id+' .btn_round span')                   : document.createElement('div');
+    this.$uiBtnRoundSvg              = document.querySelector('#'+this.config.id+' .btn_roundsvg')                     ? document.querySelector('#'+this.config.id+' .btn_roundsvg')                     : document.createElement('div');
+    this.$uiBtnRoundSvgPath          = document.querySelector('#'+this.config.id+' .btn_roundsvg .btn_roundsvg__path') ? document.querySelector('#'+this.config.id+' .btn_roundsvg .btn_roundsvg__path') : document.createElement('div');
   }
 
   EventPlay(){
@@ -565,6 +555,25 @@ class PLAYER_MODULE_BRIGHTCOVE {
     }
   }
 
+  Update(){
+    // 再生時間の更新(分秒)
+    this.$uiDisplayTime.innerHTML = this.GetTime()+'/'+this.GetTimeMax();
+    this.$uiBtnChangeDisplayTime.innerHTML = this.GetTime()+'/'+this.GetTimeMax();
+
+    // 再生時間の更新(分秒)
+    this.$uiDisplayTimeDown.innerHTML = this.GetTimeDown();
+    this.$uiBtnChangeDisplayTimeDown.innerHTML = this.GetTimeDown();
+
+    // 再生時間の更新(％)
+    this.$uiDisplayTimePar.innerHTML = this.GetTimePar();
+
+    // シークバーの更新(％)
+    this.$uiSeekbarTimeCover.style.width = this.GetTimePar();
+    this.$uiBtnRoundSpan.style.webkitTransform = 'rotate('+(360 * this.GetTimeRatio())+'deg)';
+    let _roundNum = this.$uiBtnRoundSvg.clientWidth * 3.14 !== 0 ? this.$uiBtnRoundSvg.clientWidth * 3.14 : this.config.ui_round_num  * 3.14;
+    this.$uiBtnRoundSvgPath.style.cssText = 'stroke-dashoffset: '+(_roundNum + 10 - (360 * this.GetTimeRatio()) / 365 * _roundNum)+';';
+  }
+
   Play(){
     let _that = this;
     if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
@@ -654,7 +663,6 @@ class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   Change(id){
-
     let _that = this;
 
     // 動画IDが取得出来ない場合は処理を中止
@@ -666,21 +674,29 @@ class PLAYER_MODULE_BRIGHTCOVE {
         return
       }
 
-      this.$uiDisplayTime = document.querySelector('[data-PMB-id="'+id+'"]'+' .display_time') ? document.querySelector('[data-PMB-id="'+id+'"]'+' .display_time') : document.createElement('div');
-      this.$uiDisplayTimeDown = document.querySelector('[data-PMB-id="'+id+'"]'+' .display_time_down') ? document.querySelector('[data-PMB-id="'+id+'"]'+' .display_time_down') : document.createElement('div');
+      this.$uiBtnChangeDisplayTime = document.querySelector('[data-PMB-id="'+id+'"]'+' .display_time') ? document.querySelector('[data-PMB-id="'+id+'"]'+' .display_time') : document.createElement('div');
+      this.$uiBtnChangeDisplayTimeDown = document.querySelector('[data-PMB-id="'+id+'"]'+' .display_time_down') ? document.querySelector('[data-PMB-id="'+id+'"]'+' .display_time_down') : document.createElement('div');
     }
+
+    // clickイベントの伝播内に一度再生位置をリセットする
+    this.Player.currentTime(0);
 
     // clickイベントの伝播内に一度再生開始処理を走らせる
     this.Player.muted(true);
     this.Player.play();
+
     this.Player.catalog.getVideo(id, (error, video) => {
 
       // プレーヤーの情報を再ロード
       this.Player.catalog.load(video);
 
       // 変更後に再生
-      this.Player.play();
-      this.Player.muted(false);
+      setTimeout( () => {
+        this.Player.play();
+        this.Player.muted(false);
+        this.$uiBtnChangeDisplayTime.innerHTML = '00:00';
+        this.$uiBtnChangeDisplayTimeDown.innerHTML = '00:00';
+      }, 10);
 
       // Playボタンにhtml-classを付与
       if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
@@ -790,7 +806,9 @@ class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   GetTimePar(){
-    return (Math.floor(this.Player.currentTime() / this.Player.duration() * 1000) / 10) + '%';
+    let _time = Math.floor(this.Player.currentTime() / this.Player.duration() * 1000) / 10;
+    if(!isNaN(_time)) return _time + '%';
+    else return '0%';
   }
 
   GetUrlPoster(){
