@@ -16,16 +16,19 @@
   "main": "./dist/js-player-module-brightcove.js",
   "scripts": {
     "start": "npm install && npm run develop",
-    "develop": "npm-run-all -p build:webpack server",
-    "server": "browser-sync start --server ./ --directory ./sample --files **/*.css **/*.js **/*.html",
-    "build:webpack": "webpack --progress --colors --watch"
+    "develop": "npm-run-all -p build:develop server:develop",
+    "server:develop": "browser-sync start --server ./ --directory ./sample --files **/*.css **/*.js **/*.html",
+    "build:develop": "webpack --mode=development --progress --colors --watch",
+    "production": "npm-run-all -p build:production server:production",
+    "server:production": "browser-sync start --server ./ --directory ./sample --files **/*.css **/*.js **/*.html",
+    "build:production": "webpack --mode=production --progress --colors --watch"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/yama-dev/js-player-module-brightcove"
   },
   "bugs": {
-    "url" : "https://github.com/yama-dev/js-player-module-brightcove/issues"
+    "url": "https://github.com/yama-dev/js-player-module-brightcove/issues"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
