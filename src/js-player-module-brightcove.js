@@ -668,9 +668,13 @@ class PLAYER_MODULE_BRIGHTCOVE {
       this.$uiDisplayTimeDown = document.querySelector('[data-PMB-id="'+id+'"]'+' .display_time_down') ? document.querySelector('[data-PMB-id="'+id+'"]'+' .display_time_down') : document.createElement('div');
     }
 
+    // clickイベントの伝播内に一度再生位置をリセットする
+    this.Player.currentTime(0);
+
     // clickイベントの伝播内に一度再生開始処理を走らせる
     this.Player.muted(true);
     this.Player.play();
+
     this.Player.catalog.getVideo(id, (error, video) => {
 
       // プレーヤーの情報を再ロード
