@@ -788,7 +788,9 @@ class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   GetTimePar(){
-    return (Math.floor(this.Player.currentTime() / this.Player.duration() * 1000) / 10) + '%';
+    let _time = Math.floor(this.Player.currentTime() / this.Player.duration() * 1000) / 10;
+    if(!isNaN(_time)) return _time + '%';
+    else return '0%';
   }
 
   GetUrlPoster(){
