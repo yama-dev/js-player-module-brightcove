@@ -53,6 +53,9 @@ class PLAYER_MODULE_BRIGHTCOVE {
     // BrightcovePlayer Instance.
     this.Player = '';
 
+    // Set Load Flg
+    this.PlayerLoadFlg = false;
+
     // Set ChangeLoad Flg
     this.PlayerChangeLoadFlg = true;
 
@@ -175,9 +178,6 @@ class PLAYER_MODULE_BRIGHTCOVE {
 
     // SetPlayerEvent
     function SetPlayerEvent(){
-
-      // Set Load Flg
-      _that.PlayerLoadFlg = false;
 
       // Check Player try loaded.
       let checkPlayerCount      = 0;
@@ -800,7 +800,8 @@ class PLAYER_MODULE_BRIGHTCOVE {
     }
     let _m = parseNumber(Math.floor(this.Player.currentTime()/60));
     let _s = parseNumber(Math.floor(this.Player.currentTime()%60));
-    return _m+':'+_s;
+    if(isFinite(_s) && isFinite(_m)) return _m+':'+_s;
+    else return '00:00';
   }
 
   GetTimeDown(){
@@ -812,7 +813,8 @@ class PLAYER_MODULE_BRIGHTCOVE {
     let _countDownTime = this.Player.duration() - this.Player.currentTime();
     let _m_down        = parseNumber(Math.floor(_countDownTime / 60));
     let _s_down        = parseNumber(Math.floor(_countDownTime % 60));
-    return _m_down+':'+_s_down;
+    if(isFinite(_s_down) && isFinite(_m_down)) return _m_down+':'+_s_down;
+    else return '00:00';
   }
 
   GetTimeMax(){
@@ -836,7 +838,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
 
   GetTimePar(){
     let _time = Math.floor(this.Player.currentTime() / this.Player.duration() * 1000) / 10;
-    if(!isNaN(_time)) return _time + '%';
+    if(isFinite(_time)) return _time + '%';
     else return '0%';
   }
 
