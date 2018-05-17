@@ -233,28 +233,28 @@ class PLAYER_MODULE_BRIGHTCOVE {
           _that.EventSeekbarTime();
           _that.EventChangeVideo();
 
-      // For Timeupdate.
-      videojs(_that.config.player_id).on('timeupdate', function() {
-        _that.Update();
-      });
+          // For Timeupdate.
+          videojs(_that.config.player_id).on('timeupdate', function() {
+            _that.Update();
+          });
 
-      // For Volume change.
-      videojs(_that.config.player_id).on('volumechange', function() {
-        // 音量バーの更新(％)
-        _that.$uiSeekbarVolCover.style.width = (_that.Player.volume() * 100) + '%';
-      });
+          // For Volume change.
+          videojs(_that.config.player_id).on('volumechange', function() {
+            // 音量バーの更新(％)
+            _that.$uiSeekbarVolCover.style.width = (_that.Player.volume() * 100) + '%';
+          });
 
-      // For Ended movie paly.
-      videojs(_that.config.player_id).on('ended', function() {
-        _that.Stop();
-      });
+          // For Ended movie paly.
+          videojs(_that.config.player_id).on('ended', function() {
+            _that.Stop();
+          });
 
-      // For Error
-      videojs(_that.config.player_id).on( 'error' , function(err) {
-        console.log(this.error().code);
-      });
+          // For Error
+          videojs(_that.config.player_id).on( 'error' , function(err) {
+            console.log(this.error().code);
+          });
 
-    }
+        }
 
       }, 100);
 
@@ -561,22 +561,22 @@ class PLAYER_MODULE_BRIGHTCOVE {
   Update(){
 
     if(this.PlayerChangeLoadFlg){
-    // 再生時間の更新(分秒)
-    this.$uiDisplayTime.innerHTML = this.GetTime()+'/'+this.GetTimeMax();
-    this.$uiBtnChangeDisplayTime.innerHTML = this.GetTime()+'/'+this.GetTimeMax();
+      // 再生時間の更新(分秒)
+      this.$uiDisplayTime.innerHTML          = this.GetTime()+'/'+this.GetTimeMax();
+      this.$uiBtnChangeDisplayTime.innerHTML = this.GetTime()+'/'+this.GetTimeMax();
 
-    // 再生時間の更新(分秒)
-    this.$uiDisplayTimeDown.innerHTML = this.GetTimeDown();
-    this.$uiBtnChangeDisplayTimeDown.innerHTML = this.GetTimeDown();
+      // 再生時間の更新(分秒)
+      this.$uiDisplayTimeDown.innerHTML          = this.GetTimeDown();
+      this.$uiBtnChangeDisplayTimeDown.innerHTML = this.GetTimeDown();
 
-    // 再生時間の更新(％)
-    this.$uiDisplayTimePar.innerHTML = this.GetTimePar();
+      // 再生時間の更新(％)
+      this.$uiDisplayTimePar.innerHTML = this.GetTimePar();
 
-    // シークバーの更新(％)
-    this.$uiSeekbarTimeCover.style.width = this.GetTimePar();
-    this.$uiBtnRoundSpan.style.webkitTransform = 'rotate('+(360 * this.GetTimeRatio())+'deg)';
-    let _roundNum = this.$uiBtnRoundSvg.clientWidth * 3.14 !== 0 ? this.$uiBtnRoundSvg.clientWidth * 3.14 : this.config.ui_round_num  * 3.14;
-    this.$uiBtnRoundSvgPath.style.cssText = 'stroke-dashoffset: '+(_roundNum + 10 - (360 * this.GetTimeRatio()) / 365 * _roundNum)+';';
+      // シークバーの更新(％)
+      this.$uiSeekbarTimeCover.style.width       = this.GetTimePar();
+      this.$uiBtnRoundSpan.style.webkitTransform = 'rotate('+(360 * this.GetTimeRatio())+'deg)';
+      let _roundNum = this.$uiBtnRoundSvg.clientWidth * 3.14 !== 0 ? this.$uiBtnRoundSvg.clientWidth * 3.14 : this.config.ui_round_num  * 3.14;
+      this.$uiBtnRoundSvgPath.style.cssText = 'stroke-dashoffset: '+(_roundNum + 10 - (360 * this.GetTimeRatio()) / 365 * _roundNum)+';';
     } else {
       // 再生時間の更新(分秒)
       this.$uiDisplayTime.innerHTML          = '00:00';
@@ -699,12 +699,16 @@ class PLAYER_MODULE_BRIGHTCOVE {
         return
       }
 
-      this.$uiBtnChangeDisplayTime = document.querySelector('[data-PMB-id="'+id+'"]'+' .display_time') ? document.querySelector('[data-PMB-id="'+id+'"]'+' .display_time') : document.createElement('div');
+      this.$uiBtnChangeDisplayTime     = document.querySelector('[data-PMB-id="'+id+'"]'+' .display_time') ? document.querySelector('[data-PMB-id="'+id+'"]'+' .display_time') : document.createElement('div');
       this.$uiBtnChangeDisplayTimeDown = document.querySelector('[data-PMB-id="'+id+'"]'+' .display_time_down') ? document.querySelector('[data-PMB-id="'+id+'"]'+' .display_time_down') : document.createElement('div');
     }
 
     // clickイベントの伝播内に一度再生位置をリセットする
-    this.Player.currentTime(0);
+    // IE、Edgeでは、バグがあるため除外
+    var _ua = window.navigator.userAgent.toLowerCase();
+    if(_ua.indexOf('msie') == -1 && _ua.indexOf('trident') == -1 && _ua.indexOf('edge') == -1) {
+      this.Player.currentTime(0);
+    }
 
     // clickイベントの伝播内に一度再生開始処理を走らせる
     this.Player.muted(true);
