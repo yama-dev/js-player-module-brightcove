@@ -53,6 +53,9 @@ class PLAYER_MODULE_BRIGHTCOVE {
     // BrightcovePlayer Instance.
     this.Player = '';
 
+    // Set ChangeLoad Flg
+    this.PlayerChangeLoadFlg = true;
+
     // Import Views.
     this.playerHtml       = viewPlayer;
     this.playerUiHtml     = viewPlayerUi;
@@ -556,6 +559,8 @@ class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   Update(){
+
+    if(this.PlayerChangeLoadFlg){
     // 再生時間の更新(分秒)
     this.$uiDisplayTime.innerHTML = this.GetTime()+'/'+this.GetTimeMax();
     this.$uiBtnChangeDisplayTime.innerHTML = this.GetTime()+'/'+this.GetTimeMax();
@@ -572,6 +577,24 @@ class PLAYER_MODULE_BRIGHTCOVE {
     this.$uiBtnRoundSpan.style.webkitTransform = 'rotate('+(360 * this.GetTimeRatio())+'deg)';
     let _roundNum = this.$uiBtnRoundSvg.clientWidth * 3.14 !== 0 ? this.$uiBtnRoundSvg.clientWidth * 3.14 : this.config.ui_round_num  * 3.14;
     this.$uiBtnRoundSvgPath.style.cssText = 'stroke-dashoffset: '+(_roundNum + 10 - (360 * this.GetTimeRatio()) / 365 * _roundNum)+';';
+    } else {
+      // 再生時間の更新(分秒)
+      this.$uiDisplayTime.innerHTML          = '00:00';
+      this.$uiBtnChangeDisplayTime.innerHTML = '00:00';
+
+      // 再生時間の更新(分秒)
+      this.$uiDisplayTimeDown.innerHTML          = '00:00';
+      this.$uiBtnChangeDisplayTimeDown.innerHTML = '00:00';
+
+      // 再生時間の更新(％)
+      this.$uiDisplayTimePar.innerHTML = '0%';
+
+      // シークバーの更新(％)
+      this.$uiSeekbarTimeCover.style.width       = '0%';
+      this.$uiBtnRoundSpan.style.webkitTransform = 'rotate(0deg)';
+      this.$uiBtnRoundSvgPath.style.cssText      = 'stroke-dashoffset: 0;';
+    }
+
   }
 
   Play(){
@@ -665,6 +688,8 @@ class PLAYER_MODULE_BRIGHTCOVE {
   Change(id){
     let _that = this;
 
+    this.PlayerChangeLoadFlg = false;
+
     // 動画IDが取得出来ない場合は処理を中止
     if(id == '' || id == null || id == undefined) return
 
@@ -685,6 +710,12 @@ class PLAYER_MODULE_BRIGHTCOVE {
     this.Player.muted(true);
     this.Player.play();
 
+    // 次のメディア情報が取得できたかを判定
+    this.Player.on('loadeddata',() => {
+      this.PlayerChangeLoadFlg = true;
+      this.Player.off('loadeddata');
+    });
+
     this.Player.catalog.getVideo(id, (error, video) => {
 
       // プレーヤーの情報を再ロード
@@ -694,8 +725,6 @@ class PLAYER_MODULE_BRIGHTCOVE {
       setTimeout( () => {
         this.Player.play();
         this.Player.muted(false);
-        this.$uiBtnChangeDisplayTime.innerHTML = '00:00';
-        this.$uiBtnChangeDisplayTimeDown.innerHTML = '00:00';
       }, 10);
 
       // Playボタンにhtml-classを付与
