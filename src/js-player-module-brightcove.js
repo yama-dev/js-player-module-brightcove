@@ -233,10 +233,6 @@ class PLAYER_MODULE_BRIGHTCOVE {
           _that.EventSeekbarTime();
           _that.EventChangeVideo();
 
-        }
-
-      }, 100);
-
       // For Timeupdate.
       videojs(_that.config.player_id).on('timeupdate', function() {
         _that.Update();
@@ -257,6 +253,10 @@ class PLAYER_MODULE_BRIGHTCOVE {
       videojs(_that.config.player_id).on( 'error' , function(err) {
         console.log(this.error().code);
       });
+
+    }
+
+      }, 100);
 
     }
 
