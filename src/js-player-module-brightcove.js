@@ -1,7 +1,7 @@
 /*!
  * JS PLAYER MODULE BRIGHTCOVE (JavaScript Library)
  *   js-player-module-brightcove.js
- * Versoin 2.0.4
+ * Versoin 2.0.5
  * Repository https://github.com/yama-dev/js-player-module-brightcove
  * Copyright yama-dev
  * Licensed under the MIT license.
@@ -14,7 +14,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
   constructor(options = {}){
 
     // Set Version.
-    this.VERSION = '2.0.4';
+    this.VERSION = '2.0.5';
 
     // Use for discrimination by URL.
     this.currentUrl = location.href;
@@ -52,6 +52,12 @@ class PLAYER_MODULE_BRIGHTCOVE {
 
     // BrightcovePlayer Instance.
     this.Player = '';
+
+    // Set Load Flg
+    this.PlayerLoadFlg = false;
+
+    // Set ChangeLoad Flg
+    this.PlayerChangeLoadFlg = true;
 
     // Import Views.
     this.playerHtml       = viewPlayer;
@@ -173,9 +179,6 @@ class PLAYER_MODULE_BRIGHTCOVE {
     // SetPlayerEvent
     function SetPlayerEvent(){
 
-      // Set Load Flg
-      _that.PlayerLoadFlg = false;
-
       // Check Player try loaded.
       let checkPlayerCount      = 0;
       let checkPlayerLimitCount = 100;
@@ -230,30 +233,30 @@ class PLAYER_MODULE_BRIGHTCOVE {
           _that.EventSeekbarTime();
           _that.EventChangeVideo();
 
+          // For Timeupdate.
+          videojs(_that.config.player_id).on('timeupdate', function() {
+            _that.Update();
+          });
+
+          // For Volume change.
+          videojs(_that.config.player_id).on('volumechange', function() {
+            // 音量バーの更新(％)
+            _that.$uiSeekbarVolCover.style.width = (_that.Player.volume() * 100) + '%';
+          });
+
+          // For Ended movie paly.
+          videojs(_that.config.player_id).on('ended', function() {
+            _that.Stop();
+          });
+
+          // For Error
+          videojs(_that.config.player_id).on( 'error' , function(err) {
+            console.log(this.error().code);
+          });
+
         }
 
       }, 100);
-
-      // For Timeupdate.
-      videojs(_that.config.player_id).on('timeupdate', function() {
-        _that.Update();
-      });
-
-      // For Volume change.
-      videojs(_that.config.player_id).on('volumechange', function() {
-        // 音量バーの更新(％)
-        _that.$uiSeekbarVolCover.style.width = (_that.Player.volume() * 100) + '%';
-      });
-
-      // For Ended movie paly.
-      videojs(_that.config.player_id).on('ended', function() {
-        _that.Stop();
-      });
-
-      // For Error
-      videojs(_that.config.player_id).on( 'error' , function(err) {
-        console.log(this.error().code);
-      });
 
     }
 
@@ -556,22 +559,42 @@ class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   Update(){
-    // 再生時間の更新(分秒)
-    this.$uiDisplayTime.innerHTML = this.GetTime()+'/'+this.GetTimeMax();
-    this.$uiBtnChangeDisplayTime.innerHTML = this.GetTime()+'/'+this.GetTimeMax();
 
-    // 再生時間の更新(分秒)
-    this.$uiDisplayTimeDown.innerHTML = this.GetTimeDown();
-    this.$uiBtnChangeDisplayTimeDown.innerHTML = this.GetTimeDown();
+    if(this.PlayerChangeLoadFlg){
+      // 再生時間の更新(分秒)
+      this.$uiDisplayTime.innerHTML          = this.GetTime()+'/'+this.GetTimeMax();
+      this.$uiBtnChangeDisplayTime.innerHTML = this.GetTime()+'/'+this.GetTimeMax();
 
-    // 再生時間の更新(％)
-    this.$uiDisplayTimePar.innerHTML = this.GetTimePar();
+      // 再生時間の更新(分秒)
+      this.$uiDisplayTimeDown.innerHTML          = this.GetTimeDown();
+      this.$uiBtnChangeDisplayTimeDown.innerHTML = this.GetTimeDown();
 
-    // シークバーの更新(％)
-    this.$uiSeekbarTimeCover.style.width = this.GetTimePar();
-    this.$uiBtnRoundSpan.style.webkitTransform = 'rotate('+(360 * this.GetTimeRatio())+'deg)';
-    let _roundNum = this.$uiBtnRoundSvg.clientWidth * 3.14 !== 0 ? this.$uiBtnRoundSvg.clientWidth * 3.14 : this.config.ui_round_num  * 3.14;
-    this.$uiBtnRoundSvgPath.style.cssText = 'stroke-dashoffset: '+(_roundNum + 10 - (360 * this.GetTimeRatio()) / 365 * _roundNum)+';';
+      // 再生時間の更新(％)
+      this.$uiDisplayTimePar.innerHTML = this.GetTimePar();
+
+      // シークバーの更新(％)
+      this.$uiSeekbarTimeCover.style.width       = this.GetTimePar();
+      this.$uiBtnRoundSpan.style.webkitTransform = 'rotate('+(360 * this.GetTimeRatio())+'deg)';
+      let _roundNum = this.$uiBtnRoundSvg.clientWidth * 3.14 !== 0 ? this.$uiBtnRoundSvg.clientWidth * 3.14 : this.config.ui_round_num  * 3.14;
+      this.$uiBtnRoundSvgPath.style.cssText = 'stroke-dashoffset: '+(_roundNum + 10 - (360 * this.GetTimeRatio()) / 365 * _roundNum)+';';
+    } else {
+      // 再生時間の更新(分秒)
+      this.$uiDisplayTime.innerHTML          = '00:00';
+      this.$uiBtnChangeDisplayTime.innerHTML = '00:00';
+
+      // 再生時間の更新(分秒)
+      this.$uiDisplayTimeDown.innerHTML          = '00:00';
+      this.$uiBtnChangeDisplayTimeDown.innerHTML = '00:00';
+
+      // 再生時間の更新(％)
+      this.$uiDisplayTimePar.innerHTML = '0%';
+
+      // シークバーの更新(％)
+      this.$uiSeekbarTimeCover.style.width       = '0%';
+      this.$uiBtnRoundSpan.style.webkitTransform = 'rotate(0deg)';
+      this.$uiBtnRoundSvgPath.style.cssText      = 'stroke-dashoffset: 0;';
+    }
+
   }
 
   Play(){
@@ -665,6 +688,8 @@ class PLAYER_MODULE_BRIGHTCOVE {
   Change(id){
     let _that = this;
 
+    this.PlayerChangeLoadFlg = false;
+
     // 動画IDが取得出来ない場合は処理を中止
     if(id == '' || id == null || id == undefined) return
 
@@ -674,16 +699,26 @@ class PLAYER_MODULE_BRIGHTCOVE {
         return
       }
 
-      this.$uiBtnChangeDisplayTime = document.querySelector('[data-PMB-id="'+id+'"]'+' .display_time') ? document.querySelector('[data-PMB-id="'+id+'"]'+' .display_time') : document.createElement('div');
+      this.$uiBtnChangeDisplayTime     = document.querySelector('[data-PMB-id="'+id+'"]'+' .display_time') ? document.querySelector('[data-PMB-id="'+id+'"]'+' .display_time') : document.createElement('div');
       this.$uiBtnChangeDisplayTimeDown = document.querySelector('[data-PMB-id="'+id+'"]'+' .display_time_down') ? document.querySelector('[data-PMB-id="'+id+'"]'+' .display_time_down') : document.createElement('div');
     }
 
     // clickイベントの伝播内に一度再生位置をリセットする
-    this.Player.currentTime(0);
+    // IE、Edgeでは、バグがあるため除外
+    var _ua = window.navigator.userAgent.toLowerCase();
+    if(_ua.indexOf('msie') == -1 && _ua.indexOf('trident') == -1 && _ua.indexOf('edge') == -1) {
+      this.Player.currentTime(0);
+    }
 
     // clickイベントの伝播内に一度再生開始処理を走らせる
     this.Player.muted(true);
     this.Player.play();
+
+    // 次のメディア情報が取得できたかを判定
+    this.Player.on('loadeddata',() => {
+      this.PlayerChangeLoadFlg = true;
+      this.Player.off('loadeddata');
+    });
 
     this.Player.catalog.getVideo(id, (error, video) => {
 
@@ -694,8 +729,6 @@ class PLAYER_MODULE_BRIGHTCOVE {
       setTimeout( () => {
         this.Player.play();
         this.Player.muted(false);
-        this.$uiBtnChangeDisplayTime.innerHTML = '00:00';
-        this.$uiBtnChangeDisplayTimeDown.innerHTML = '00:00';
       }, 10);
 
       // Playボタンにhtml-classを付与
@@ -771,7 +804,8 @@ class PLAYER_MODULE_BRIGHTCOVE {
     }
     let _m = parseNumber(Math.floor(this.Player.currentTime()/60));
     let _s = parseNumber(Math.floor(this.Player.currentTime()%60));
-    return _m+':'+_s;
+    if(isFinite(_s) && isFinite(_m)) return _m+':'+_s;
+    else return '00:00';
   }
 
   GetTimeDown(){
@@ -783,7 +817,8 @@ class PLAYER_MODULE_BRIGHTCOVE {
     let _countDownTime = this.Player.duration() - this.Player.currentTime();
     let _m_down        = parseNumber(Math.floor(_countDownTime / 60));
     let _s_down        = parseNumber(Math.floor(_countDownTime % 60));
-    return _m_down+':'+_s_down;
+    if(isFinite(_s_down) && isFinite(_m_down)) return _m_down+':'+_s_down;
+    else return '00:00';
   }
 
   GetTimeMax(){
@@ -807,7 +842,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
 
   GetTimePar(){
     let _time = Math.floor(this.Player.currentTime() / this.Player.duration() * 1000) / 10;
-    if(!isNaN(_time)) return _time + '%';
+    if(isFinite(_time)) return _time + '%';
     else return '0%';
   }
 
