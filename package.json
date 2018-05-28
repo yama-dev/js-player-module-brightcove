@@ -1,6 +1,6 @@
 {
   "name": "js-player-module-brightcove",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "Brightcove custom player using the Brightcove Player API.",
   "keywords": [
     "Brightcove",
@@ -37,7 +37,6 @@
     "babel-preset-env": "^1.6.1",
     "browser-sync": "^2.23.6",
     "npm-run-all": "^4.1.2",
-    "uglify-js": "^3.3.14",
     "webpack": "^4.6.0",
     "webpack-cli": "^2.0.14"
   }
