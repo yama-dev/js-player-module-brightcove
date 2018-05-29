@@ -700,7 +700,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
     }
 
     // 同じメディアを選択しているかを判定
-    if(this.PlayerMediaInfo.id !== id){
+    if(this.config.videoid !== id){
 
       this.PlayerChangeLoadFlg = false;
 
@@ -728,6 +728,9 @@ class PLAYER_MODULE_BRIGHTCOVE {
 
         // Set MediaInfo
         this.PlayerMediaInfo = this.Player.mediainfo;
+        // Overwrite video id.
+        this.config.videoid = id;
+        // Set Information.
         this.SetInfo();
 
         // Playボタンにhtml-classを付与
