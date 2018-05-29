@@ -1,7 +1,7 @@
 /*!
  * JS PLAYER MODULE BRIGHTCOVE (JavaScript Library)
  *   js-player-module-brightcove.js
- * Version 2.0.8
+ * Version 2.0.9
  * Repository https://github.com/yama-dev/js-player-module-brightcove
  * Copyright yama-dev
  * Licensed under the MIT license.
@@ -14,7 +14,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
   constructor(options = {}){
 
     // Set Version.
-    this.VERSION = '2.0.8';
+    this.VERSION = '2.0.9';
 
     // Use for discrimination by URL.
     this.currentUrl = location.href;
@@ -700,7 +700,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
     }
 
     // 同じメディアを選択しているかを判定
-    if(this.PlayerMediaInfo.id !== id){
+    if(this.config.videoid !== id){
 
       this.PlayerChangeLoadFlg = false;
 
@@ -728,6 +728,9 @@ class PLAYER_MODULE_BRIGHTCOVE {
 
         // Set MediaInfo
         this.PlayerMediaInfo = this.Player.mediainfo;
+        // Overwrite video id.
+        this.config.videoid = id;
+        // Set Information.
         this.SetInfo();
 
         // Playボタンにhtml-classを付与
