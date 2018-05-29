@@ -1,7 +1,7 @@
 /*!
  * JS PLAYER MODULE BRIGHTCOVE (JavaScript Library)
  *   js-player-module-brightcove.js
- * Versoin 2.0.5
+ * Version 2.0.6
  * Repository https://github.com/yama-dev/js-player-module-brightcove
  * Copyright yama-dev
  * Licensed under the MIT license.
@@ -14,7 +14,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
   constructor(options = {}){
 
     // Set Version.
-    this.VERSION = '2.0.5';
+    this.VERSION = '2.0.6';
 
     // Use for discrimination by URL.
     this.currentUrl = location.href;
@@ -232,6 +232,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
           _that.EventSeekbarVol();
           _that.EventSeekbarTime();
           _that.EventChangeVideo();
+          _that.EventStopAll();
 
           // For Timeupdate.
           videojs(_that.config.player_id).on('timeupdate', function() {
@@ -345,8 +346,11 @@ class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   EventStopAll(){
-    // TODO: Modify StopAll function.
-    this.StopAll();
+
+    window.addEventListener('blur', () => {
+      this.StopAll();
+    });
+
   }
 
   EventMute(){
@@ -792,6 +796,13 @@ class PLAYER_MODULE_BRIGHTCOVE {
         for (var i = 0; i < this.$uiBtnPauseAll.length; ++i) {
           this.$uiBtnPauseAll[i].removeClass('active');
         }
+      }
+      // メディア変更ボタンのhtml-classを削除
+      let clickElemAll = Array.prototype.slice.call( document.querySelectorAll('[data-PMB-id]') );
+      if(clickElemAll){
+        clickElemAll.forEach(function(elem,i){
+          elem.removeClass('active');
+        });
       }
     }
   }
