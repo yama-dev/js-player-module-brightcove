@@ -1,7 +1,7 @@
 /*!
  * JS PLAYER MODULE BRIGHTCOVE (JavaScript Library)
  *   js-player-module-brightcove.js
- * Version 2.0.7
+ * Version 2.0.8
  * Repository https://github.com/yama-dev/js-player-module-brightcove
  * Copyright yama-dev
  * Licensed under the MIT license.
@@ -14,7 +14,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
   constructor(options = {}){
 
     // Set Version.
-    this.VERSION = '2.0.7';
+    this.VERSION = '2.0.8';
 
     // Use for discrimination by URL.
     this.currentUrl = location.href;
