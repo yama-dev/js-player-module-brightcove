@@ -41,14 +41,8 @@ class PLAYER_MODULE_BRIGHTCOVE {
       style_text     : options.style_text||'',
     }
 
-    // BrightcovePlayer Information.
-    this.playerVideo = {
-      id          : '',
-      name        : '',
-      description : '',
-      duration    : '',
-      thumbnail   : '',
-    }
+    // BrightcovePlayer MediaInfo
+    this.PlayerMediaInfo = {};
 
     // BrightcovePlayer Instance.
     this.Player = '';
@@ -692,8 +686,6 @@ class PLAYER_MODULE_BRIGHTCOVE {
   Change(id){
     let _that = this;
 
-    this.PlayerChangeLoadFlg = false;
-
     // 動画IDが取得出来ない場合は処理を中止
     if(id == '' || id == null || id == undefined) return
 
@@ -707,33 +699,75 @@ class PLAYER_MODULE_BRIGHTCOVE {
       this.$uiBtnChangeDisplayTimeDown = document.querySelector('[data-PMB-id="'+id+'"]'+' .display_time_down') ? document.querySelector('[data-PMB-id="'+id+'"]'+' .display_time_down') : document.createElement('div');
     }
 
-    // clickイベントの伝播内に一度再生位置をリセットする
-    // IE、Edgeでは、バグがあるため除外
-    var _ua = window.navigator.userAgent.toLowerCase();
-    if(_ua.indexOf('msie') == -1 && _ua.indexOf('trident') == -1 && _ua.indexOf('edge') == -1) {
-      this.Player.currentTime(0);
-    }
+    // 同じメディアを選択しているかを判定
+    if(this.PlayerMediaInfo.id !== id){
 
-    // clickイベントの伝播内に一度再生開始処理を走らせる
-    this.Player.muted(true);
-    this.Player.play();
+      this.PlayerChangeLoadFlg = false;
 
-    // 次のメディア情報が取得できたかを判定
-    this.Player.on('loadeddata',() => {
-      this.PlayerChangeLoadFlg = true;
-      this.Player.off('loadeddata');
-    });
+      // clickイベントの伝播内に一度再生位置をリセットする
+      // IE、Edgeでは、バグがあるため除外
+      var _ua = window.navigator.userAgent.toLowerCase();
+      if(_ua.indexOf('msie') == -1 && _ua.indexOf('trident') == -1 && _ua.indexOf('edge') == -1) {
+        this.Player.currentTime(0);
+      }
 
-    this.Player.catalog.getVideo(id, (error, video) => {
+      // clickイベントの伝播内に一度再生開始処理を走らせる
+      this.Player.muted(true);
+      this.Player.play();
 
-      // プレーヤーの情報を再ロード
-      this.Player.catalog.load(video);
+      this.Player.catalog.getVideo(id, (error, video) => {
 
-      // 変更後に再生
-      setTimeout( () => {
-        this.Player.play();
-        this.Player.muted(false);
-      }, 100);
+        // プレーヤーの情報を再ロード
+        this.Player.catalog.load(video);
+
+        // 変更後に再生
+        setTimeout( () => {
+          this.Player.play();
+          this.Player.muted(false);
+        }, 100);
+
+        // Set MediaInfo
+        this.PlayerMediaInfo = this.Player.mediainfo;
+        this.SetInfo();
+
+        // Playボタンにhtml-classを付与
+        if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
+          for (var i = 0; i < this.$uiBtnPlay.length; ++i) {
+            this.$uiBtnPlay[i].addClass('active');
+          }
+        }
+
+        // PAUSEボタンにhtml-classを付与
+        if(this.$uiBtnPause !== null && this.$uiBtnPause.length !== 0){
+          for (var i = 0; i < this.$uiBtnPause.length; ++i) {
+            this.$uiBtnPause[i].addClass('active');
+          }
+        }
+
+        // メディア変更ボタンにhtml-classを付与
+        let clickElemAll = Array.prototype.slice.call( document.querySelectorAll('[data-PMB-id]') );
+        let clickElem = document.querySelector('[data-PMB-id="'+id+'"]');
+        if(clickElemAll){
+          clickElemAll.forEach(function(elem,i){
+            elem.removeClass('active');
+          });
+        }
+        if(clickElem){
+          clickElem.addClass('active');
+        }
+
+      });
+
+      // 次のメディア情報が取得できたかを判定
+      this.Player.on('loadeddata',() => {
+        this.PlayerChangeLoadFlg = true;
+        this.Player.off('loadeddata');
+      });
+
+    } else {
+
+      this.Player.muted(false);
+      this.Player.play();
 
       // Playボタンにhtml-classを付与
       if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
@@ -761,17 +795,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
         clickElem.addClass('active');
       }
 
-      // Set Video Data
-      this.playerVideo.id          = video.id;
-      this.playerVideo.name        = video.name;
-      this.playerVideo.description = video.description;
-      this.playerVideo.duration    = video.duration;
-      this.playerVideo.thumbnail   = video.thumbnail;
-
-      // Set MediaInfo
-      this.PlayerMediaInfo = this.Player.mediainfo;
-      this.SetInfo();
-    });
+    }
 
   }
 
