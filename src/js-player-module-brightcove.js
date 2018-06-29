@@ -204,11 +204,6 @@ class PLAYER_MODULE_BRIGHTCOVE {
             _that.DebugModePlayer();
           } else { }
 
-          if(_that.config.poster){
-            _that.Player.poster(_that.config.poster);
-            _that.$uiDisplayPoster.innerHTML = '<img src="' + _that.config.poster + '" alt="">';
-          }
-
           // ロードイベントが複数掛からないためのハック
           if(_that.PlayerLoadFlg === true) return false;
 
@@ -216,6 +211,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
           _that.PlayerLoadFlg = true;
 
           _that.SetInfo();
+          _that.SetPoster();
           _that.EventPlay();
           _that.EventPause();
           _that.EventStop();
@@ -732,6 +728,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
         this.config.videoid = id;
         // Set Information.
         this.SetInfo();
+        this.SetPoster();
 
         // Playボタンにhtml-classを付与
         if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
@@ -889,7 +886,24 @@ class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   SetInfo(){
-    this.$uiDisplayPoster.innerHTML = this.PlayerMediaInfo.name;
+    if(this.$uiDisplayName !== null && this.$uiDisplayName.length !== 0){
+      this.$uiDisplayName.innerHTML = this.PlayerMediaInfo.name;
+    }
+  }
+
+  SetPoster(){
+    if(this.config.mode == 'audio'){
+      this.$uiDisplayPoster.innerHTML = '';
+    } else if(this.config.poster){
+      this.Player.poster(this.config.poster);
+      if(this.$uiDisplayPoster !== null && this.$uiDisplayPoster.length !== 0){
+        this.$uiDisplayPoster.innerHTML = '<img src="' + this.config.poster + '" alt="">';
+      }
+    } else {
+      if(this.$uiDisplayPoster !== null && this.$uiDisplayPoster.length !== 0){
+        this.$uiDisplayPoster.innerHTML = '<img src="' + this.Player.poster() + '" alt="">';
+      }
+    }
   }
 
   SetUrlPoster(url){
