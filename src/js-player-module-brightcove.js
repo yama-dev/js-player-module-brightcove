@@ -867,10 +867,6 @@ class PLAYER_MODULE_BRIGHTCOVE {
     return _m_max+':'+_s_max;
   }
 
-  GetInfo(){
-    return this.PlayerMediaInfo;
-  }
-
   GetTimeRatio(){
     return Math.floor(this.Player.currentTime() / this.Player.duration() * 1000) / 1000;
   }
@@ -881,8 +877,12 @@ class PLAYER_MODULE_BRIGHTCOVE {
     else return '0%';
   }
 
+  GetInfo(){
+    return this.PlayerMediaInfo;
+  }
+
   GetUrlPoster(){
-    return this.Player.poster();
+    return this.PlayerMediaInfo.poster;
   }
 
   SetInfo(){
