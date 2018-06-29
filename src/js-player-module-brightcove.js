@@ -885,6 +885,18 @@ class PLAYER_MODULE_BRIGHTCOVE {
     return this.PlayerMediaInfo.poster;
   }
 
+  GetName(){
+    return this.PlayerMediaInfo.name;
+  }
+
+  GetDescription(){
+    return this.PlayerMediaInfo.description;
+  }
+
+  GetTags(){
+    return this.PlayerMediaInfo.tags;
+  }
+
   SetInfo(){
     if(this.$uiDisplayName !== null && this.$uiDisplayName.length !== 0){
       this.$uiDisplayName.innerHTML = this.PlayerMediaInfo.name;
