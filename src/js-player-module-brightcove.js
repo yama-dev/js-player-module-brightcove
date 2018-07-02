@@ -29,6 +29,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
       width          : options.width||'',
       height         : options.height||'',
       player         : options.player||'default',
+      volume         : options.volume||1,
       playsinline    : options.playsinline !== false ? 'webkit-playsinline playsinline' : '',
       ui_controls    : options.ui_controls === true ? 'controls' : '',
       ui_autoplay    : options.ui_autoplay === true ? 'autoplay' : '',
@@ -210,6 +211,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
           // Set Load Flg
           _that.PlayerLoadFlg = true;
 
+          _that.SetVolume();
           _that.SetInfo();
           _that.SetPoster();
           _that.EventPlay();
@@ -348,9 +350,8 @@ class PLAYER_MODULE_BRIGHTCOVE {
       this.$uiBtnMute.addEventListener('click', (event) => {
         if(this.Player.muted()){
           this.Player.muted(false);
-          this.Player.volume(1);
+          this.Player.volume(this.config.volume);
           this.$uiBtnMute.removeClass('active');
-          this.$uiSeekbarVolCover.style.width = 100 + '%';
         }else{
           this.Player.muted(true);
           this.Player.volume(0);
@@ -365,9 +366,8 @@ class PLAYER_MODULE_BRIGHTCOVE {
     if(this.$uiBtnVolon !== null){
       this.$uiBtnVolon.addEventListener('click', (event) => {
         this.Player.muted(false);
-        this.Player.volume(1);
+        this.Player.volume(this.config.volume);
         this.$uiBtnVolon.removeClass('active');
-        this.$uiSeekbarVolCover.style.width = 100 + '%';
       });
     }
   }
@@ -401,6 +401,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
         let _clickPosition  = this.$uiSeekbarVol.getBoundingClientRect().left;
         let _targetWidth = (event.pageX - _clickPosition) / _currentWidth;
         this.Player.volume(_targetWidth);
+        this.config.volume = _targetWidth;
       });
       this.$uiSeekbarVol.addEventListener('mouseleave', (event) => {
         _flag = false;
@@ -414,6 +415,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
           let _clickPosition  = this.$uiSeekbarVol.getBoundingClientRect().left;
           let _targetWidth = (event.pageX - _clickPosition) / _currentWidth;
           this.Player.volume(_targetWidth);
+          this.config.volume = _targetWidth;
         }
       });
     }
@@ -895,6 +897,12 @@ class PLAYER_MODULE_BRIGHTCOVE {
 
   GetTags(){
     return this.PlayerMediaInfo.tags;
+  }
+
+  SetVolume(){
+    if(this.config.volume){
+      this.Player.volume(this.config.volume);
+    }
   }
 
   SetInfo(){
