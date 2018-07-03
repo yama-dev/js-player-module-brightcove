@@ -131,6 +131,7 @@ import PLAYER_MODULE_BRIGHTCOVE from 'js-player-module-brightcove';
 | Parameter      | Type    | Default | Description                                                                                                                                                                                        | 
 | :---           | :---:   | :---:   | :---                                                                                                                                                                                               | 
 | playsinline    | boolean | true    | iOS10+でインライン再生をするかを指定します。<br>デフォルトでは、`playsinline`属性が設定され、インライン再生されます。<br>※`false`を指定するとiOS10+では全画面にプレーヤーが立ち上がります。       | 
+| volume         | number  | 1       | 初期の音量を指定します。(0.0～1.0)<br>デフォルトでは、1(最大音量)がセットされます。<br>※機種、ブラウザに依存します。                                                                              | 
 | ui_controls    | boolean | false   | `control`を表示するかしないかを指定します。<br>デフォルトでは、表示されません。                                                                                                                    | 
 | ui_default     | boolean | true    | ライブラリであらかじめ用意したUIパーツを表示するかしないかを指定します。<br>デフォルトは、表示されます。<br>※`false`を指定すると出力されません。                                                  | 
 | ui_default_css | boolean | true    | ライブラリであらかじめ用意したCSSを出力するかしないかを指定します。<br>デフォルトは、CSSを出力します。<br>※`false`を指定すると出力されません。                                                    | 
