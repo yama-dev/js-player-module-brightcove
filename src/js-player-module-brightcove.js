@@ -1,7 +1,7 @@
 /*!
  * JS PLAYER MODULE BRIGHTCOVE (JavaScript Library)
  *   js-player-module-brightcove.js
- * Version 2.0.9
+ * Version 2.0.10
  * Repository https://github.com/yama-dev/js-player-module-brightcove
  * Copyright yama-dev
  * Licensed under the MIT license.
@@ -29,6 +29,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
       width          : options.width||'',
       height         : options.height||'',
       player         : options.player||'default',
+      volume         : options.volume||1,
       playsinline    : options.playsinline !== false ? 'webkit-playsinline playsinline' : '',
       ui_controls    : options.ui_controls === true ? 'controls' : '',
       ui_autoplay    : options.ui_autoplay === true ? 'autoplay' : '',
@@ -204,18 +205,15 @@ class PLAYER_MODULE_BRIGHTCOVE {
             _that.DebugModePlayer();
           } else { }
 
-          if(_that.config.poster){
-            _that.Player.poster(_that.config.poster);
-            _that.$uiDisplayPoster.innerHTML = '<img src="' + _that.config.poster + '" alt="">';
-          }
-
           // ロードイベントが複数掛からないためのハック
           if(_that.PlayerLoadFlg === true) return false;
 
           // Set Load Flg
           _that.PlayerLoadFlg = true;
 
+          _that.SetVolume();
           _that.SetInfo();
+          _that.SetPoster();
           _that.EventPlay();
           _that.EventPause();
           _that.EventStop();
@@ -352,9 +350,8 @@ class PLAYER_MODULE_BRIGHTCOVE {
       this.$uiBtnMute.addEventListener('click', (event) => {
         if(this.Player.muted()){
           this.Player.muted(false);
-          this.Player.volume(1);
+          this.Player.volume(this.config.volume);
           this.$uiBtnMute.removeClass('active');
-          this.$uiSeekbarVolCover.style.width = 100 + '%';
         }else{
           this.Player.muted(true);
           this.Player.volume(0);
@@ -369,9 +366,8 @@ class PLAYER_MODULE_BRIGHTCOVE {
     if(this.$uiBtnVolon !== null){
       this.$uiBtnVolon.addEventListener('click', (event) => {
         this.Player.muted(false);
-        this.Player.volume(1);
+        this.Player.volume(this.config.volume);
         this.$uiBtnVolon.removeClass('active');
-        this.$uiSeekbarVolCover.style.width = 100 + '%';
       });
     }
   }
@@ -405,6 +401,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
         let _clickPosition  = this.$uiSeekbarVol.getBoundingClientRect().left;
         let _targetWidth = (event.pageX - _clickPosition) / _currentWidth;
         this.Player.volume(_targetWidth);
+        this.config.volume = _targetWidth;
       });
       this.$uiSeekbarVol.addEventListener('mouseleave', (event) => {
         _flag = false;
@@ -418,6 +415,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
           let _clickPosition  = this.$uiSeekbarVol.getBoundingClientRect().left;
           let _targetWidth = (event.pageX - _clickPosition) / _currentWidth;
           this.Player.volume(_targetWidth);
+          this.config.volume = _targetWidth;
         }
       });
     }
@@ -732,6 +730,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
         this.config.videoid = id;
         // Set Information.
         this.SetInfo();
+        this.SetPoster();
 
         // Playボタンにhtml-classを付与
         if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
@@ -870,10 +869,6 @@ class PLAYER_MODULE_BRIGHTCOVE {
     return _m_max+':'+_s_max;
   }
 
-  GetInfo(){
-    return this.PlayerMediaInfo;
-  }
-
   GetTimeRatio(){
     return Math.floor(this.Player.currentTime() / this.Player.duration() * 1000) / 1000;
   }
@@ -884,12 +879,51 @@ class PLAYER_MODULE_BRIGHTCOVE {
     else return '0%';
   }
 
+  GetInfo(){
+    return this.PlayerMediaInfo;
+  }
+
   GetUrlPoster(){
-    return this.Player.poster();
+    return this.PlayerMediaInfo.poster;
+  }
+
+  GetName(){
+    return this.PlayerMediaInfo.name;
+  }
+
+  GetDescription(){
+    return this.PlayerMediaInfo.description;
+  }
+
+  GetTags(){
+    return this.PlayerMediaInfo.tags;
+  }
+
+  SetVolume(){
+    if(this.config.volume){
+      this.Player.volume(this.config.volume);
+    }
   }
 
   SetInfo(){
-    this.$uiDisplayPoster.innerHTML = this.PlayerMediaInfo.name;
+    if(this.$uiDisplayName !== null && this.$uiDisplayName.length !== 0){
+      this.$uiDisplayName.innerHTML = this.PlayerMediaInfo.name;
+    }
+  }
+
+  SetPoster(){
+    if(this.config.mode == 'audio'){
+      this.$uiDisplayPoster.innerHTML = '';
+    } else if(this.config.poster){
+      this.Player.poster(this.config.poster);
+      if(this.$uiDisplayPoster !== null && this.$uiDisplayPoster.length !== 0){
+        this.$uiDisplayPoster.innerHTML = '<img src="' + this.config.poster + '" alt="">';
+      }
+    } else {
+      if(this.$uiDisplayPoster !== null && this.$uiDisplayPoster.length !== 0){
+        this.$uiDisplayPoster.innerHTML = '<img src="' + this.Player.poster() + '" alt="">';
+      }
+    }
   }
 
   SetUrlPoster(url){

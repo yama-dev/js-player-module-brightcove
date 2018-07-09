@@ -7,7 +7,7 @@
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
   <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://code.jquery.com/jquery-3.1.1.min.js" charset="UTF-8"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" charset="UTF-8"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
   <script src="../dist/js-player-module-brightcove.js"></script>
@@ -18,7 +18,7 @@
   <div class="row mt10">
     <div class="col-md-1"></div>
     <div class="col-md-10">
-      <h2>js player module brightcove.js v2.0.8</h2>
+      <h2>js player module brightcove.js v2.0.10</h2>
       <hr>
       <h3>Simple Player</h3>
       <div id="brightcovePlayer1">
@@ -56,10 +56,10 @@
           });
         </script>
         <div class="player__btn">
-          <div class="btn_play"><img class="on" src="http://placehold.jp/14/333/ddd/120x30.png?text=PLAY" alt=""><img class="off" src="http://placehold.jp/14/ddd/333/120x30.png?text=PLAY" alt=""></div>
-          <div class="btn_pause"><img class="on" src="http://placehold.jp/14/333/ddd/120x30.png?text=PAUSE" alt=""><img class="off" src="http://placehold.jp/14/ddd/333/120x30.png?text=PAUSE" alt=""></div>
-          <div class="btn_stop"><img class="on" src="http://placehold.jp/14/333/ddd/120x30.png?text=STOP" alt=""><img class="off" src="http://placehold.jp/14/ddd/333/120x30.png?text=STOP" alt=""></div>
-          <div class="btn_mute"><img class="on" src="http://placehold.jp/14/333/ddd/120x30.png?text=MUTE" alt=""><img class="off" src="http://placehold.jp/14/ddd/333/120x30.png?text=MUTE" alt=""></div>
+          <div class="btn_play"><img class="on" src="//placehold.jp/14/333/ddd/120x30.png?text=PLAY" alt=""><img class="off" src="//placehold.jp/14/ddd/333/120x30.png?text=PLAY" alt=""></div>
+          <div class="btn_pause"><img class="on" src="//placehold.jp/14/333/ddd/120x30.png?text=PAUSE" alt=""><img class="off" src="//placehold.jp/14/ddd/333/120x30.png?text=PAUSE" alt=""></div>
+          <div class="btn_stop"><img class="on" src="//placehold.jp/14/333/ddd/120x30.png?text=STOP" alt=""><img class="off" src="//placehold.jp/14/ddd/333/120x30.png?text=STOP" alt=""></div>
+          <div class="btn_mute"><img class="on" src="//placehold.jp/14/333/ddd/120x30.png?text=MUTE" alt=""><img class="off" src="//placehold.jp/14/ddd/333/120x30.png?text=MUTE" alt=""></div>
         </div>
         <pre class="prettyprint lang-html">
         <code>
@@ -74,20 +74,20 @@
             &lt;/script&gt;
             &lt;div class="player__btn"&gt;
               &lt;div class="btn_play"&gt;
-                &lt;img class="on" src="http://placehold.jp/14/333/ddd/120x30.png?text=PLAY" alt=""&gt;
-                &lt;img class="off" src="http://placehold.jp/14/ddd/333/120x30.png?text=PLAY" alt=""&gt;
+                &lt;img class="on" src="//placehold.jp/14/333/ddd/120x30.png?text=PLAY" alt=""&gt;
+                &lt;img class="off" src="//placehold.jp/14/ddd/333/120x30.png?text=PLAY" alt=""&gt;
               &lt;/div&gt;
               &lt;div class="btn_pause"&gt;
-                &lt;img class="on" src="http://placehold.jp/14/333/ddd/120x30.png?text=PAUSE" alt=""&gt;
-                &lt;img class="off" src="http://placehold.jp/14/ddd/333/120x30.png?text=PAUSE" alt=""&gt;
+                &lt;img class="on" src="//placehold.jp/14/333/ddd/120x30.png?text=PAUSE" alt=""&gt;
+                &lt;img class="off" src="//placehold.jp/14/ddd/333/120x30.png?text=PAUSE" alt=""&gt;
               &lt;/div&gt;
               &lt;div class="btn_stop"&gt;
-                &lt;img class="on" src="http://placehold.jp/14/333/ddd/120x30.png?text=STOP" alt=""&gt;
-                &lt;img class="off" src="http://placehold.jp/14/ddd/333/120x30.png?text=STOP" alt=""&gt;
+                &lt;img class="on" src="//placehold.jp/14/333/ddd/120x30.png?text=STOP" alt=""&gt;
+                &lt;img class="off" src="//placehold.jp/14/ddd/333/120x30.png?text=STOP" alt=""&gt;
               &lt;/div&gt;
               &lt;div class="btn_mute"&gt;
-                &lt;img class="on" src="http://placehold.jp/14/333/ddd/120x30.png?text=MUTE" alt=""&gt;
-                &lt;img class="off" src="http://placehold.jp/14/ddd/333/120x30.png?text=MUTE" alt=""&gt;
+                &lt;img class="on" src="//placehold.jp/14/333/ddd/120x30.png?text=MUTE" alt=""&gt;
+                &lt;img class="off" src="//placehold.jp/14/ddd/333/120x30.png?text=MUTE" alt=""&gt;
               &lt;/div&gt;
             &lt;/div&gt;
           &lt;/div&gt;</code>
@@ -107,6 +107,7 @@
             account:'20318290001',
             width: '480px',
             height: '300px',
+            volume: 0.5
           });
         </script>
         <button class="btn btn-default" data-PMB-id="4217352666001" onclick="PMB.Change('4217352666001')">曲変更 id=4217352666001</button>
@@ -128,6 +129,7 @@
               account:&#039;20318290001&#039;,
               width: &#039;480px&#039;,
               height: &#039;300px&#039;,
+              volume: 0.5
             });
           &lt;/script&gt;
           &lt;button class=&quot;btn btn-default&quot; data-PMB-id=&quot;4217352666001&quot; onclick=&quot;PMB.Change(&#039;4217352666001&#039;)&quot;&gt;

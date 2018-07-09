@@ -156,4 +156,7 @@ export let viewPlayerStyle = `
   background: #666;
   position: relative;
 }
+#{{ id }} .display_poster img {
+  max-width: 50%;
+}
 `;
