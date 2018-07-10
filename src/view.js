@@ -22,6 +22,9 @@ export let viewPlayer = `
   {{ui_controls}}
   {{ui_autoplay}}
   {{playsinline}}
+  {{loop}}
+  {{muted}}
+  {{other}}
 ></video>
 `;
 

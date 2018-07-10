@@ -1,7 +1,7 @@
 /*!
  * JS PLAYER MODULE BRIGHTCOVE (JavaScript Library)
  *   js-player-module-brightcove.js
- * Version 2.0.10
+ * Version 2.0.11
  * Repository https://github.com/yama-dev/js-player-module-brightcove
  * Copyright yama-dev
  * Licensed under the MIT license.
@@ -14,7 +14,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
   constructor(options = {}){
 
     // Set Version.
-    this.VERSION = '2.0.9';
+    this.VERSION = '2.0.11';
 
     // Use for discrimination by URL.
     this.currentUrl = location.href;
@@ -31,6 +31,8 @@ class PLAYER_MODULE_BRIGHTCOVE {
       player         : options.player||'default',
       volume         : options.volume||1,
       playsinline    : options.playsinline !== false ? 'webkit-playsinline playsinline' : '',
+      loop           : options.loop === true ? 'loop' : '',
+      muted          : options.muted === true ? 'muted' : '',
       ui_controls    : options.ui_controls === true ? 'controls' : '',
       ui_autoplay    : options.ui_autoplay === true ? 'autoplay' : '',
       ui_default     : options.ui_default === false ? false : true,
@@ -40,6 +42,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
       ui_round_num   : options.ui_round_num||146,
       ui_round_color : options.ui_round_color||'#696969',
       style_text     : options.style_text||'',
+      other          : options.other||''
     }
 
     // BrightcovePlayer MediaInfo
@@ -212,8 +215,10 @@ class PLAYER_MODULE_BRIGHTCOVE {
           _that.PlayerLoadFlg = true;
 
           _that.SetVolume();
+          _that.SetMute();
           _that.SetInfo();
           _that.SetPoster();
+
           _that.EventPlay();
           _that.EventPause();
           _that.EventStop();
@@ -897,6 +902,16 @@ class PLAYER_MODULE_BRIGHTCOVE {
 
   GetTags(){
     return this.PlayerMediaInfo.tags;
+  }
+
+  SetMute(){
+    if(this.Player.muted()){
+      this.Player.volume(0);
+      this.$uiBtnMute.addClass('active');
+    }else{
+      this.Player.volume(this.config.volume);
+      this.$uiBtnMute.removeClass('active');
+    }
   }
 
   SetVolume(){
