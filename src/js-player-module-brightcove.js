@@ -45,6 +45,18 @@ class PLAYER_MODULE_BRIGHTCOVE {
       other          : options.other||''
     }
 
+    // Set config, callback functions.
+    if(!options.on){
+      options.on = {}
+    }
+    this.on = {
+      Play    : options.on.Play||'',
+      Pause   : options.on.Pause||'',
+      Stop    : options.on.Stop||'',
+      StopAll : options.on.StopAll||'',
+      Change  : options.on.Change||''
+    }
+
     // BrightcovePlayer MediaInfo
     this.PlayerMediaInfo = {};
 
@@ -229,7 +241,6 @@ class PLAYER_MODULE_BRIGHTCOVE {
           _that.EventSeekbarVol();
           _that.EventSeekbarTime();
           _that.EventChangeVideo();
-          _that.EventStopAll();
 
           // For Timeupdate.
           videojs(_that.config.player_id).on('timeupdate', function() {
@@ -340,14 +351,10 @@ class PLAYER_MODULE_BRIGHTCOVE {
         });
       }
     }
-  }
-
-  EventStopAll(){
 
     window.addEventListener('blur', () => {
-      this.StopAll();
+      this.Stop();
     });
-
   }
 
   EventMute(){
@@ -630,11 +637,12 @@ class PLAYER_MODULE_BRIGHTCOVE {
       }
     }
 
-    if(callback && typeof(callback) === 'function') callback();
+    if(!this.on.Play && callback) this.on.Play = callback;
+    if(this.on.Play && typeof(this.on.Play) === 'function') this.on.Play();
   }
 
   Stop(callback){
-    this.Pause();
+    this.Player.pause();
     this.Player.currentTime(0);
 
     // 再生中のPLAYボタンのhtml-classを削除
@@ -659,7 +667,8 @@ class PLAYER_MODULE_BRIGHTCOVE {
       });
     }
 
-    if(callback && typeof(callback) === 'function') callback();
+    if(!this.on.Stop && callback) this.on.Stop = callback;
+    if(this.on.Stop && typeof(this.on.Stop) === 'function') this.on.Stop();
   }
 
   Pause(callback){
@@ -688,7 +697,8 @@ class PLAYER_MODULE_BRIGHTCOVE {
       });
     }
 
-    if(callback && typeof(callback) === 'function') callback();
+    if(!this.on.Pause && callback) this.on.Pause = callback;
+    if(this.on.Pause && typeof(this.on.Pause) === 'function') this.on.Pause();
   }
 
   Change(id, callback){
@@ -776,7 +786,8 @@ class PLAYER_MODULE_BRIGHTCOVE {
         this.Player.off('loadeddata');
       });
 
-      if(callback && typeof(callback) === 'function') callback();
+      if(!this.on.Change && callback) this.on.Change = callback;
+      if(this.on.Change && typeof(this.on.Change) === 'function') this.on.Change();
 
     } else {
 
@@ -809,7 +820,8 @@ class PLAYER_MODULE_BRIGHTCOVE {
         clickElem.addClass('active');
       }
 
-      if(callback && typeof(callback) === 'function') callback();
+      if(!this.on.Change && callback) this.on.Change = callback;
+      if(this.on.Change && typeof(this.on.Change) === 'function') this.on.Change();
 
     }
 
@@ -846,7 +858,8 @@ class PLAYER_MODULE_BRIGHTCOVE {
       }
     }
 
-    if(callback && typeof(callback) === 'function') callback();
+    if(!this.on.StopAll && callback) this.on.StopAll = callback;
+    if(this.on.StopAll && typeof(this.on.StopAll) === 'function') this.on.StopAll();
   }
 
   GetTime(){

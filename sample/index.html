@@ -20,10 +20,10 @@
 </head>
 <body>
 <div class="container-fluid">
-  <div class="row mt10">
+  <div class="row mt-3">
     <div class="col-md-1"></div>
     <div class="col-md-10">
-      <h2>js player module brightcove.js v2.0.11</h2>
+      <h2>PLAYER MODULE BRIGHTCOVE v2.0.11</h2>
       <hr>
       <h3>Simple Player</h3>
       <div id="brightcovePlayer1">
@@ -34,7 +34,7 @@
             account:'20318290001'
           });
         </script>
-        <pre class="prettyprint lang-html">
+        <pre class="prettyprint lang-html mt-2">
         <code>
           &lt;div id="player01"&gt;
             &lt;script&gt;
@@ -68,7 +68,7 @@
           <div class="btn_stop"><img class="on" src="//placehold.jp/14/333/ddd/120x30.png?text=STOP" alt=""><img class="off" src="//placehold.jp/14/ddd/333/120x30.png?text=STOP" alt=""></div>
           <div class="btn_mute"><img class="on" src="//placehold.jp/14/333/ddd/120x30.png?text=MUTE" alt=""><img class="off" src="//placehold.jp/14/ddd/333/120x30.png?text=MUTE" alt=""></div>
         </div>
-        <pre class="prettyprint lang-html">
+        <pre class="prettyprint lang-html mt-2">
         <code>
           &lt;div id="brightcovePlayerOriginalimage"&gt;
             &lt;script&gt;
@@ -116,9 +116,20 @@
             account:'20318290001',
             width: '480px',
             height: '300px',
-            volume: 0.5
+            volume: 0.5,
+            on: {
+              Play: function(){ console.log('Play') },
+              Pause: function(){ console.log('Pause') },
+              Stop: function(){ console.log('Stop') },
+              StopAll: function(){ console.log('StopAll') },
+              Change: function(){ console.log('Change') }
+            }
           });
         </script>
+
+        <button class="btn btn btn-secondary" onclick="PMB.Stop()">Media停止(Stop)</button>
+        <button class="btn btn btn-secondary" onclick="PMB.StopAll()">Media全停止(StopAll)</button>
+
         <button class="btn btn btn-secondary" data-PMB-id="4217352666001" onclick="PMB.Change('4217352666001')">Media変更 id=4217352666001</button>
         <button class="btn_change btn btn btn-secondary" data-PMB-id="4230322585001">Media変更 id=4230322585001</button>
         <div class="btn btn-secondary" data-PMB-id="4231692338001" onclick="PMB.Change('4231692338001')">
@@ -126,11 +137,8 @@
           <p class="display_time">00:00</p>
           <p class="display_time_down">00:00</p>
         </div>
-        <br>
-        <button class="btn btn btn-secondary" onclick="PMB.StopAll()">Media全停止</button>
-        <button class="btn btn btn-secondary" onclick="PMB.StopAll( function(){ alert('停止しました'); } )">Media全停止(callback有り)</button>
 
-        <pre class="prettyprint lang-html mt-5">
+        <pre class="prettyprint lang-html mt-2">
           <code>
           &lt;script&gt;
             var PMB = new PLAYER_MODULE_BRIGHTCOVE({
@@ -141,20 +149,27 @@
               account:&#039;20318290001&#039;,
               width: &#039;480px&#039;,
               height: &#039;300px&#039;,
-              volume: 0.5
+              volume: 0.5,
+              on: {
+                Play: function(){ console.log(&#039;Play&#039;) },
+                Pause: function(){ console.log(&#039;Pause&#039;) },
+                Stop: function(){ console.log(&#039;Stop&#039;) },
+                StopAll: function(){ console.log(&#039;StopAll&#039;) },
+                Change: function(){ console.log(&#039;Change&#039;) }
+              }
             });
           &lt;/script&gt;
-          &lt;button class=&quot;btn btn btn-secondary&quot; data-PMB-id=&quot;4217352666001&quot; onclick=&quot;PMB.Change(&#039;4217352666001&#039;)&quot;&gt;
-            Media変更 id=4217352666001
-          &lt;/button&gt;
-          &lt;button class=&quot;btn_change btn btn btn-secondary&quot; data-PMB-id=&quot;4230322585001&quot;&gt;
-            Media変更 id=4230322585001
-          &lt;/button&gt;
-          &lt;div class=&quot;btn_change btn btn btn-secondary&quot; data-PMB-id=&quot;4231692338001&quot; onclick=&quot;PMB.Change(&#039;4231692338001&#039;)&quot;&gt;
-            Media変更 id=4231692338001
+
+          &lt;button class=&quot;btn btn btn-secondary&quot; onclick=&quot;PMB.Stop()&quot;&gt;Media停止(Stop)&lt;/button&gt;
+          &lt;button class=&quot;btn btn btn-secondary&quot; onclick=&quot;PMB.StopAll()&quot;&gt;Media全停止(StopAll)&lt;/button&gt;
+
+          &lt;button class=&quot;btn btn btn-secondary&quot; data-PMB-id=&quot;4217352666001&quot; onclick=&quot;PMB.Change(&#039;4217352666001&#039;)&quot;&gt;Media変更 id=4217352666001&lt;/button&gt;
+          &lt;button class=&quot;btn_change btn btn btn-secondary&quot; data-PMB-id=&quot;4230322585001&quot;&gt;Media変更 id=4230322585001&lt;/button&gt;
+          &lt;div class=&quot;btn btn-secondary&quot; data-PMB-id=&quot;4231692338001&quot; onclick=&quot;PMB.Change(&#039;4231692338001&#039;)&quot;&gt;
+            Media変更 id=4231692338001&lt;br&gt;&lt;br&gt;
+            &lt;p class=&quot;display_time&quot;&gt;00:00&lt;/p&gt;
             &lt;p class=&quot;display_time_down&quot;&gt;00:00&lt;/p&gt;
-          &lt;/div&gt;
-          </code>
+          &lt;/div&gt;</code>
         </pre>
       </div>
 
@@ -170,7 +185,7 @@
             account:'20318290001',
           });
         </script>
-        <pre class="prettyprint lang-html">
+        <pre class="prettyprint lang-html mt-2">
         <code>
           &lt;div id="brightcovePlayerAudio"&gt;
             &lt;script&gt;
