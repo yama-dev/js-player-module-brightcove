@@ -31,13 +31,13 @@ export let viewPlayer = `
 export let viewPlayerUi = `
   <div class="display_time">00:00</div>
   <div class="display_time_par">0%</div>
-  <button class="btn_play btn btn-default">play</button>
-  <button class="btn_pause btn btn-default">pause</button>
-  <button class="btn_stop btn btn-default">stop</button>
-  <button class="btn_mute btn btn-default">mute</button>
+  <button class="btn_play btn btn-secondary">play</button>
+  <button class="btn_pause btn btn-secondary">pause</button>
+  <button class="btn_stop btn btn-secondary">stop</button>
+  <button class="btn_mute btn btn-secondary">mute</button>
   <div class="seekbar_time"><div class="seekbar_time_bg"></div><span></span></div>
   <div class="seekbar_vol"><div class="seekbar_vol_bg"></div><span></span></div>
-  <button class="btn_full btn btn-default">full screen</button>
+  <button class="btn_full btn btn-secondary">full screen</button>
   <div class="display_poster"><img src="" alt=""></div>
   <div class="display_name"></div>
 `;
@@ -54,7 +54,6 @@ export let viewPlayerStyle = `
 }
 #{{ id }} .btn_play {
   width: 120px;
-  height: 30px;
   display: block;
   cursor: pointer;
 }
@@ -69,7 +68,6 @@ export let viewPlayerStyle = `
 }
 #{{ id }} .btn_pause {
   width: 120px;
-  height: 30px;
   display: none;
   cursor: pointer;
 }
@@ -84,7 +82,6 @@ export let viewPlayerStyle = `
 }
 #{{ id }} .btn_stop {
   width: 120px;
-  height: 30px;
   cursor: pointer;
 }
 #{{ id }} .btn_stop.active {
@@ -98,7 +95,6 @@ export let viewPlayerStyle = `
 }
 #{{ id }} .btn_mute {
   width: 120px;
-  height: 30px;
   cursor: pointer;
 }
 #{{ id }} .btn_mute.active .on {
@@ -109,8 +105,8 @@ export let viewPlayerStyle = `
 }
 #{{ id }} .seekbar_vol {
   width: 100%;
-  height: 9px;
-  padding: 2px 0;
+  height: 13px;
+  padding: 4px 0;
   position: relative;
   cursor: pointer;
   -webkit-box-sizing: border-box;
@@ -124,7 +120,7 @@ export let viewPlayerStyle = `
   position: absolute;
   top: 0;
   left: 0;
-  margin: 2px 0;
+  margin: 4px 0;
 }
 #{{ id }} .seekbar_vol span {
   display: block;
@@ -135,8 +131,8 @@ export let viewPlayerStyle = `
 }
 #{{ id }} .seekbar_time {
   width: 100%;
-  height: 9px;
-  padding: 2px 0;
+  height: 13px;
+  padding: 4px 0;
   position: relative;
   cursor: pointer;
   -webkit-box-sizing: border-box;
@@ -150,7 +146,7 @@ export let viewPlayerStyle = `
   position: absolute;
   top: 0;
   left: 0;
-  margin: 2px 0;
+  margin: 4px 0;
 }
 #{{ id }} .seekbar_time span {
   display: block;

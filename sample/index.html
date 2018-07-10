@@ -6,9 +6,7 @@
   <title>js-player-module-brightcove.js | yama-dev</title>
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
   <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js" charset="UTF-8"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
   <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
   <script src="../dist/js-player-module-brightcove.js"></script>
   <script src="/ga.js"></script>
@@ -114,15 +112,18 @@
             volume: 0.5
           });
         </script>
-        <button class="btn btn-default" data-PMB-id="4217352666001" onclick="PMB.Change('4217352666001')">曲変更 id=4217352666001</button>
-        <button class="btn_change btn btn-default" data-PMB-id="4230322585001">曲変更 id=4230322585001</button>
-        <div class="btn btn-default" data-PMB-id="4231692338001" onclick="PMB.Change('4231692338001')">
-          曲変更 id=4231692338001<br><br>
+        <button class="btn btn btn-secondary" data-PMB-id="4217352666001" onclick="PMB.Change('4217352666001')">Media変更 id=4217352666001</button>
+        <button class="btn_change btn btn btn-secondary" data-PMB-id="4230322585001">Media変更 id=4230322585001</button>
+        <div class="btn btn-secondary" data-PMB-id="4231692338001" onclick="PMB.Change('4231692338001')">
+          Media変更 id=4231692338001<br><br>
           <p class="display_time">00:00</p>
           <p class="display_time_down">00:00</p>
         </div>
+        <br>
+        <button class="btn btn btn-secondary" onclick="PMB.StopAll()">Media全停止</button>
+        <button class="btn btn btn-secondary" onclick="PMB.StopAll( function(){ alert('停止しました'); } )">Media全停止(callback有り)</button>
 
-        <pre class="prettyprint lang-html">
+        <pre class="prettyprint lang-html mt-5">
           <code>
           &lt;script&gt;
             var PMB = new PLAYER_MODULE_BRIGHTCOVE({
@@ -136,14 +137,14 @@
               volume: 0.5
             });
           &lt;/script&gt;
-          &lt;button class=&quot;btn btn-default&quot; data-PMB-id=&quot;4217352666001&quot; onclick=&quot;PMB.Change(&#039;4217352666001&#039;)&quot;&gt;
-            曲変更 id=4217352666001
+          &lt;button class=&quot;btn btn btn-secondary&quot; data-PMB-id=&quot;4217352666001&quot; onclick=&quot;PMB.Change(&#039;4217352666001&#039;)&quot;&gt;
+            Media変更 id=4217352666001
           &lt;/button&gt;
-          &lt;button class=&quot;btn_change btn btn-default&quot; data-PMB-id=&quot;4230322585001&quot;&gt;
-            曲変更 id=4230322585001
+          &lt;button class=&quot;btn_change btn btn btn-secondary&quot; data-PMB-id=&quot;4230322585001&quot;&gt;
+            Media変更 id=4230322585001
           &lt;/button&gt;
-          &lt;div class=&quot;btn_change btn btn-default&quot; data-PMB-id=&quot;4231692338001&quot; onclick=&quot;PMB.Change(&#039;4231692338001&#039;)&quot;&gt;
-            曲変更 id=4231692338001
+          &lt;div class=&quot;btn_change btn btn btn-secondary&quot; data-PMB-id=&quot;4231692338001&quot; onclick=&quot;PMB.Change(&#039;4231692338001&#039;)&quot;&gt;
+            Media変更 id=4231692338001
             &lt;p class=&quot;display_time_down&quot;&gt;00:00&lt;/p&gt;
           &lt;/div&gt;
           </code>
