@@ -598,7 +598,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
 
   }
 
-  Play(){
+  Play(callback){
     let _that = this;
     if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
       if(this.Player.paused()){
@@ -629,9 +629,11 @@ class PLAYER_MODULE_BRIGHTCOVE {
         }
       }
     }
+
+    if(callback && typeof(callback) === 'function') callback();
   }
 
-  Stop(){
+  Stop(callback){
     this.Pause();
     this.Player.currentTime(0);
 
@@ -657,9 +659,10 @@ class PLAYER_MODULE_BRIGHTCOVE {
       });
     }
 
+    if(callback && typeof(callback) === 'function') callback();
   }
 
-  Pause(){
+  Pause(callback){
 
     this.Player.pause();
 
@@ -684,9 +687,11 @@ class PLAYER_MODULE_BRIGHTCOVE {
         elem.removeClass('active');
       });
     }
+
+    if(callback && typeof(callback) === 'function') callback();
   }
 
-  Change(id){
+  Change(id, callback){
     let _that = this;
 
     // 動画IDが取得出来ない場合は処理を中止
@@ -771,6 +776,8 @@ class PLAYER_MODULE_BRIGHTCOVE {
         this.Player.off('loadeddata');
       });
 
+      if(callback && typeof(callback) === 'function') callback();
+
     } else {
 
       this.Player.muted(false);
@@ -802,11 +809,13 @@ class PLAYER_MODULE_BRIGHTCOVE {
         clickElem.addClass('active');
       }
 
+      if(callback && typeof(callback) === 'function') callback();
+
     }
 
   }
 
-  StopAll(){
+  StopAll(callback){
     for (var _i in window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST) {
       videojs(window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST[_i].player_id).pause();
       videojs(window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST[_i].player_id).currentTime(0);
@@ -836,6 +845,8 @@ class PLAYER_MODULE_BRIGHTCOVE {
         });
       }
     }
+
+    if(callback && typeof(callback) === 'function') callback();
   }
 
   GetTime(){
