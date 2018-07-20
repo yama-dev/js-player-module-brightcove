@@ -1,7 +1,7 @@
 /*!
  * JS PLAYER MODULE BRIGHTCOVE (JavaScript Library)
  *   js-player-module-brightcove.js
- * Version 2.0.10
+ * Version 2.0.11
  * Repository https://github.com/yama-dev/js-player-module-brightcove
  * Copyright yama-dev
  * Licensed under the MIT license.
@@ -14,7 +14,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
   constructor(options = {}){
 
     // Set Version.
-    this.VERSION = '2.0.9';
+    this.VERSION = '2.0.11';
 
     // Use for discrimination by URL.
     this.currentUrl = location.href;
@@ -31,6 +31,8 @@ class PLAYER_MODULE_BRIGHTCOVE {
       player         : options.player||'default',
       volume         : options.volume||1,
       playsinline    : options.playsinline !== false ? 'webkit-playsinline playsinline' : '',
+      loop           : options.loop === true ? 'loop' : '',
+      muted          : options.muted === true ? 'muted' : '',
       ui_controls    : options.ui_controls === true ? 'controls' : '',
       ui_autoplay    : options.ui_autoplay === true ? 'autoplay' : '',
       ui_default     : options.ui_default === false ? false : true,
@@ -40,6 +42,19 @@ class PLAYER_MODULE_BRIGHTCOVE {
       ui_round_num   : options.ui_round_num||146,
       ui_round_color : options.ui_round_color||'#696969',
       style_text     : options.style_text||'',
+      other          : options.other||''
+    }
+
+    // Set config, callback functions.
+    if(!options.on){
+      options.on = {}
+    }
+    this.on = {
+      Play    : options.on.Play||'',
+      Pause   : options.on.Pause||'',
+      Stop    : options.on.Stop||'',
+      StopAll : options.on.StopAll||'',
+      Change  : options.on.Change||''
     }
 
     // BrightcovePlayer MediaInfo
@@ -212,8 +227,10 @@ class PLAYER_MODULE_BRIGHTCOVE {
           _that.PlayerLoadFlg = true;
 
           _that.SetVolume();
+          _that.SetMute();
           _that.SetInfo();
           _that.SetPoster();
+
           _that.EventPlay();
           _that.EventPause();
           _that.EventStop();
@@ -224,7 +241,6 @@ class PLAYER_MODULE_BRIGHTCOVE {
           _that.EventSeekbarVol();
           _that.EventSeekbarTime();
           _that.EventChangeVideo();
-          _that.EventStopAll();
 
           // For Timeupdate.
           videojs(_that.config.player_id).on('timeupdate', function() {
@@ -335,14 +351,10 @@ class PLAYER_MODULE_BRIGHTCOVE {
         });
       }
     }
-  }
-
-  EventStopAll(){
 
     window.addEventListener('blur', () => {
-      this.StopAll();
+      this.Stop();
     });
-
   }
 
   EventMute(){
@@ -593,7 +605,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
 
   }
 
-  Play(){
+  Play(callback){
     let _that = this;
     if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
       if(this.Player.paused()){
@@ -624,10 +636,13 @@ class PLAYER_MODULE_BRIGHTCOVE {
         }
       }
     }
+
+    if(!this.on.Play && callback) this.on.Play = callback;
+    if(this.on.Play && typeof(this.on.Play) === 'function') this.on.Play();
   }
 
-  Stop(){
-    this.Pause();
+  Stop(callback){
+    this.Player.pause();
     this.Player.currentTime(0);
 
     // 再生中のPLAYボタンのhtml-classを削除
@@ -652,9 +667,11 @@ class PLAYER_MODULE_BRIGHTCOVE {
       });
     }
 
+    if(!this.on.Stop && callback) this.on.Stop = callback;
+    if(this.on.Stop && typeof(this.on.Stop) === 'function') this.on.Stop();
   }
 
-  Pause(){
+  Pause(callback){
 
     this.Player.pause();
 
@@ -679,9 +696,12 @@ class PLAYER_MODULE_BRIGHTCOVE {
         elem.removeClass('active');
       });
     }
+
+    if(!this.on.Pause && callback) this.on.Pause = callback;
+    if(this.on.Pause && typeof(this.on.Pause) === 'function') this.on.Pause();
   }
 
-  Change(id){
+  Change(id, callback){
     let _that = this;
 
     // 動画IDが取得出来ない場合は処理を中止
@@ -766,6 +786,9 @@ class PLAYER_MODULE_BRIGHTCOVE {
         this.Player.off('loadeddata');
       });
 
+      if(!this.on.Change && callback) this.on.Change = callback;
+      if(this.on.Change && typeof(this.on.Change) === 'function') this.on.Change();
+
     } else {
 
       this.Player.muted(false);
@@ -797,11 +820,14 @@ class PLAYER_MODULE_BRIGHTCOVE {
         clickElem.addClass('active');
       }
 
+      if(!this.on.Change && callback) this.on.Change = callback;
+      if(this.on.Change && typeof(this.on.Change) === 'function') this.on.Change();
+
     }
 
   }
 
-  StopAll(){
+  StopAll(callback){
     for (var _i in window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST) {
       videojs(window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST[_i].player_id).pause();
       videojs(window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST[_i].player_id).currentTime(0);
@@ -831,6 +857,9 @@ class PLAYER_MODULE_BRIGHTCOVE {
         });
       }
     }
+
+    if(!this.on.StopAll && callback) this.on.StopAll = callback;
+    if(this.on.StopAll && typeof(this.on.StopAll) === 'function') this.on.StopAll();
   }
 
   GetTime(){
@@ -897,6 +926,16 @@ class PLAYER_MODULE_BRIGHTCOVE {
 
   GetTags(){
     return this.PlayerMediaInfo.tags;
+  }
+
+  SetMute(){
+    if(this.Player.muted()){
+      this.Player.volume(0);
+      this.$uiBtnMute.addClass('active');
+    }else{
+      this.Player.volume(this.config.volume);
+      this.$uiBtnMute.removeClass('active');
+    }
   }
 
   SetVolume(){
