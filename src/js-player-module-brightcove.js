@@ -37,6 +37,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
       ui_autoplay    : options.ui_autoplay === true ? 'autoplay' : '',
       ui_default     : options.ui_default === false ? false : true,
       ui_default_css : options.ui_default_css === false ? false : true,
+      stop_outfocus  : options.stop_outfocus === true ? true : false,
       poster         : options.poster||null,
       ui_round       : options.ui_round||null,
       ui_round_num   : options.ui_round_num||146,
@@ -353,7 +354,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
     }
 
     window.addEventListener('blur', () => {
-      this.Stop();
+      if(this.config.stop_outfocus) this.Stop();
     });
   }
 
