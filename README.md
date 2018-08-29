@@ -136,6 +136,7 @@ import PLAYER_MODULE_BRIGHTCOVE from 'js-player-module-brightcove';
 | ui_default     | boolean | true    | ライブラリであらかじめ用意したUIパーツを表示するかしないかを指定します。<br>デフォルトは、表示されます。<br>※`false`を指定すると出力されません。                                                  | 
 | ui_default_css | boolean | true    | ライブラリであらかじめ用意したCSSを出力するかしないかを指定します。<br>デフォルトは、CSSを出力します。<br>※`false`を指定すると出力されません。                                                    | 
 | ui_autoplay    | boolean | false   | 自動再生をするか指定します。<br>デフォルトでは、自動再生はされません。<br>※`true`を設定すると、動画のロードが完了すると自動再生を開始します。                                                     | 
+| stop_outfocus  | boolean | false   | フォーカスが外れた時に自動停止するか指定します。<br>デフォルトでは、自動停止しません。<br>※`true`を設定すると、フォーカスが外れた時にメディアが自動停止します。                                   | 
 | mode           | string  | 'movie' | `'movie'` -> 動画モード<br>`'audio` -> 音声モード<br><br>デフォルトでは、動画モードになります。<br>動画か音声のみかを簡単に切り替えが出来ます。<br>※`'audio'`を設定すると、動画が表示されません。 | 
 | poster         | string  | null    | 動画のポスター画像を設定できます。<br>画像のパスを設定することで、サムネイルとして読み込まれます。                                                                                                 | 
 

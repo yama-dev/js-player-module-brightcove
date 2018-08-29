@@ -1,7 +1,7 @@
 /*!
  * JS PLAYER MODULE BRIGHTCOVE (JavaScript Library)
  *   js-player-module-brightcove.js
- * Version 2.0.11
+ * Version 2.0.12
  * Repository https://github.com/yama-dev/js-player-module-brightcove
  * Copyright yama-dev
  * Licensed under the MIT license.
@@ -14,7 +14,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
   constructor(options = {}){
 
     // Set Version.
-    this.VERSION = '2.0.11';
+    this.VERSION = '2.0.12';
 
     // Use for discrimination by URL.
     this.currentUrl = location.href;
@@ -37,6 +37,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
       ui_autoplay    : options.ui_autoplay === true ? 'autoplay' : '',
       ui_default     : options.ui_default === false ? false : true,
       ui_default_css : options.ui_default_css === false ? false : true,
+      stop_outfocus  : options.stop_outfocus === true ? true : false,
       poster         : options.poster||null,
       ui_round       : options.ui_round||null,
       ui_round_num   : options.ui_round_num||146,
@@ -353,7 +354,7 @@ class PLAYER_MODULE_BRIGHTCOVE {
     }
 
     window.addEventListener('blur', () => {
-      this.Stop();
+      if(this.config.stop_outfocus) this.Stop();
     });
   }
 
