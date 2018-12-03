@@ -39,9 +39,6 @@ export class PLAYER_MODULE_BRIGHTCOVE {
       ui_default_css : options.ui_default_css === false ? false : true,
       stop_outfocus  : options.stop_outfocus === true ? true : false,
       poster         : options.poster||null,
-      ui_round       : options.ui_round||null,
-      ui_round_num   : options.ui_round_num||146,
-      ui_round_color : options.ui_round_color||'#696969',
       style_text     : options.style_text||'',
       other          : options.other||''
     }
@@ -307,10 +304,6 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     this.$uiBtnChange                = document.querySelectorAll('#'+this.config.id+' .btn_change')                    ? document.querySelectorAll('#'+this.config.id+' .btn_change')                    : document.createElement('div');
     this.$uiBtnChangeDisplayTime     = document.querySelector('#'+this.config.id+' .display_time')                     ? document.querySelector('#'+this.config.id+' .display_time')                     : document.createElement('div');
     this.$uiBtnChangeDisplayTimeDown = document.querySelector('#'+this.config.id+' .display_time_down')                ? document.querySelector('#'+this.config.id+' .display_time_down')                : document.createElement('div');
-    this.$uiBtnRound                 = document.querySelector('#'+this.config.id+' .btn_round')                        ? document.querySelector('#'+this.config.id+' .btn_round')                        : document.createElement('div');
-    this.$uiBtnRoundSpan             = document.querySelector('#'+this.config.id+' .btn_round span')                   ? document.querySelector('#'+this.config.id+' .btn_round span')                   : document.createElement('div');
-    this.$uiBtnRoundSvg              = document.querySelector('#'+this.config.id+' .btn_roundsvg')                     ? document.querySelector('#'+this.config.id+' .btn_roundsvg')                     : document.createElement('div');
-    this.$uiBtnRoundSvgPath          = document.querySelector('#'+this.config.id+' .btn_roundsvg .btn_roundsvg__path') ? document.querySelector('#'+this.config.id+' .btn_roundsvg .btn_roundsvg__path') : document.createElement('div');
   }
 
   EventPlay(){
@@ -583,9 +576,6 @@ export class PLAYER_MODULE_BRIGHTCOVE {
 
       // シークバーの更新(％)
       this.$uiSeekbarTimeCover.style.width       = this.GetTimePar();
-      this.$uiBtnRoundSpan.style.webkitTransform = 'rotate('+(360 * this.GetTimeRatio())+'deg)';
-      let _roundNum = this.$uiBtnRoundSvg.clientWidth * 3.14 !== 0 ? this.$uiBtnRoundSvg.clientWidth * 3.14 : this.config.ui_round_num  * 3.14;
-      this.$uiBtnRoundSvgPath.style.cssText = 'stroke-dashoffset: '+(_roundNum + 10 - (360 * this.GetTimeRatio()) / 365 * _roundNum)+';';
     } else {
       // 再生時間の更新(分秒)
       this.$uiDisplayTime.innerHTML          = '00:00';
@@ -600,8 +590,6 @@ export class PLAYER_MODULE_BRIGHTCOVE {
 
       // シークバーの更新(％)
       this.$uiSeekbarTimeCover.style.width       = '0%';
-      this.$uiBtnRoundSpan.style.webkitTransform = 'rotate(0deg)';
-      this.$uiBtnRoundSvgPath.style.cssText      = 'stroke-dashoffset: 0;';
     }
 
   }
