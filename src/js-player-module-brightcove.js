@@ -14,7 +14,7 @@ export class PLAYER_MODULE_BRIGHTCOVE {
   constructor(options = {}){
 
     // Set Version.
-    this.VERSION = '2.0.12';
+    this.VERSION = '2.1.0';
 
     // Use for discrimination by URL.
     this.currentUrl = location.href;
@@ -427,6 +427,9 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     }
   }
 
+  /**
+   * When dragging a seek bar(time).
+   */
   EventSeekbarTime(){
     let _that = this;
 
@@ -598,20 +601,26 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     let _that = this;
     if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
       if(this.Player.paused()){
-        // 停止状態の場合
+        // When the player is stopped.
+
         this.Player.play();
+
+        // Add className Play-Button.
         if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
           for (var i = 0; i < this.$uiBtnPlay.length; ++i) {
             this.$uiBtnPlay[i].addClass('active');
           }
         }
+
+        // Add className Pause-Button.
         if(this.$uiBtnPause !== null && this.$uiBtnPause.length !== 0){
           for (var i = 0; i < this.$uiBtnPause.length; ++i) {
             this.$uiBtnPause[i].addClass('active');
           }
         }
       } else {
-        // 再生状態の場合
+        // When the player is playing.
+
         _that.Pause();
         if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
           for (var i = 0; i < this.$uiBtnPlay.length; ++i) {
@@ -634,21 +643,21 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     this.Player.pause();
     this.Player.currentTime(0);
 
-    // 再生中のPLAYボタンのhtml-classを削除
+    // Remove className Play-Button.
     if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
       for (var i = 0; i < this.$uiBtnPlay.length; ++i) {
         this.$uiBtnPlay[i].removeClass('active');
       }
     }
 
-    // 再生中のPAUSEボタンのhtml-classを削除
+    // Remove className Pause-Button.
     if(this.$uiBtnPause !== null && this.$uiBtnPause.length !== 0){
       for (var i = 0; i < this.$uiBtnPause.length; ++i) {
         this.$uiBtnPause[i].removeClass('active');
       }
     }
 
-    // メディア変更ボタンのhtml-classを削除
+    // Remove className MediaChange-Button.
     let clickElemAll = Array.prototype.slice.call( document.querySelectorAll('[data-PMB-id]') );
     if(clickElemAll){
       clickElemAll.forEach(function(elem,i){
@@ -664,21 +673,21 @@ export class PLAYER_MODULE_BRIGHTCOVE {
 
     this.Player.pause();
 
-    // 再生中のPLAYボタンのhtml-classを削除
+    // Remove className Play-Button.
     if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
       for (var i = 0; i < this.$uiBtnPlay.length; ++i) {
         this.$uiBtnPlay[i].removeClass('active');
       }
     }
 
-    // 再生中のPAUSEボタンのhtml-classを削除
+    // Remove className Pause-Button.
     if(this.$uiBtnPause !== null && this.$uiBtnPause.length !== 0){
       for (var i = 0; i < this.$uiBtnPause.length; ++i) {
         this.$uiBtnPause[i].removeClass('active');
       }
     }
 
-    // メディア変更ボタンのhtml-classを削除
+    // Remove className MediaChange-Button.
     let clickElemAll = Array.prototype.slice.call( document.querySelectorAll('[data-PMB-id]') );
     if(clickElemAll){
       clickElemAll.forEach(function(elem,i){
@@ -690,6 +699,12 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     if(this.on.Pause && typeof(this.on.Pause) === 'function') this.on.Pause();
   }
 
+  /**
+   * When Media change.
+   *
+   * id       | str      | media-id.
+   * callback | function | callback function after changed.
+   */
   Change(id, callback){
     let _that = this;
 
