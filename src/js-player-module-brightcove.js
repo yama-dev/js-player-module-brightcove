@@ -9,7 +9,7 @@
 
 import { viewPlayerScriptcode, viewPlayer, viewPlayerUi, viewPlayerStyle } from './view.js';
 
-class PLAYER_MODULE_BRIGHTCOVE {
+export class PLAYER_MODULE_BRIGHTCOVE {
 
   constructor(options = {}){
 
@@ -975,7 +975,3 @@ class PLAYER_MODULE_BRIGHTCOVE {
   }
 
 }
-
-export default PLAYER_MODULE_BRIGHTCOVE;
-
-window.PLAYER_MODULE_BRIGHTCOVE = PLAYER_MODULE_BRIGHTCOVE;
