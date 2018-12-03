@@ -397,6 +397,57 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     }
   }
 
+  /**
+   * When dragging a seek bar(time).
+   */
+  EventSeekbarTime(){
+    let _that = this;
+
+    if(this.$uiSeekbarTime !== null){
+      let _flag = false;
+
+      this.$uiSeekbarTime.addEventListener('mousedown', (event) => {
+
+        _flag = true;
+
+        _that.Pause();
+
+        let _currentWidth    = this.$uiSeekbarTime.clientWidth;
+        let _clickPosition  = this.$uiSeekbarTime.getBoundingClientRect().left;
+        let _targetWidth = (event.pageX - _clickPosition) / _currentWidth;
+        let _targetTime = this.Player.duration() * _targetWidth;
+        this.$uiSeekbarTimeCover.style.width = (_targetWidth * 100) + '%';
+        this.Player.currentTime(_targetTime);
+
+      });
+
+      this.$uiSeekbarTime.addEventListener('mouseleave', (event) => {
+        if(_flag === true) _that.Play();
+        _flag = false;
+      });
+
+      this.$uiSeekbarTime.addEventListener('mouseup', (event) => {
+        if(_flag === true) _that.Play();
+        _flag = false;
+      });
+
+      this.$uiSeekbarTime.addEventListener('mousemove', (event) => {
+        if(_flag === true){
+          let _currentWidth    = this.$uiSeekbarTime.clientWidth;
+          let _clickPosition  = this.$uiSeekbarTime.getBoundingClientRect().left;
+          let _targetWidth = (event.pageX - _clickPosition) / _currentWidth;
+          let _targetTime = this.Player.duration() * _targetWidth;
+          this.$uiSeekbarTimeCover.style.width = (_targetWidth * 100) + '%';
+          this.Player.currentTime(_targetTime);
+        }
+      });
+
+    }
+  }
+
+  /**
+   * When dragging a seek bar(volume).
+   */
   EventSeekbarVol(){
     if(this.$uiSeekbarVol !== null){
       let _flag = false;
@@ -423,128 +474,6 @@ export class PLAYER_MODULE_BRIGHTCOVE {
           this.Player.volume(_targetWidth);
           this.config.volume = _targetWidth;
         }
-      });
-    }
-  }
-
-  /**
-   * When dragging a seek bar(time).
-   */
-  EventSeekbarTime(){
-    let _that = this;
-
-    if(this.$uiSeekbarTime !== null){
-      let _flag = false;
-
-      this.$uiSeekbarTime.addEventListener('mousedown', (event) => {
-
-        _flag = true;
-
-        _that.Pause();
-
-        let _currentWidth    = this.$uiSeekbarTime.clientWidth;
-        let _clickPosition  = this.$uiSeekbarTime.getBoundingClientRect().left;
-        let _targetWidth = (event.pageX - _clickPosition) / _currentWidth;
-        let _targetTime = this.Player.duration() * _targetWidth;
-        this.$uiSeekbarTimeCover.style.width = (_targetWidth * 100) + '%';
-        this.Player.currentTime(_targetTime);
-
-      });
-
-      this.$uiSeekbarTime.addEventListener('mouseleave', (event) => {
-        if(_flag === true){
-          this.Player.play();
-          if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
-            for (var i = 0; i < this.$uiBtnPlay.length; ++i) {
-              this.$uiBtnPlay[i].addClass('active');
-            }
-          }
-          if(this.$uiBtnPause !== null && this.$uiBtnPause.length !== 0){
-            for (var i = 0; i < this.$uiBtnPause.length; ++i) {
-              this.$uiBtnPause[i].addClass('active');
-            }
-          }
-        }
-        _flag = false;
-      });
-
-      this.$uiSeekbarTime.addEventListener('mouseup', (event) => {
-        if(_flag === true){
-          this.Player.play();
-          if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
-            for (var i = 0; i < this.$uiBtnPlay.length; ++i) {
-              this.$uiBtnPlay[i].addClass('active');
-            }
-          }
-          if(this.$uiBtnPause !== null && this.$uiBtnPause.length !== 0){
-            for (var i = 0; i < this.$uiBtnPause.length; ++i) {
-              this.$uiBtnPause[i].addClass('active');
-            }
-          }
-        }
-        _flag = false;
-      });
-
-      this.$uiSeekbarTime.addEventListener('mousemove', (event) => {
-        if(_flag === true){
-          let _currentWidth    = this.$uiSeekbarTime.clientWidth;
-          let _clickPosition  = this.$uiSeekbarTime.getBoundingClientRect().left;
-          let _targetWidth = (event.pageX - _clickPosition) / _currentWidth;
-          let _targetTime = this.Player.duration() * _targetWidth;
-          this.$uiSeekbarTimeCover.style.width = (_targetWidth * 100) + '%';
-          this.Player.currentTime(_targetTime);
-        }
-      });
-
-    }
-    if(this.$uiBtnRound !== null){
-      this.$uiBtnRound.addEventListener('click', (event) => {
-        _that.Pause();
-        let _currentWidth      = this.$uiBtnRound.clientWidth;
-        let _currentWidthHalf  = _currentWidth / 2;
-        let _clickPositionLeft = this.$uiBtnRound.getBoundingClientRect().left;
-        let _clickPositionTop  = this.$uiBtnRound.getBoundingClientRect().top;
-        let _x = event.pageX - _clickPositionLeft - _currentWidthHalf;
-        let _y = event.pageY - (_clickPositionTop + window.pageYOffset) - _currentWidthHalf;
-        let _deg = Math.atan2( _y, _x ) * 180 / Math.PI;
-        if(_deg >= -90 && _deg <= 0){
-          _deg = _deg + 90;
-        } else if(_deg >= 0 && _deg <= 90){
-          _deg = _deg + 90;
-        } else if(_deg >= 90 && _deg <= 180){
-          _deg = _deg + 90;
-        } else if(_deg >= -180 && _deg <= -90){
-          _deg = _deg + 360 + 90;
-        }
-        // this.$uiSeekbarTimeCover.style.width = (_targetWidth * 100) + '%';
-        this.Player.currentTime(this.Player.duration() * (_deg / 360) );
-        this.$uiBtnRoundSpan.style.webkitTransform = 'rotate('+_deg+'deg)';
-        this.Player.play();
-      });
-    }
-    if(this.$uiBtnRoundSvg !== null){
-      let _roundNum = this.$uiBtnRoundSvg.clientWidth * 3.14;
-      this.$uiBtnRoundSvg.addEventListener('click', (event) => {
-        _that.Pause();
-        let _currentWidth      = this.$uiBtnRoundSvg.clientWidth;
-        let _currentWidthHalf  = _currentWidth / 2;
-        let _clickPositionLeft = this.$uiBtnRoundSvg.getBoundingClientRect().left;
-        let _clickPositionTop  = this.$uiBtnRoundSvg.getBoundingClientRect().top;
-        let _x = event.pageX - _clickPositionLeft - _currentWidthHalf;
-        let _y = event.pageY - (_clickPositionTop + window.pageYOffset) - _currentWidthHalf;
-        let _deg = Math.atan2( _y, _x ) * 180 / Math.PI;
-        if(_deg >= -90 && _deg <= 0){
-          _deg = _deg + 90;
-        } else if(_deg >= 0 && _deg <= 90){
-          _deg = _deg + 90;
-        } else if(_deg >= 90 && _deg <= 180){
-          _deg = _deg + 90;
-        } else if(_deg >= -180 && _deg <= -90){
-          _deg = _deg + 360 + 90;
-        }
-        this.Player.currentTime(this.Player.duration() * (_deg / 360) );
-        this.$uiBtnRoundSvgPath.style.cssText = 'stroke-dashoffset: '+(_roundNum + 10 - _deg / 365 * _roundNum)+';';
-        this.Player.play();
       });
     }
   }
@@ -618,10 +547,22 @@ export class PLAYER_MODULE_BRIGHTCOVE {
             this.$uiBtnPause[i].addClass('active');
           }
         }
+
+        // Add className MediaChange-Button.
+        let dataIdElemAll = Array.prototype.slice.call( document.querySelectorAll('[data-PMB-id]') );
+        if(dataIdElemAll){
+          dataIdElemAll.forEach(function(elem,i){
+            if(_that.config.videoid == elem.getAttribute('data-PMB-id')){
+              elem.addClass('active');
+            }
+          });
+        }
+
       } else {
         // When the player is playing.
 
         _that.Pause();
+
         if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
           for (var i = 0; i < this.$uiBtnPlay.length; ++i) {
             this.$uiBtnPlay[i].removeClass('active');
