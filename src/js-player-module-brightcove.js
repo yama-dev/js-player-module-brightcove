@@ -1,7 +1,7 @@
 /*!
  * JS PLAYER MODULE BRIGHTCOVE (JavaScript Library)
  *   js-player-module-brightcove.js
- * Version 2.0.12
+ * Version 2.1.0
  * Repository https://github.com/yama-dev/js-player-module-brightcove
  * Copyright yama-dev
  * Licensed under the MIT license.
@@ -9,12 +9,12 @@
 
 import { viewPlayerScriptcode, viewPlayer, viewPlayerUi, viewPlayerStyle } from './view.js';
 
-class PLAYER_MODULE_BRIGHTCOVE {
+export class PLAYER_MODULE_BRIGHTCOVE {
 
   constructor(options = {}){
 
     // Set Version.
-    this.VERSION = '2.0.12';
+    this.VERSION = '2.1.0';
 
     // Use for discrimination by URL.
     this.currentUrl = location.href;
@@ -39,9 +39,6 @@ class PLAYER_MODULE_BRIGHTCOVE {
       ui_default_css : options.ui_default_css === false ? false : true,
       stop_outfocus  : options.stop_outfocus === true ? true : false,
       poster         : options.poster||null,
-      ui_round       : options.ui_round||null,
-      ui_round_num   : options.ui_round_num||146,
-      ui_round_color : options.ui_round_color||'#696969',
       style_text     : options.style_text||'',
       other          : options.other||''
     }
@@ -307,10 +304,6 @@ class PLAYER_MODULE_BRIGHTCOVE {
     this.$uiBtnChange                = document.querySelectorAll('#'+this.config.id+' .btn_change')                    ? document.querySelectorAll('#'+this.config.id+' .btn_change')                    : document.createElement('div');
     this.$uiBtnChangeDisplayTime     = document.querySelector('#'+this.config.id+' .display_time')                     ? document.querySelector('#'+this.config.id+' .display_time')                     : document.createElement('div');
     this.$uiBtnChangeDisplayTimeDown = document.querySelector('#'+this.config.id+' .display_time_down')                ? document.querySelector('#'+this.config.id+' .display_time_down')                : document.createElement('div');
-    this.$uiBtnRound                 = document.querySelector('#'+this.config.id+' .btn_round')                        ? document.querySelector('#'+this.config.id+' .btn_round')                        : document.createElement('div');
-    this.$uiBtnRoundSpan             = document.querySelector('#'+this.config.id+' .btn_round span')                   ? document.querySelector('#'+this.config.id+' .btn_round span')                   : document.createElement('div');
-    this.$uiBtnRoundSvg              = document.querySelector('#'+this.config.id+' .btn_roundsvg')                     ? document.querySelector('#'+this.config.id+' .btn_roundsvg')                     : document.createElement('div');
-    this.$uiBtnRoundSvgPath          = document.querySelector('#'+this.config.id+' .btn_roundsvg .btn_roundsvg__path') ? document.querySelector('#'+this.config.id+' .btn_roundsvg .btn_roundsvg__path') : document.createElement('div');
   }
 
   EventPlay(){
@@ -404,6 +397,57 @@ class PLAYER_MODULE_BRIGHTCOVE {
     }
   }
 
+  /**
+   * When dragging a seek bar(time).
+   */
+  EventSeekbarTime(){
+    let _that = this;
+
+    if(this.$uiSeekbarTime !== null){
+      let _flag = false;
+
+      this.$uiSeekbarTime.addEventListener('mousedown', (event) => {
+
+        _flag = true;
+
+        _that.Pause();
+
+        let _currentWidth    = this.$uiSeekbarTime.clientWidth;
+        let _clickPosition  = this.$uiSeekbarTime.getBoundingClientRect().left;
+        let _targetWidth = (event.pageX - _clickPosition) / _currentWidth;
+        let _targetTime = this.Player.duration() * _targetWidth;
+        this.$uiSeekbarTimeCover.style.width = (_targetWidth * 100) + '%';
+        this.Player.currentTime(_targetTime);
+
+      });
+
+      this.$uiSeekbarTime.addEventListener('mouseleave', (event) => {
+        if(_flag === true) _that.Play();
+        _flag = false;
+      });
+
+      this.$uiSeekbarTime.addEventListener('mouseup', (event) => {
+        if(_flag === true) _that.Play();
+        _flag = false;
+      });
+
+      this.$uiSeekbarTime.addEventListener('mousemove', (event) => {
+        if(_flag === true){
+          let _currentWidth    = this.$uiSeekbarTime.clientWidth;
+          let _clickPosition  = this.$uiSeekbarTime.getBoundingClientRect().left;
+          let _targetWidth = (event.pageX - _clickPosition) / _currentWidth;
+          let _targetTime = this.Player.duration() * _targetWidth;
+          this.$uiSeekbarTimeCover.style.width = (_targetWidth * 100) + '%';
+          this.Player.currentTime(_targetTime);
+        }
+      });
+
+    }
+  }
+
+  /**
+   * When dragging a seek bar(volume).
+   */
   EventSeekbarVol(){
     if(this.$uiSeekbarVol !== null){
       let _flag = false;
@@ -430,125 +474,6 @@ class PLAYER_MODULE_BRIGHTCOVE {
           this.Player.volume(_targetWidth);
           this.config.volume = _targetWidth;
         }
-      });
-    }
-  }
-
-  EventSeekbarTime(){
-    let _that = this;
-
-    if(this.$uiSeekbarTime !== null){
-      let _flag = false;
-
-      this.$uiSeekbarTime.addEventListener('mousedown', (event) => {
-
-        _flag = true;
-
-        _that.Pause();
-
-        let _currentWidth    = this.$uiSeekbarTime.clientWidth;
-        let _clickPosition  = this.$uiSeekbarTime.getBoundingClientRect().left;
-        let _targetWidth = (event.pageX - _clickPosition) / _currentWidth;
-        let _targetTime = this.Player.duration() * _targetWidth;
-        this.$uiSeekbarTimeCover.style.width = (_targetWidth * 100) + '%';
-        this.Player.currentTime(_targetTime);
-
-      });
-
-      this.$uiSeekbarTime.addEventListener('mouseleave', (event) => {
-        if(_flag === true){
-          this.Player.play();
-          if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
-            for (var i = 0; i < this.$uiBtnPlay.length; ++i) {
-              this.$uiBtnPlay[i].addClass('active');
-            }
-          }
-          if(this.$uiBtnPause !== null && this.$uiBtnPause.length !== 0){
-            for (var i = 0; i < this.$uiBtnPause.length; ++i) {
-              this.$uiBtnPause[i].addClass('active');
-            }
-          }
-        }
-        _flag = false;
-      });
-
-      this.$uiSeekbarTime.addEventListener('mouseup', (event) => {
-        if(_flag === true){
-          this.Player.play();
-          if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
-            for (var i = 0; i < this.$uiBtnPlay.length; ++i) {
-              this.$uiBtnPlay[i].addClass('active');
-            }
-          }
-          if(this.$uiBtnPause !== null && this.$uiBtnPause.length !== 0){
-            for (var i = 0; i < this.$uiBtnPause.length; ++i) {
-              this.$uiBtnPause[i].addClass('active');
-            }
-          }
-        }
-        _flag = false;
-      });
-
-      this.$uiSeekbarTime.addEventListener('mousemove', (event) => {
-        if(_flag === true){
-          let _currentWidth    = this.$uiSeekbarTime.clientWidth;
-          let _clickPosition  = this.$uiSeekbarTime.getBoundingClientRect().left;
-          let _targetWidth = (event.pageX - _clickPosition) / _currentWidth;
-          let _targetTime = this.Player.duration() * _targetWidth;
-          this.$uiSeekbarTimeCover.style.width = (_targetWidth * 100) + '%';
-          this.Player.currentTime(_targetTime);
-        }
-      });
-
-    }
-    if(this.$uiBtnRound !== null){
-      this.$uiBtnRound.addEventListener('click', (event) => {
-        _that.Pause();
-        let _currentWidth      = this.$uiBtnRound.clientWidth;
-        let _currentWidthHalf  = _currentWidth / 2;
-        let _clickPositionLeft = this.$uiBtnRound.getBoundingClientRect().left;
-        let _clickPositionTop  = this.$uiBtnRound.getBoundingClientRect().top;
-        let _x = event.pageX - _clickPositionLeft - _currentWidthHalf;
-        let _y = event.pageY - (_clickPositionTop + window.pageYOffset) - _currentWidthHalf;
-        let _deg = Math.atan2( _y, _x ) * 180 / Math.PI;
-        if(_deg >= -90 && _deg <= 0){
-          _deg = _deg + 90;
-        } else if(_deg >= 0 && _deg <= 90){
-          _deg = _deg + 90;
-        } else if(_deg >= 90 && _deg <= 180){
-          _deg = _deg + 90;
-        } else if(_deg >= -180 && _deg <= -90){
-          _deg = _deg + 360 + 90;
-        }
-        // this.$uiSeekbarTimeCover.style.width = (_targetWidth * 100) + '%';
-        this.Player.currentTime(this.Player.duration() * (_deg / 360) );
-        this.$uiBtnRoundSpan.style.webkitTransform = 'rotate('+_deg+'deg)';
-        this.Player.play();
-      });
-    }
-    if(this.$uiBtnRoundSvg !== null){
-      let _roundNum = this.$uiBtnRoundSvg.clientWidth * 3.14;
-      this.$uiBtnRoundSvg.addEventListener('click', (event) => {
-        _that.Pause();
-        let _currentWidth      = this.$uiBtnRoundSvg.clientWidth;
-        let _currentWidthHalf  = _currentWidth / 2;
-        let _clickPositionLeft = this.$uiBtnRoundSvg.getBoundingClientRect().left;
-        let _clickPositionTop  = this.$uiBtnRoundSvg.getBoundingClientRect().top;
-        let _x = event.pageX - _clickPositionLeft - _currentWidthHalf;
-        let _y = event.pageY - (_clickPositionTop + window.pageYOffset) - _currentWidthHalf;
-        let _deg = Math.atan2( _y, _x ) * 180 / Math.PI;
-        if(_deg >= -90 && _deg <= 0){
-          _deg = _deg + 90;
-        } else if(_deg >= 0 && _deg <= 90){
-          _deg = _deg + 90;
-        } else if(_deg >= 90 && _deg <= 180){
-          _deg = _deg + 90;
-        } else if(_deg >= -180 && _deg <= -90){
-          _deg = _deg + 360 + 90;
-        }
-        this.Player.currentTime(this.Player.duration() * (_deg / 360) );
-        this.$uiBtnRoundSvgPath.style.cssText = 'stroke-dashoffset: '+(_roundNum + 10 - _deg / 365 * _roundNum)+';';
-        this.Player.play();
       });
     }
   }
@@ -583,9 +508,6 @@ class PLAYER_MODULE_BRIGHTCOVE {
 
       // シークバーの更新(％)
       this.$uiSeekbarTimeCover.style.width       = this.GetTimePar();
-      this.$uiBtnRoundSpan.style.webkitTransform = 'rotate('+(360 * this.GetTimeRatio())+'deg)';
-      let _roundNum = this.$uiBtnRoundSvg.clientWidth * 3.14 !== 0 ? this.$uiBtnRoundSvg.clientWidth * 3.14 : this.config.ui_round_num  * 3.14;
-      this.$uiBtnRoundSvgPath.style.cssText = 'stroke-dashoffset: '+(_roundNum + 10 - (360 * this.GetTimeRatio()) / 365 * _roundNum)+';';
     } else {
       // 再生時間の更新(分秒)
       this.$uiDisplayTime.innerHTML          = '00:00';
@@ -600,8 +522,6 @@ class PLAYER_MODULE_BRIGHTCOVE {
 
       // シークバーの更新(％)
       this.$uiSeekbarTimeCover.style.width       = '0%';
-      this.$uiBtnRoundSpan.style.webkitTransform = 'rotate(0deg)';
-      this.$uiBtnRoundSvgPath.style.cssText      = 'stroke-dashoffset: 0;';
     }
 
   }
@@ -610,21 +530,39 @@ class PLAYER_MODULE_BRIGHTCOVE {
     let _that = this;
     if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
       if(this.Player.paused()){
-        // 停止状態の場合
+        // When the player is stopped.
+
         this.Player.play();
+
+        // Add className Play-Button.
         if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
           for (var i = 0; i < this.$uiBtnPlay.length; ++i) {
             this.$uiBtnPlay[i].addClass('active');
           }
         }
+
+        // Add className Pause-Button.
         if(this.$uiBtnPause !== null && this.$uiBtnPause.length !== 0){
           for (var i = 0; i < this.$uiBtnPause.length; ++i) {
             this.$uiBtnPause[i].addClass('active');
           }
         }
+
+        // Add className MediaChange-Button.
+        let dataIdElemAll = Array.prototype.slice.call( document.querySelectorAll('[data-PMB-id]') );
+        if(dataIdElemAll){
+          dataIdElemAll.forEach(function(elem,i){
+            if(_that.config.videoid == elem.getAttribute('data-PMB-id')){
+              elem.addClass('active');
+            }
+          });
+        }
+
       } else {
-        // 再生状態の場合
+        // When the player is playing.
+
         _that.Pause();
+
         if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
           for (var i = 0; i < this.$uiBtnPlay.length; ++i) {
             this.$uiBtnPlay[i].removeClass('active');
@@ -646,21 +584,21 @@ class PLAYER_MODULE_BRIGHTCOVE {
     this.Player.pause();
     this.Player.currentTime(0);
 
-    // 再生中のPLAYボタンのhtml-classを削除
+    // Remove className Play-Button.
     if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
       for (var i = 0; i < this.$uiBtnPlay.length; ++i) {
         this.$uiBtnPlay[i].removeClass('active');
       }
     }
 
-    // 再生中のPAUSEボタンのhtml-classを削除
+    // Remove className Pause-Button.
     if(this.$uiBtnPause !== null && this.$uiBtnPause.length !== 0){
       for (var i = 0; i < this.$uiBtnPause.length; ++i) {
         this.$uiBtnPause[i].removeClass('active');
       }
     }
 
-    // メディア変更ボタンのhtml-classを削除
+    // Remove className MediaChange-Button.
     let clickElemAll = Array.prototype.slice.call( document.querySelectorAll('[data-PMB-id]') );
     if(clickElemAll){
       clickElemAll.forEach(function(elem,i){
@@ -676,21 +614,21 @@ class PLAYER_MODULE_BRIGHTCOVE {
 
     this.Player.pause();
 
-    // 再生中のPLAYボタンのhtml-classを削除
+    // Remove className Play-Button.
     if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
       for (var i = 0; i < this.$uiBtnPlay.length; ++i) {
         this.$uiBtnPlay[i].removeClass('active');
       }
     }
 
-    // 再生中のPAUSEボタンのhtml-classを削除
+    // Remove className Pause-Button.
     if(this.$uiBtnPause !== null && this.$uiBtnPause.length !== 0){
       for (var i = 0; i < this.$uiBtnPause.length; ++i) {
         this.$uiBtnPause[i].removeClass('active');
       }
     }
 
-    // メディア変更ボタンのhtml-classを削除
+    // Remove className MediaChange-Button.
     let clickElemAll = Array.prototype.slice.call( document.querySelectorAll('[data-PMB-id]') );
     if(clickElemAll){
       clickElemAll.forEach(function(elem,i){
@@ -702,6 +640,12 @@ class PLAYER_MODULE_BRIGHTCOVE {
     if(this.on.Pause && typeof(this.on.Pause) === 'function') this.on.Pause();
   }
 
+  /**
+   * When Media change.
+   *
+   * id       | str      | media-id.
+   * callback | function | callback function after changed.
+   */
   Change(id, callback){
     let _that = this;
 
@@ -975,7 +919,3 @@ class PLAYER_MODULE_BRIGHTCOVE {
   }
 
 }
-
-export default PLAYER_MODULE_BRIGHTCOVE;
-
-window.PLAYER_MODULE_BRIGHTCOVE = PLAYER_MODULE_BRIGHTCOVE;
