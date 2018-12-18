@@ -1,46 +1,66 @@
 /*!
  * JS PLAYER MODULE BRIGHTCOVE (JavaScript Library)
  *   js-player-module-brightcove.js
- * Version 2.1.0
+ * Version 2.2.0
  * Repository https://github.com/yama-dev/js-player-module-brightcove
  * Copyright yama-dev
  * Licensed under the MIT license.
  */
 
-import { viewPlayerScriptcode, viewPlayer, viewPlayerUi, viewPlayerStyle } from './view.js';
+import {PARSE_MODULE} from 'js-parse-module';
+
+import { viewPlayerScriptcode, viewPlayerMain, viewPlayerUi, viewPlayerStyle } from './view.js';
+
+import JS_DOM from '@yama-dev/js-dom';
+const dom = new JS_DOM();
 
 export class PLAYER_MODULE_BRIGHTCOVE {
 
   constructor(options = {}){
 
     // Set Version.
-    this.VERSION = '2.1.0';
+    this.VERSION = '2.2.0';
 
-    // Use for discrimination by URL.
-    this.currentUrl = location.href;
+    // Set Flgs.
+    this.PlayerLoadFlg = false;
+    this.PlayerChangeLoadFlg = true;
+
+    if(!options.id || !options.videoid){
+      console.log('Inadequate parameters (id, videoid)');
+      return false;
+    }
 
     // Set config, options.
-    this.config = {
+    this.CONFIG = {
       mode           : options.mode||'movie',
       id             : options.id||'pmb',
-      player_id      : options.id+'_player'||'pmb_player',
+
+      player_id        : `${options.id}_player`||'pmy_player',
+      player_id_wrap   : `${options.id}_player_wrap`||'pmy_player_wrap',
+      player_ui_id     : `${options.id}_ui`||'pmy_ui',
+      player_style_id  : `${options.id}_style`||'pmy_style',
+
       videoid        : options.videoid||'',
       account        : options.account||'',
       width          : options.width||'',
       height         : options.height||'',
+
       player         : options.player||'default',
       volume         : options.volume||1,
+
       playsinline    : options.playsinline !== false ? 'webkit-playsinline playsinline' : '',
       loop           : options.loop === true ? 'loop' : '',
       muted          : options.muted === true ? 'muted' : '',
+
       ui_controls    : options.ui_controls === true ? 'controls' : '',
       ui_autoplay    : options.ui_autoplay === true ? 'autoplay' : '',
       ui_default     : options.ui_default === false ? false : true,
       ui_default_css : options.ui_default_css === false ? false : true,
+
       stop_outfocus  : options.stop_outfocus === true ? true : false,
       poster         : options.poster||null,
-      style_text     : options.style_text||'',
-      other          : options.other||''
+
+      add_style        : options.add_style||''
     }
 
     // Set config, callback functions.
@@ -51,6 +71,7 @@ export class PLAYER_MODULE_BRIGHTCOVE {
       Play    : options.on.Play||'',
       Pause   : options.on.Pause||'',
       Stop    : options.on.Stop||'',
+      PauseAll : options.on.PauseAll||'',
       StopAll : options.on.StopAll||'',
       Change  : options.on.Change||''
     }
@@ -61,338 +82,325 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     // BrightcovePlayer Instance.
     this.Player = '';
 
-    // Set Load Flg
-    this.PlayerLoadFlg = false;
-
-    // Set ChangeLoad Flg
-    this.PlayerChangeLoadFlg = true;
+    // Player wrapper.
+    this.$playerElem = dom.selectDom(`#${this.CONFIG.id}`);
 
     // Import Views.
-    this.playerHtml       = viewPlayer;
+    this.playerHtml       = viewPlayerMain;
     this.playerUiHtml     = viewPlayerUi;
     this.playerCss        = viewPlayerStyle;
+    this.playerCssOption  = '';
     this.playerScriptCode = viewPlayerScriptcode;
-
-    // Check Audio mode.
-    if(this.config.mode == 'audio'){
-      this.config.width  = 1;
-      this.config.height = 1;
-      this.playerCss += `#${this.config.player_id} { opacity: 0; }`;
-    }
 
     // Set Options
     // -> playerHtml
-    // -> playerScriptCode
     // -> playerCss
-    for (let obj in this.config) {
-      let _reg = new RegExp('({{.?' + obj + '.?}})','g');
-      let _regIn = new RegExp('{{.?(' + obj + ').?}}','g');
-      this.playerHtml.match(_regIn);
-      let _regInStr = RegExp.$1;
-      this.playerHtml = this.playerHtml.replace(_regIn, this.config[_regInStr]);
-    }
-    for (let obj1 in this.config) {
-      let _reg = new RegExp('({{.?' + obj1 + '.?}})','g');
-      let _regIn = new RegExp('{{.?(' + obj1 + ').?}}','g');
-      this.playerScriptCode.match(_regIn);
-      let _regInStr = RegExp.$1;
-      this.playerScriptCode = this.playerScriptCode.replace(_regIn, this.config[_regInStr]);
-    }
-    for (let obj2 in this.config) {
-      let _reg2 = new RegExp('({{.?' + obj2 + '.?}})','g');
-      let _regIn2 = new RegExp('{{.?(' + obj2 + ').?}}','g');
-      this.playerCss.match(_regIn2);
-      let _regInStr2 = RegExp.$1;
-      this.playerCss = this.playerCss.replace(_regIn2, this.config[_regInStr2]);
+    // -> playerScriptCode
+    this.playerHtml        = PARSE_MODULE.Str2Mustache(this.playerHtml, this.CONFIG);
+    this.playerCss         = PARSE_MODULE.Str2Mustache(this.playerCss, this.CONFIG);
+    this.playerScriptCode  = PARSE_MODULE.Str2Mustache(this.playerScriptCode, this.CONFIG);
+
+    // Check Audio mode.
+    if(this.CONFIG.mode == 'audio'){
+      this.CONFIG.width  = 1;
+      this.CONFIG.height = 1;
+      this.playerCssOption += `#${this.CONFIG.player_id} { opacity: 0; }`;
     }
 
-    Element.prototype.hasClass = function(className){
-      let classArray = this.className.split(' ');
-      return classArray.indexOf(className) >= 0;
-    }
-    Element.prototype.addClass = function(className){
-      if(!this.hasClass(className)){
-        let classArray = this.className.split(' ');
-        classArray.push(className);
-        this.className = classArray.join(' ');
-      }
-      return this;
-    }
-    Element.prototype.removeClass = function(className){
-      let classArray = this.className.split(' ');
-      let index = classArray.indexOf(className);
-      if(index >= 0){
-        classArray.splice(index, 1);
-        this.className = classArray.join(' ');
-      }
-      return this;
-    }
-    Element.prototype.toggleClass = function(className){
-      this.hasClass(className) ? this.removeClass(className) : this.addClass(className);
-    }
-
-    // DebugMode
-    if(this.currentUrl.search(/localhost/) !== -1 || this.currentUrl.search(/192.168/) !== -1){
-      this.DebugMode();
-    } else { }
-
-    // Player
-    let playerElem            = document.getElementById(this.config.id);
-    let playerHtmlDom         = document.createElement('div');
-    let playerUiHtmlDom       = document.createElement('div');
-    let playerCssDom          = document.createElement('style');
-    playerHtmlDom.innerHTML   = this.playerHtml;
-    playerUiHtmlDom.innerHTML = this.playerUiHtml;
-    playerCssDom.innerHTML    = this.playerCss;
-    playerCssDom.id           = this.config.id+'_scripttag';
-    playerElem.appendChild(playerHtmlDom);
-    if(this.config.ui_default){
-      playerElem.appendChild(playerUiHtmlDom);
-    }
-    if(this.config.ui_default_css){
-      playerElem.appendChild(playerCssDom);
+    // Check Add Style.
+    if(this.CONFIG.add_style){
+      this.playerCssOption += this.CONFIG.add_style;
     }
 
     // SetPlayer
-    document.addEventListener('DOMContentLoaded', (event) => {
-      this.SetPlayer();
-    });
+    if(document.readyState == 'complete'){
+      this.BuildPlayer();
+    } else {
+      document.addEventListener('DOMContentLoaded', (event) => {
+        this.BuildPlayer();
+      });
+    }
 
   }
 
-  DebugMode(){
-    console.log(this);
-  }
+  BuildPlayer(){
+    // Player Ui.
+    let playerUiHtmlDom       = document.createElement('div');
+    playerUiHtmlDom.innerHTML = this.playerUiHtml;
+    if(this.CONFIG.ui_default){
+      this.$playerElem[0].insertBefore(playerUiHtmlDom, this.$playerElem[0].firstElementChild);
+    }
 
-  DebugModePlayer(){
-    console.log(
-      'player_id  -> '+this.config.player_id+'\n'+
-      'readyState -> '+this.Player.readyState()+'\n'
-    );
-  }
+    // Player Main.
+    let playerHtmlDom         = document.createElement('div');
+    let playerHtmlDomWrap = document.createElement('div');
+    playerHtmlDom.id  = this.CONFIG.player_id;
+    playerHtmlDomWrap.id  = this.CONFIG.player_id_wrap;
+    playerHtmlDom.innerHTML   = this.playerHtml;
+    playerHtmlDomWrap.appendChild(playerHtmlDom);
+    this.$playerElem[0].insertBefore(playerHtmlDomWrap, this.$playerElem[0].firstElementChild);
 
-  SetPlayer(){
-    let _that = this;
+    // Player Style.
+    let playerCssDom          = document.createElement('style');
+    playerCssDom.innerHTML    = this.playerCss;
+    playerCssDom.id           = this.CONFIG.id+'_scripttag';
+    if(this.CONFIG.ui_default_css){
+      playerCssDom.innerHTML = this.playerCss;
+      playerCssDom.innerHTML += this.playerCssOption;
+      if(!dom.selectDom(`#${this.CONFIG.id} #${this.CONFIG.player_style_id}`).length){
+        this.$playerElem[0].appendChild(playerCssDom);
+      }
+    } else {
+      playerCssDom.innerHTML = this.playerCssOption;
+      if(!dom.selectDom(`#${this.CONFIG.id} #${this.CONFIG.player_style_id}`).length){
+        this.$playerElem[0].appendChild(playerCssDom);
+      }
+    }
 
     // CacheElement
     this.CacheElement();
 
     // Set ScriptTag
     let s = document.createElement('script');
-    s.id  = _that.config.id+'_scripttag';
+    s.id  = `${this.CONFIG.id}_scripttag`;
     s.src = this.playerScriptCode;
     document.body.appendChild(s);
-    s.onload = SetPlayerEvent;
 
-    // SetPlayerEvent
-    function SetPlayerEvent(){
+    s.onload = this.PlayerInstance();
+  }
 
-      // Check Player try loaded.
-      let checkPlayerCount      = 0;
-      let checkPlayerLimitCount = 100;
-      let checkPlayer = setInterval(function(){
+  PlayerInstance(){
+    let _that = this;
 
-        // Check upper limit of action to try.
-        if(checkPlayerCount >= checkPlayerLimitCount){
-          clearInterval(checkPlayer);
-          console.log('ERROR: not movie loaded.');
-        } else {
-          checkPlayerCount++;
-        }
+    // Check Player try loaded.
+    let checkPlayerCount      = 0;
+    let checkPlayerLimitCount = 100;
+    let checkPlayer = setInterval(()=>{
 
-        if(videojs(_that.config.player_id).mediainfo){
+      // Check upper limit of action to try.
+      if(checkPlayerCount >= checkPlayerLimitCount){
+        clearInterval(checkPlayer);
+        console.log('ERROR: not movie loaded.');
+      } else {
+        checkPlayerCount++;
+      }
 
-          clearInterval(checkPlayer);
+      if(videojs(this.CONFIG.player_id).mediainfo){
 
-          // Set Instance
-          _that.Player = videojs(_that.config.player_id);
+        clearInterval(checkPlayer);
 
-          // Set PlayerJson
-          _that.PlayerJson = _that.Player.toJSON();
+        // Set Instance
+        this.Player = videojs(this.CONFIG.player_id);
 
-          // Set MediaInfo
-          _that.PlayerMediaInfo = _that.Player.mediainfo;
+        // Set PlayerJson
+        this.PlayerJson = this.Player.toJSON();
 
-          // DebugMode
-          if(_that.currentUrl.search(/localhost/) !== -1 || _that.currentUrl.search(/192.168/) !== -1){
-            _that.DebugModePlayer();
-          } else { }
+        // Set MediaInfo
+        this.PlayerMediaInfo = this.Player.mediainfo;
 
-          // ロードイベントが複数掛からないためのハック
-          if(_that.PlayerLoadFlg === true) return false;
+        // ロードイベントが複数掛からないためのハック
+        if(this.PlayerLoadFlg === true) return false;
 
-          // Set Load Flg
-          _that.PlayerLoadFlg = true;
+        // Set Load Flg
+        this.PlayerLoadFlg = true;
 
-          _that.SetVolume();
-          _that.SetMute();
-          _that.SetInfo();
-          _that.SetPoster();
+        this.SetVolume();
+        this.SetInfo();
+        this.SetPoster();
 
-          _that.EventPlay();
-          _that.EventPause();
-          _that.EventStop();
-          _that.EventMute();
-          _that.EventVolon();
-          _that.EventVoloff();
-          _that.EventBtnFull();
-          _that.EventSeekbarVol();
-          _that.EventSeekbarTime();
-          _that.EventChangeVideo();
+        this.EventPlay();
+        this.EventPause();
+        this.EventStop();
+        this.EventMute();
+        this.EventVolon();
+        this.EventVoloff();
+        this.EventBtnFull();
+        this.EventSeekbarVol();
+        this.EventSeekbarTime();
+        this.EventChangeVideo();
 
-          // For Timeupdate.
-          videojs(_that.config.player_id).on('timeupdate', function() {
-            _that.Update();
-          });
+        this.AddGlobalObject();
 
-          // For Volume change.
-          videojs(_that.config.player_id).on('volumechange', function() {
-            // 音量バーの更新(％)
-            _that.$uiSeekbarVolCover.style.width = (_that.Player.volume() * 100) + '%';
-          });
+        // For Timeupdate.
+        videojs(this.CONFIG.player_id).on('timeupdate', ()=>{
+          this.Update();
+        });
 
-          // For Ended movie paly.
-          videojs(_that.config.player_id).on('ended', function() {
-            _that.Stop();
-          });
+        // For Volume change.
+        videojs(this.CONFIG.player_id).on('volumechange', ()=>{
+          // 音量バーの更新(％)
+          dom.setStyle( this.$uiSeekbarVolCover, { width : (this.Player.volume() * 100) + '%' } );
+        });
 
-          // For Error
-          videojs(_that.config.player_id).on( 'error' , function(err) {
-            console.log(this.error().code);
-          });
+        // For Ended movie paly.
+        videojs(this.CONFIG.player_id).on('ended', ()=>{
+          this.Stop();
+        });
 
-        }
+        // For Error
+        videojs(this.CONFIG.player_id).on( 'error' , (err)=>{
+          console.log(this.error().code);
+        });
 
-      }, 100);
+      }
 
-    }
+    }, 100);
 
+  }
+
+  AddGlobalObject(){
     // windowオブジェクトへインスタンスしたPlayerを配列で管理(Player-IDを文字列で追加)
-    if(window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST === undefined){
-      window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST = [];
-      window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST.push({
-        id: _that.config.id,
-        player_id: _that.config.player_id
+    // -> window.PLAYER_MODULE_YOUTUBE_PLATLIST
+
+    if(window.PLAYER_MODULE_YOUTUBE_PLATLIST === undefined){
+      window.PLAYER_MODULE_YOUTUBE_PLATLIST = [];
+      window.PLAYER_MODULE_YOUTUBE_PLATLIST.push({
+        Player: this.Player,
+        videoid: this.CONFIG.videoid,
+        id: this.CONFIG.id,
+        player_id: this.CONFIG.player_id
       });
     }else{
-      window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST.push({
-        id: _that.config.id,
-        player_id: _that.config.player_id
+      window.PLAYER_MODULE_YOUTUBE_PLATLIST.push({
+        Player: this.Player,
+        videoid: this.CONFIG.videoid,
+        id: this.CONFIG.id,
+        player_id: this.CONFIG.player_id
       });
     }
   }
 
   CacheElement(){
-    this.$uiBtnPlay                  = document.querySelectorAll('#'+this.config.id+' .btn_play')                      ? document.querySelectorAll('#'+this.config.id+' .btn_play')                      : document.createElement('div');
-    this.$uiBtnStop                  = document.querySelectorAll('#'+this.config.id+' .btn_stop')                      ? document.querySelectorAll('#'+this.config.id+' .btn_stop')                      : document.createElement('div');
-    this.$uiBtnPause                 = document.querySelectorAll('#'+this.config.id+' .btn_pause')                     ? document.querySelectorAll('#'+this.config.id+' .btn_pause')                     : document.createElement('div');
-    this.$uiBtnMute                  = document.querySelector('#'+this.config.id+' .btn_mute')                         ? document.querySelector('#'+this.config.id+' .btn_mute')                         : document.createElement('div');
-    this.$uiBtnVolon                 = document.querySelector('#'+this.config.id+' .btn_volon')                        ? document.querySelector('#'+this.config.id+' .btn_volon')                        : document.createElement('div');
-    this.$uiBtnVoloff                = document.querySelector('#'+this.config.id+' .btn_voloff')                       ? document.querySelector('#'+this.config.id+' .btn_voloff')                       : document.createElement('div');
-    this.$uiDisplayTime              = document.querySelector('#'+this.config.id+' .display_time')                     ? document.querySelector('#'+this.config.id+' .display_time')                     : document.createElement('div');
-    this.$uiDisplayTimeDown          = document.querySelector('#'+this.config.id+' .display_time_down')                ? document.querySelector('#'+this.config.id+' .display_time_down')                : document.createElement('div');
-    this.$uiDisplayTimePar           = document.querySelector('#'+this.config.id+' .display_time_par')                 ? document.querySelector('#'+this.config.id+' .display_time_par')                 : document.createElement('div');
-    this.$uiDisplayPoster            = document.querySelector('#'+this.config.id+' .display_poster')                   ? document.querySelector('#'+this.config.id+' .display_poster')                   : document.createElement('div');
-    this.$uiDisplayName              = document.querySelector('#'+this.config.id+' .display_name')                     ? document.querySelector('#'+this.config.id+' .display_name')                     : document.createElement('div');
-    this.$uiBtnFull                  = document.querySelector('#'+this.config.id+' .btn_full')                         ? document.querySelector('#'+this.config.id+' .btn_full')                         : document.createElement('div');
-    this.$uiSeekbarVol               = document.querySelector('#'+this.config.id+' .seekbar_vol')                      ? document.querySelector('#'+this.config.id+' .seekbar_vol')                      : document.createElement('div');
-    this.$uiSeekbarVolBg             = document.querySelector('#'+this.config.id+' .seekbar_vol .seekbar_vol_bg')      ? document.querySelector('#'+this.config.id+' .seekbar_vol .seekbar_vol_bg')      : document.createElement('div');
-    this.$uiSeekbarVolCover          = document.querySelector('#'+this.config.id+' .seekbar_vol span')                 ? document.querySelector('#'+this.config.id+' .seekbar_vol span')                 : document.createElement('div');
-    this.$uiSeekbarTime              = document.querySelector('#'+this.config.id+' .seekbar_time')                     ? document.querySelector('#'+this.config.id+' .seekbar_time')                     : document.createElement('div');
-    this.$uiSeekbarTimeBg            = document.querySelector('#'+this.config.id+' .seekbar_time .seekbar_time_bg')    ? document.querySelector('#'+this.config.id+' .seekbar_time .seekbar_time_bg')    : document.createElement('div');
-    this.$uiSeekbarTimeCover         = document.querySelector('#'+this.config.id+' .seekbar_time span')                ? document.querySelector('#'+this.config.id+' .seekbar_time span')                : document.createElement('div');
-    this.$uiBtnChange                = document.querySelectorAll('#'+this.config.id+' .btn_change')                    ? document.querySelectorAll('#'+this.config.id+' .btn_change')                    : document.createElement('div');
-    this.$uiBtnChangeDisplayTime     = document.querySelector('#'+this.config.id+' .display_time')                     ? document.querySelector('#'+this.config.id+' .display_time')                     : document.createElement('div');
-    this.$uiBtnChangeDisplayTimeDown = document.querySelector('#'+this.config.id+' .display_time_down')                ? document.querySelector('#'+this.config.id+' .display_time_down')                : document.createElement('div');
+    this.$playerElem                 = dom.selectDom(`#${this.CONFIG.id}`);
+    this.$playerElemMain             = dom.selectDom(`#${this.CONFIG.id} #${this.CONFIG.player_id}`);
+    this.$playerElemMainWrap         = dom.selectDom(`#${this.CONFIG.id} #${this.CONFIG.player_id_wrap}`);
+
+    this.$uiBtnPlay                  = dom.selectDom('#'+this.CONFIG.id+' .btn_play');
+    this.$uiBtnStop                  = dom.selectDom('#'+this.CONFIG.id+' .btn_stop');
+    this.$uiBtnPause                 = dom.selectDom('#'+this.CONFIG.id+' .btn_pause');
+    this.$uiBtnMute                  = dom.selectDom('#'+this.CONFIG.id+' .btn_mute');
+    this.$uiBtnVolon                 = dom.selectDom('#'+this.CONFIG.id+' .btn_volon');
+    this.$uiBtnVoloff                = dom.selectDom('#'+this.CONFIG.id+' .btn_voloff');
+    this.$uiBtnFull                  = dom.selectDom('#'+this.CONFIG.id+' .btn_full');
+
+    this.$uiDisplayTime              = dom.selectDom('#'+this.CONFIG.id+' .display_time');
+    this.$uiDisplayTimeNow           = dom.selectDom('#'+this.CONFIG.id+' .display_time_now');
+    this.$uiDisplayTimeTotal         = dom.selectDom('#'+this.CONFIG.id+' .display_time_total');
+    this.$uiDisplayTimeDown          = dom.selectDom('#'+this.CONFIG.id+' .display_time_down');
+    this.$uiDisplayTimePar           = dom.selectDom('#'+this.CONFIG.id+' .display_time_par');
+    this.$uiDisplayPoster            = dom.selectDom('#'+this.CONFIG.id+' .display_poster');
+    this.$uiDisplayPosterBg          = dom.selectDom('#'+this.CONFIG.id+' .display_poster_background');
+    this.$uiDisplayName              = dom.selectDom('#'+this.CONFIG.id+' .display_name');
+
+    this.$uiSeekbarVol               = dom.selectDom('#'+this.CONFIG.id+' .seekbar_vol');
+    this.$uiSeekbarVolBg             = dom.selectDom('#'+this.CONFIG.id+' .seekbar_vol .seekbar_vol_bg');
+    this.$uiSeekbarVolCover          = dom.selectDom('#'+this.CONFIG.id+' .seekbar_vol span');
+    this.$uiSeekbarTime              = dom.selectDom('#'+this.CONFIG.id+' .seekbar_time');
+    this.$uiSeekbarTimeBg            = dom.selectDom('#'+this.CONFIG.id+' .seekbar_time .seekbar_time_bg');
+    this.$uiSeekbarTimeCover         = dom.selectDom('#'+this.CONFIG.id+' .seekbar_time span');
+
+    this.$uiBtnChange                = dom.selectDom('#'+this.CONFIG.id+' .btn_change');
+    this.$uiBtnChangeDisplayTime     = dom.selectDom('#'+this.CONFIG.id+' .display_time');
+    this.$uiBtnChangeDisplayTimeDown = dom.selectDom('#'+this.CONFIG.id+' .display_time_down');
+
+    this.$uiBtnDataId                = dom.selectDom('[data-PMY-id]');
   }
 
   EventPlay(){
-    let _that = this;
-    if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
-
-      for (var j = 0; j < this.$uiBtnPlay.length; ++j) {
-        this.$uiBtnPlay[j].addEventListener('click', (event) => {
-          if(this.Player.paused()){
-            // 停止状態の場合
-            _that.Play();
-          } else {
-            // 再生状態の場合
-            _that.Pause();
-          }
-        });
-      }
-
-    }
-  }
-
-  EventPause(){
-    let _that = this;
-    if(this.$uiBtnPause !== null && this.$uiBtnPause.length !== 0){
-      for (var j = 0; j < this.$uiBtnPause.length; ++j) {
-        this.$uiBtnPause[j].addEventListener('click', (event) => {
-          _that.Pause();
-        });
-      }
-    }
-  }
-
-  EventStop(){
-    let _that = this;
-    if(this.$uiBtnStop !== null && this.$uiBtnStop.length !== 0){
-      for (var j = 0; j < this.$uiBtnStop.length; ++j) {
-        this.$uiBtnStop[j].addEventListener('click', (event) => {
-          _that.Stop();
-        });
-      }
-    }
-
-    window.addEventListener('blur', () => {
-      if(this.config.stop_outfocus) this.Stop();
-    });
-  }
-
-  EventMute(){
-    if(this.$uiBtnMute !== null){
-      this.$uiBtnMute.addEventListener('click', (event) => {
-        if(this.Player.muted()){
-          this.Player.muted(false);
-          this.Player.volume(this.config.volume);
-          this.$uiBtnMute.removeClass('active');
-        }else{
-          this.Player.muted(true);
-          this.Player.volume(0);
-          this.$uiBtnMute.addClass('active');
-          this.$uiSeekbarVolCover.style.width = 0 + '%';
+    if(this.$uiBtnPlay.length){
+      dom.addEvent(this.$uiBtnPlay, 'click' , (event) => {
+        if(this.Player.paused()){
+          this.Play();
+        } else {
+          this.Pause();
         }
       });
     }
   }
 
+  EventPause(){
+    if(this.$uiBtnPause.length){
+      dom.addEvent(this.$uiBtnPause, 'click' , (event) => {
+        this.Pause();
+      });
+    }
+  }
+
+  EventStop(){
+    if(this.$uiBtnStop.length){
+      dom.addEvent(this.$uiBtnStop, 'click' , (event) => {
+        this.Stop();
+      });
+    }
+
+    dom.addEvent(window, 'blur' , (event) => {
+      if(this.CONFIG.stop_outfocus) this.Stop();
+    });
+  }
+
+  EventMute(){
+    if(this.$uiBtnMute.length){
+      dom.addEvent(this.$uiBtnMute, 'click' , (event) => {
+        this.Mute();
+      });
+    }
+  }
+
   EventVolon(){
-    if(this.$uiBtnVolon !== null){
-      this.$uiBtnVolon.addEventListener('click', (event) => {
-        this.Player.muted(false);
-        this.Player.volume(this.config.volume);
-        this.$uiBtnVolon.removeClass('active');
+    if(this.$uiBtnVolon.length){
+      dom.addEvent(this.$uiBtnVolon, 'click' , (event) => {
+        this.SetVolume(this.CONFIG.volume);
+        dom.removeClass(this.$uiBtnVolon, 'active');
       });
     }
   }
 
   EventVoloff(){
-    if(this.$uiBtnVoloff !== null){
-      this.$uiBtnVoloff.addEventListener('click', (event) => {
-        this.Player.muted(true);
-        this.Player.volume(0);
-        this.$uiBtnVoloff.addClass('active');
-        this.$uiSeekbarVolCover.style.width = 0 + '%';
+    if(this.$uiBtnVoloff.length){
+      dom.addEvent(this.$uiBtnVoloff, 'click' , (event) => {
+        this.SetVolume(0);
+        dom.addClass(this.$uiBtnVoloff, 'active');
       });
     }
   }
 
-  EventBtnFull(){
-    if(this.$uiBtnFull !== null){
-      this.$uiBtnFull.addEventListener('click', (event) => {
-        this.Player.requestFullscreen();
+  /**
+   * When dragging a seek bar(volume).
+   */
+  EventSeekbarVol(){
+    if(this.$uiSeekbarVol.length){
+
+      let _flag = false;
+      let _targetWidth = 0;
+
+      dom.setStyle( this.$uiSeekbarVolCover, { width : 100 + '%' } );
+
+      dom.addEvent(this.$uiSeekbarVol, 'mousedown' , (event) => {
+        _flag = true;
+        let _currentWidth  = event.currentTarget.clientWidth;
+        let _clickPosition = event.currentTarget.getBoundingClientRect().left;
+        _targetWidth       = (event.pageX - _clickPosition) / _currentWidth;
+        this.SetVolume(_targetWidth);
+      });
+
+      dom.addEvent(this.$uiSeekbarVol, 'mouseleave' , (event) => {
+        _flag = false;
+      });
+      dom.addEvent(this.$uiSeekbarVol, 'mouseup' , (event) => {
+        _flag = false;
+      });
+
+      dom.addEvent(this.$uiSeekbarVol, 'mousemove' , (event) => {
+        if(_flag === true){
+          let _currentWidth  = event.currentTarget.clientWidth;
+          let _clickPosition = event.currentTarget.getBoundingClientRect().left;
+          _targetWidth       = (event.pageX - _clickPosition) / _currentWidth;
+          if(this.Player.muted()){
+            this.CONFIG.muted = false;
+            this.Player.muted(false);
+          }
+          this.SetVolume(_targetWidth);
+        }
       });
     }
   }
@@ -401,43 +409,48 @@ export class PLAYER_MODULE_BRIGHTCOVE {
    * When dragging a seek bar(time).
    */
   EventSeekbarTime(){
-    let _that = this;
 
-    if(this.$uiSeekbarTime !== null){
-      let _flag = false;
+    if(this.$uiSeekbarTime.length){
 
-      this.$uiSeekbarTime.addEventListener('mousedown', (event) => {
+      let _targetTime = 0;
 
-        _flag = true;
-
-        _that.Pause();
-
-        let _currentWidth    = this.$uiSeekbarTime.clientWidth;
-        let _clickPosition  = this.$uiSeekbarTime.getBoundingClientRect().left;
+      dom.addEvent(this.$uiSeekbarTime, 'mousedown', (event) => {
+        this.PlayerChangeSeekingFlg = true;
+        let _currentWidth    = event.currentTarget.clientWidth;
+        let _clickPosition  = event.currentTarget.getBoundingClientRect().left;
         let _targetWidth = (event.pageX - _clickPosition) / _currentWidth;
-        let _targetTime = this.Player.duration() * _targetWidth;
-        this.$uiSeekbarTimeCover.style.width = (_targetWidth * 100) + '%';
+        _targetTime = this.Player.duration() * _targetWidth;
+        dom.setStyle( this.$uiSeekbarTimeCover, { width : (_targetWidth * 100) + '%' } );
         this.Player.currentTime(_targetTime);
-
       });
 
-      this.$uiSeekbarTime.addEventListener('mouseleave', (event) => {
-        if(_flag === true) _that.Play();
-        _flag = false;
+      dom.addEvent(this.$uiSeekbarTime, 'mouseleave', (event) => {
+        if(this.PlayerChangeSeekingFlg){
+          this.Play();
+          setTimeout(()=>{
+            this.Play();
+            this.PlayerChangeSeekingFlg = false;
+          }, 100);
+        }
       });
 
-      this.$uiSeekbarTime.addEventListener('mouseup', (event) => {
-        if(_flag === true) _that.Play();
-        _flag = false;
+      dom.addEvent(this.$uiSeekbarTime, 'mouseup', (event) => {
+        if(this.PlayerChangeSeekingFlg){
+          this.Play();
+          setTimeout(()=>{
+            this.Play();
+            this.PlayerChangeSeekingFlg = false;
+          }, 100);
+        }
       });
 
-      this.$uiSeekbarTime.addEventListener('mousemove', (event) => {
-        if(_flag === true){
-          let _currentWidth    = this.$uiSeekbarTime.clientWidth;
-          let _clickPosition  = this.$uiSeekbarTime.getBoundingClientRect().left;
+      dom.addEvent(this.$uiSeekbarTime, 'mousemove', (event) => {
+        if(this.PlayerChangeSeekingFlg){
+          let _currentWidth    = event.currentTarget.clientWidth;
+          let _clickPosition  = event.currentTarget.getBoundingClientRect().left;
           let _targetWidth = (event.pageX - _clickPosition) / _currentWidth;
           let _targetTime = this.Player.duration() * _targetWidth;
-          this.$uiSeekbarTimeCover.style.width = (_targetWidth * 100) + '%';
+          dom.setStyle( this.$uiSeekbarTimeCover, { width : (_targetWidth * 100) + '%' } );
           this.Player.currentTime(_targetTime);
         }
       });
@@ -445,199 +458,137 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     }
   }
 
-  /**
-   * When dragging a seek bar(volume).
-   */
-  EventSeekbarVol(){
-    if(this.$uiSeekbarVol !== null){
-      let _flag = false;
-      this.$uiSeekbarVolCover.style.width = 100 + '%';
-      this.$uiSeekbarVol.addEventListener('mousedown', (event) => {
-        _flag = true;
-        let _currentWidth    = this.$uiSeekbarVol.clientWidth;
-        let _clickPosition  = this.$uiSeekbarVol.getBoundingClientRect().left;
-        let _targetWidth = (event.pageX - _clickPosition) / _currentWidth;
-        this.Player.volume(_targetWidth);
-        this.config.volume = _targetWidth;
+  EventChangeVideo(){
+    if(this.$uiBtnChange.length){
+      dom.addEvent(this.$uiBtnChange, 'click' , (event) => {
+        // Get video-id.
+        // -> <data-PMY-id="">
+        let id = event.currentTarget.dataset.pmyId;
+        this.Change(id);
       });
-      this.$uiSeekbarVol.addEventListener('mouseleave', (event) => {
-        _flag = false;
+    }
+  }
+
+  EventBtnFull(){
+    if(this.$uiBtnFull.length){
+      dom.addEvent(this.$uiBtnFull, 'click' , (event) => {
+        this.Fullscreen();
       });
-      this.$uiSeekbarVol.addEventListener('mouseup', (event) => {
-        _flag = false;
-      });
-      this.$uiSeekbarVol.addEventListener('mousemove', (event) => {
-        if(_flag === true){
-          let _currentWidth    = this.$uiSeekbarVol.clientWidth;
-          let _clickPosition  = this.$uiSeekbarVol.getBoundingClientRect().left;
-          let _targetWidth = (event.pageX - _clickPosition) / _currentWidth;
-          this.Player.volume(_targetWidth);
-          this.config.volume = _targetWidth;
+    }
+  }
+
+  ClassOn(){
+    // Add className Play-Button.
+    if(this.$uiBtnPlay.length) dom.addClass(this.$uiBtnPlay, 'active');
+
+    // Add className Pause-Button.
+    if(this.$uiBtnPause.length) dom.addClass(this.$uiBtnPause, 'active');
+
+    // Add className MediaChange-Button.
+    if(this.$uiBtnDataId.length){
+      this.$uiBtnDataId.map((item,index)=>{
+        if(this.CONFIG.videoid == item.getAttribute('data-PMY-id')){
+          dom.addClass(item, 'active');
         }
       });
     }
   }
 
-  EventChangeVideo(){
-    let _that = this;
-    if(this.$uiBtnChange !== null && this.$uiBtnChange.length !== 0){
-      for (var j = 0; j < this.$uiBtnChange.length; ++j) {
-        this.$uiBtnChange[j].addEventListener('click', (event) => {
-          // 動画IDを取得
-          // -> <data-PMB-id="">
-          let id = event.currentTarget.dataset.pmbId;
-          _that.Change(id);
-        });
-      }
-    }
+  ClassOff(){
+    // Add className Play-Button.
+    if(this.$uiBtnPlay.length) dom.removeClass(this.$uiBtnPlay, 'active');
+
+    // Add className Pause-Button.
+    if(this.$uiBtnPause.length) dom.removeClass(this.$uiBtnPause, 'active');
+
+    // Remove className MediaChange-Button.
+    if(this.$uiBtnDataId.length) dom.removeClass(this.$uiBtnDataId, 'active');
   }
 
   Update(){
 
+    // シーク中は値を更新しない
+    if(this.PlayerChangeSeekingFlg) return
+
+    // メディアを変更中を判定
     if(this.PlayerChangeLoadFlg){
       // 再生時間の更新(分秒)
-      this.$uiDisplayTime.innerHTML          = this.GetTime()+'/'+this.GetTimeMax();
-      this.$uiBtnChangeDisplayTime.innerHTML = this.GetTime()+'/'+this.GetTimeMax();
-
-      // 再生時間の更新(分秒)
-      this.$uiDisplayTimeDown.innerHTML          = this.GetTimeDown();
-      this.$uiBtnChangeDisplayTimeDown.innerHTML = this.GetTimeDown();
+      if(this.$uiDisplayTime.length) dom.setHtml( this.$uiDisplayTime, this.GetTime()+'/'+this.GetTimeMax() );
+      if(this.$uiDisplayTimeNow.length) dom.setHtml( this.$uiDisplayTimeNow, this.GetTime() );
+      if(this.$uiDisplayTimeTotal.length) dom.setHtml( this.$uiDisplayTimeTotal, this.GetTimeMax() );
+      if(this.$uiDisplayTimeDown.length) dom.setHtml( this.$uiDisplayTimeDown, this.GetTimeDown() );
+      if(this.$uiBtnChangeDisplayTime.length) dom.setHtml( this.$uiBtnChangeDisplayTime, this.GetTime()+'/'+this.GetTimeMax() );
+      if(this.$uiBtnChangeDisplayTimeDown.length) dom.setHtml( this.$uiBtnChangeDisplayTimeDown, this.GetTimeDown() );
 
       // 再生時間の更新(％)
-      this.$uiDisplayTimePar.innerHTML = this.GetTimePar();
+      if(this.$uiDisplayTimePar.length) dom.setHtml( this.$uiDisplayTimePar, this.GetTimePar() );
 
       // シークバーの更新(％)
-      this.$uiSeekbarTimeCover.style.width       = this.GetTimePar();
+      if(this.$uiSeekbarTimeCover.length) this.$uiSeekbarTimeCover[0].style.width = this.GetTimePar();
     } else {
       // 再生時間の更新(分秒)
-      this.$uiDisplayTime.innerHTML          = '00:00';
-      this.$uiBtnChangeDisplayTime.innerHTML = '00:00';
-
-      // 再生時間の更新(分秒)
-      this.$uiDisplayTimeDown.innerHTML          = '00:00';
-      this.$uiBtnChangeDisplayTimeDown.innerHTML = '00:00';
+      if(this.$uiDisplayTime.length) dom.setHtml( this.$uiDisplayTime, '00:00' );
+      if(this.$uiDisplayTimeNow.length) dom.setHtml( this.$uiDisplayTimeNow, '00:00' );
+      if(this.$uiDisplayTimeTotal.length) dom.setHtml( this.$uiDisplayTimeTotal, '00:00' );
+      if(this.$uiDisplayTimeDown.length) dom.setHtml( this.$uiDisplayTimeDown, '00:00' );
+      if(this.$uiBtnChangeDisplayTime.length) dom.setHtml( this.$uiBtnChangeDisplayTime, '00:00' );
+      if(this.$uiBtnChangeDisplayTimeDown.length) dom.setHtml( this.$uiBtnChangeDisplayTimeDown, '00:00' );
 
       // 再生時間の更新(％)
-      this.$uiDisplayTimePar.innerHTML = '0%';
+      if(this.$uiDisplayTimePar.length) dom.setHtml( this.$uiDisplayTimePar, '0%' );
 
       // シークバーの更新(％)
-      this.$uiSeekbarTimeCover.style.width       = '0%';
+      if(this.$uiSeekbarTimeCover.length) this.$uiSeekbarTimeCover[0].style.width = '0%';
     }
 
   }
 
   Play(callback){
-    let _that = this;
-    if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
+    if(this.$uiBtnPlay.length){
       if(this.Player.paused()){
         // When the player is stopped.
-
         this.Player.play();
+        this.ClassOn();
 
-        // Add className Play-Button.
-        if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
-          for (var i = 0; i < this.$uiBtnPlay.length; ++i) {
-            this.$uiBtnPlay[i].addClass('active');
-          }
-        }
-
-        // Add className Pause-Button.
-        if(this.$uiBtnPause !== null && this.$uiBtnPause.length !== 0){
-          for (var i = 0; i < this.$uiBtnPause.length; ++i) {
-            this.$uiBtnPause[i].addClass('active');
-          }
-        }
-
-        // Add className MediaChange-Button.
-        let dataIdElemAll = Array.prototype.slice.call( document.querySelectorAll('[data-PMB-id]') );
-        if(dataIdElemAll){
-          dataIdElemAll.forEach(function(elem,i){
-            if(_that.config.videoid == elem.getAttribute('data-PMB-id')){
-              elem.addClass('active');
-            }
-          });
-        }
-
+        if(!this.on.Play && callback) this.on.Play = callback;
+        if(this.on.Play && typeof(this.on.Play) === 'function') this.on.Play(this.Player, this.CONFIG);
       } else {
         // When the player is playing.
-
-        _that.Pause();
-
-        if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
-          for (var i = 0; i < this.$uiBtnPlay.length; ++i) {
-            this.$uiBtnPlay[i].removeClass('active');
-          }
-        }
-        if(this.$uiBtnPause !== null && this.$uiBtnPause.length !== 0){
-          for (var i = 0; i < this.$uiBtnPause.length; ++i) {
-            this.$uiBtnPause[i].removeClass('active');
-          }
-        }
+        this.Pause();
+        this.ClassOff();
       }
     }
-
-    if(!this.on.Play && callback) this.on.Play = callback;
-    if(this.on.Play && typeof(this.on.Play) === 'function') this.on.Play();
   }
 
   Stop(callback){
     this.Player.pause();
     this.Player.currentTime(0);
-
-    // Remove className Play-Button.
-    if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
-      for (var i = 0; i < this.$uiBtnPlay.length; ++i) {
-        this.$uiBtnPlay[i].removeClass('active');
-      }
-    }
-
-    // Remove className Pause-Button.
-    if(this.$uiBtnPause !== null && this.$uiBtnPause.length !== 0){
-      for (var i = 0; i < this.$uiBtnPause.length; ++i) {
-        this.$uiBtnPause[i].removeClass('active');
-      }
-    }
-
-    // Remove className MediaChange-Button.
-    let clickElemAll = Array.prototype.slice.call( document.querySelectorAll('[data-PMB-id]') );
-    if(clickElemAll){
-      clickElemAll.forEach(function(elem,i){
-        elem.removeClass('active');
-      });
-    }
+    this.ClassOff();
 
     if(!this.on.Stop && callback) this.on.Stop = callback;
-    if(this.on.Stop && typeof(this.on.Stop) === 'function') this.on.Stop();
+    if(this.on.Stop && typeof(this.on.Stop) === 'function') this.on.Stop(this.Player, this.CONFIG);
   }
 
   Pause(callback){
-
     this.Player.pause();
-
-    // Remove className Play-Button.
-    if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
-      for (var i = 0; i < this.$uiBtnPlay.length; ++i) {
-        this.$uiBtnPlay[i].removeClass('active');
-      }
-    }
-
-    // Remove className Pause-Button.
-    if(this.$uiBtnPause !== null && this.$uiBtnPause.length !== 0){
-      for (var i = 0; i < this.$uiBtnPause.length; ++i) {
-        this.$uiBtnPause[i].removeClass('active');
-      }
-    }
-
-    // Remove className MediaChange-Button.
-    let clickElemAll = Array.prototype.slice.call( document.querySelectorAll('[data-PMB-id]') );
-    if(clickElemAll){
-      clickElemAll.forEach(function(elem,i){
-        elem.removeClass('active');
-      });
-    }
+    this.ClassOff();
 
     if(!this.on.Pause && callback) this.on.Pause = callback;
-    if(this.on.Pause && typeof(this.on.Pause) === 'function') this.on.Pause();
+    if(this.on.Pause && typeof(this.on.Pause) === 'function') this.on.Pause(this.Player, this.CONFIG);
+  }
+
+  Mute(){
+    if(this.Player.muted()){
+      this.CONFIG.muted = false;
+      this.Player.muted(false);
+      this.SetVolume(this.CONFIG.volume);
+      dom.removeClass(this.$uiBtnMute, 'active');
+    }else{
+      this.CONFIG.muted = true;
+      this.Player.muted(true);
+      this.Player.volume(0);
+      dom.addClass(this.$uiBtnMute, 'active');
+    }
   }
 
   /**
@@ -652,20 +603,13 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     // 動画IDが取得出来ない場合は処理を中止
     if(id == '' || id == null || id == undefined) return
 
-    if(document.querySelector('[data-PMB-id="'+id+'"]')){
-      if(document.querySelector('[data-PMB-id="'+id+'"]').hasClass('active')){
-        _that.Pause();
-        return
-      }
-
-      this.$uiBtnChangeDisplayTime     = document.querySelector('[data-PMB-id="'+id+'"]'+' .display_time') ? document.querySelector('[data-PMB-id="'+id+'"]'+' .display_time') : document.createElement('div');
-      this.$uiBtnChangeDisplayTimeDown = document.querySelector('[data-PMB-id="'+id+'"]'+' .display_time_down') ? document.querySelector('[data-PMB-id="'+id+'"]'+' .display_time_down') : document.createElement('div');
-    }
-
-    // 同じメディアを選択しているかを判定
-    if(this.config.videoid !== id){
+    // Check if it is the same media.
+    if(this.CONFIG.videoid !== id){
 
       this.PlayerChangeLoadFlg = false;
+
+      // Overwrite video id.
+      this.CONFIG.videoid = id;
 
       // clickイベントの伝播内に一度再生位置をリセットする
       // IE、Edgeでは、バグがあるため除外
@@ -683,45 +627,24 @@ export class PLAYER_MODULE_BRIGHTCOVE {
         // プレーヤーの情報を再ロード
         this.Player.catalog.load(video);
 
+        // Set MediaInfo
+        this.PlayerMediaInfo = this.Player.mediainfo;
+        this.SetInfo();
+        this.SetPoster();
+
         // 変更後に再生
         setTimeout( () => {
           this.Player.play();
           this.Player.muted(false);
+          this.ClassOn();
         }, 100);
 
-        // Set MediaInfo
-        this.PlayerMediaInfo = this.Player.mediainfo;
-        // Overwrite video id.
-        this.config.videoid = id;
-        // Set Information.
-        this.SetInfo();
-        this.SetPoster();
+        setTimeout( () => {
+          this.PlayerChangeLoadFlg = true;
 
-        // Playボタンにhtml-classを付与
-        if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
-          for (var i = 0; i < this.$uiBtnPlay.length; ++i) {
-            this.$uiBtnPlay[i].addClass('active');
-          }
-        }
-
-        // PAUSEボタンにhtml-classを付与
-        if(this.$uiBtnPause !== null && this.$uiBtnPause.length !== 0){
-          for (var i = 0; i < this.$uiBtnPause.length; ++i) {
-            this.$uiBtnPause[i].addClass('active');
-          }
-        }
-
-        // メディア変更ボタンにhtml-classを付与
-        let clickElemAll = Array.prototype.slice.call( document.querySelectorAll('[data-PMB-id]') );
-        let clickElem = document.querySelector('[data-PMB-id="'+id+'"]');
-        if(clickElemAll){
-          clickElemAll.forEach(function(elem,i){
-            elem.removeClass('active');
-          });
-        }
-        if(clickElem){
-          clickElem.addClass('active');
-        }
+          if(!this.on.Change && callback) this.on.Change = callback;
+          if(this.on.Change && typeof(this.on.Change) === 'function') this.on.Change(this.Player, this.CONFIG);
+        }, 300);
 
       });
 
@@ -731,39 +654,9 @@ export class PLAYER_MODULE_BRIGHTCOVE {
         this.Player.off('loadeddata');
       });
 
-      if(!this.on.Change && callback) this.on.Change = callback;
-      if(this.on.Change && typeof(this.on.Change) === 'function') this.on.Change();
 
     } else {
-
-      this.Player.muted(false);
-      this.Player.play();
-
-      // Playボタンにhtml-classを付与
-      if(this.$uiBtnPlay !== null && this.$uiBtnPlay.length !== 0){
-        for (var i = 0; i < this.$uiBtnPlay.length; ++i) {
-          this.$uiBtnPlay[i].addClass('active');
-        }
-      }
-
-      // PAUSEボタンにhtml-classを付与
-      if(this.$uiBtnPause !== null && this.$uiBtnPause.length !== 0){
-        for (var i = 0; i < this.$uiBtnPause.length; ++i) {
-          this.$uiBtnPause[i].addClass('active');
-        }
-      }
-
-      // メディア変更ボタンにhtml-classを付与
-      let clickElemAll = Array.prototype.slice.call( document.querySelectorAll('[data-PMB-id]') );
-      let clickElem = document.querySelector('[data-PMB-id="'+id+'"]');
-      if(clickElemAll){
-        clickElemAll.forEach(function(elem,i){
-          elem.removeClass('active');
-        });
-      }
-      if(clickElem){
-        clickElem.addClass('active');
-      }
+      this.Play();
 
       if(!this.on.Change && callback) this.on.Change = callback;
       if(this.on.Change && typeof(this.on.Change) === 'function') this.on.Change();
@@ -772,39 +665,23 @@ export class PLAYER_MODULE_BRIGHTCOVE {
 
   }
 
+  PauseAll(callback){
+    window.PLAYER_MODULE_YOUTUBE_PLATLIST.map((item,index)=>{
+      item.Player.pause();
+    });
+
+    if(!this.on.PauseAll && callback) this.on.PauseAll = callback;
+    if(this.on.PauseAll && typeof(this.on.PauseAll) === 'function') this.on.PauseAll(this.Player, this.CONFIG);
+  }
+
   StopAll(callback){
-    for (var _i in window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST) {
-      videojs(window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST[_i].player_id).pause();
-      videojs(window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST[_i].player_id).currentTime(0);
-      this.$uiBtnPlayAll  = document.querySelectorAll('#'+window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST[_i].id+' .btn_play')  ? document.querySelectorAll('#'+window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST[_i].id+' .btn_play')  : document.createElement('div');
-      this.$uiBtnStopAll  = document.querySelectorAll('#'+window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST[_i].id+' .btn_stop')  ? document.querySelectorAll('#'+window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST[_i].id+' .btn_stop')  : document.createElement('div');
-      this.$uiBtnPauseAll = document.querySelectorAll('#'+window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST[_i].id+' .btn_pause') ? document.querySelectorAll('#'+window.PLAYER_MODULE_BRIGHTCOVE_PLATLIST[_i].id+' .btn_pause') : document.createElement('div');
-      if(this.$uiBtnPlayAll !== null && this.$uiBtnPlayAll.length !== 0){
-        for (var i = 0; i < this.$uiBtnPlayAll.length; ++i) {
-          this.$uiBtnPlayAll[i].removeClass('active');
-        }
-      }
-      if(this.$uiBtnStopAll !== null && this.$uiBtnStopAll.length !== 0){
-        for (var i = 0; i < this.$uiBtnStopAll.length; ++i) {
-          this.$uiBtnStopAll[i].removeClass('active');
-        }
-      }
-      if(this.$uiBtnPauseAll !== null && this.$uiBtnPauseAll.length !== 0){
-        for (var i = 0; i < this.$uiBtnPauseAll.length; ++i) {
-          this.$uiBtnPauseAll[i].removeClass('active');
-        }
-      }
-      // メディア変更ボタンのhtml-classを削除
-      let clickElemAll = Array.prototype.slice.call( document.querySelectorAll('[data-PMB-id]') );
-      if(clickElemAll){
-        clickElemAll.forEach(function(elem,i){
-          elem.removeClass('active');
-        });
-      }
-    }
+    window.PLAYER_MODULE_YOUTUBE_PLATLIST.map((item,index)=>{
+      item.Player.pause();
+      item.Player.currentTime(0);
+    });
 
     if(!this.on.StopAll && callback) this.on.StopAll = callback;
-    if(this.on.StopAll && typeof(this.on.StopAll) === 'function') this.on.StopAll();
+    if(this.on.StopAll && typeof(this.on.StopAll) === 'function') this.on.StopAll(this.Player, this.CONFIG);
   }
 
   GetTime(){
@@ -853,65 +730,33 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     else return '0%';
   }
 
-  GetInfo(){
-    return this.PlayerMediaInfo;
+  SetVolume(vol){
+    this.CONFIG.volume = vol ? vol : this.CONFIG.volume;
+    this.Player.volume(this.CONFIG.volume);
   }
 
-  GetUrlPoster(){
-    return this.PlayerMediaInfo.poster;
-  }
+  SetPoster(){
+    if(this.CONFIG.poster != false) this.CONFIG.poster = this.Player.poster();
 
-  GetName(){
-    return this.PlayerMediaInfo.name;
-  }
-
-  GetDescription(){
-    return this.PlayerMediaInfo.description;
-  }
-
-  GetTags(){
-    return this.PlayerMediaInfo.tags;
-  }
-
-  SetMute(){
-    if(this.Player.muted()){
-      this.Player.volume(0);
-      this.$uiBtnMute.addClass('active');
-    }else{
-      this.Player.volume(this.config.volume);
-      this.$uiBtnMute.removeClass('active');
+    if(this.$uiDisplayPoster.length){
+      if(this.CONFIG.mode == 'audio'){
+        dom.setHtml(this.$uiDisplayPoster, '');
+      } else {
+        dom.setHtml(this.$uiDisplayPoster, `<img src="${this.CONFIG.poster}" alt="">`);
+      }
     }
-  }
 
-  SetVolume(){
-    if(this.config.volume){
-      this.Player.volume(this.config.volume);
+    if(this.$uiDisplayPosterBg.length && this.CONFIG.mode != 'audio'){
+      dom.setStyle(this.$uiDisplayPosterBg, { backgroundImage : `url(${this.CONFIG.poster})` });
     }
   }
 
   SetInfo(){
-    if(this.$uiDisplayName !== null && this.$uiDisplayName.length !== 0){
-      this.$uiDisplayName.innerHTML = this.PlayerMediaInfo.name;
-    }
+    if(this.$uiDisplayName.length) dom.setHtml(this.$uiDisplayName, this.PlayerMediaInfo.name);
   }
 
-  SetPoster(){
-    if(this.config.mode == 'audio'){
-      this.$uiDisplayPoster.innerHTML = '';
-    } else if(this.config.poster){
-      this.Player.poster(this.config.poster);
-      if(this.$uiDisplayPoster !== null && this.$uiDisplayPoster.length !== 0){
-        this.$uiDisplayPoster.innerHTML = '<img src="' + this.config.poster + '" alt="">';
-      }
-    } else {
-      if(this.$uiDisplayPoster !== null && this.$uiDisplayPoster.length !== 0){
-        this.$uiDisplayPoster.innerHTML = '<img src="' + this.Player.poster() + '" alt="">';
-      }
-    }
-  }
-
-  SetUrlPoster(url){
-    this.Player.poster(url);
+  SetPoster(path){
+    this.Player.poster(path);
   }
 
   Destroy(){
