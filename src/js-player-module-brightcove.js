@@ -1,7 +1,7 @@
 /*!
  * JS PLAYER MODULE BRIGHTCOVE (JavaScript Library)
  *   js-player-module-brightcove.js
- * Version 2.2.0
+ * Version 2.3.0
  * Repository https://github.com/yama-dev/js-player-module-brightcove
  * Copyright yama-dev
  * Licensed under the MIT license.
@@ -14,12 +14,12 @@ import { viewPlayerScriptcode, viewPlayerMain, viewPlayerUi, viewPlayerStyle } f
 import JS_DOM from '@yama-dev/js-dom';
 const dom = new JS_DOM();
 
-export class PLAYER_MODULE_BRIGHTCOVE {
+export default class PLAYER_MODULE_BRIGHTCOVE {
 
   constructor(options = {}){
 
     // Set Version.
-    this.VERSION = '2.2.0';
+    this.VERSION = '2.3.0';
 
     // Set Flgs.
     this.PlayerLoadFlg = false;
