@@ -14,7 +14,7 @@ import { viewPlayerScriptcode, viewPlayerMain, viewPlayerUi, viewPlayerStyle } f
 import JS_DOM from '@yama-dev/js-dom';
 const dom = new JS_DOM();
 
-export class PLAYER_MODULE_BRIGHTCOVE {
+export default class PLAYER_MODULE_BRIGHTCOVE {
 
   constructor(options = {}){
 

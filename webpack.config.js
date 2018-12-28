@@ -8,6 +8,8 @@ const config = {
   output: {
     path: `${__dirname}/dist`,
     filename: 'js-player-module-brightcove.js',
+    library: 'PLAYER_MODULE_BRIGHTCOVE',
+    libraryExport: 'default',
     libraryTarget: 'umd'
   },
   module: {
