@@ -1,7 +1,7 @@
 /*!
  * JS PLAYER MODULE BRIGHTCOVE (JavaScript Library)
  *   js-player-module-brightcove.js
- * Version 2.3.0
+ * Version 2.4.0
  * Repository https://github.com/yama-dev/js-player-module-brightcove
  * Copyright yama-dev
  * Licensed under the MIT license.
@@ -19,10 +19,9 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
   constructor(options = {}){
 
     // Set Version.
-    this.VERSION = '2.3.0';
+    this.VERSION = '2.4.0';
 
     // Set Flgs.
-    this.PlayerLoadFlg = false;
     this.PlayerChangeLoadFlg = true;
 
     if(!options.id || !options.videoid){
@@ -35,10 +34,10 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
       mode           : options.mode||'movie',
       id             : options.id||'pmb',
 
-      player_id        : `${options.id}_player`||'pmy_player',
-      player_id_wrap   : `${options.id}_player_wrap`||'pmy_player_wrap',
-      player_ui_id     : `${options.id}_ui`||'pmy_ui',
-      player_style_id  : `${options.id}_style`||'pmy_style',
+      player_id        : `${options.id}_player`||'pmb_player',
+      player_id_wrap   : `${options.id}_player_wrap`||'pmb_player_wrap',
+      player_ui_id     : `${options.id}_ui`||'pmb_ui',
+      player_style_id  : `${options.id}_style`||'pmb_style',
 
       videoid        : options.videoid||'',
       account        : options.account||'',
@@ -71,7 +70,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
       Play    : options.on.Play||'',
       Pause   : options.on.Pause||'',
       Stop    : options.on.Stop||'',
-      PauseAll : options.on.PauseAll||'',
+      PauseAll: options.on.PauseAll||'',
       StopAll : options.on.StopAll||'',
       Change  : options.on.Change||''
     }
@@ -92,6 +91,12 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
     this.playerCssOption  = '';
     this.playerScriptCode = viewPlayerScriptcode;
 
+    // Check Audio mode.
+    if(this.CONFIG.mode == 'audio'){
+      this.CONFIG.width  = 1;
+      this.CONFIG.height = 1;
+    }
+
     // Set Options
     // -> playerHtml
     // -> playerCss
@@ -102,8 +107,6 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
 
     // Check Audio mode.
     if(this.CONFIG.mode == 'audio'){
-      this.CONFIG.width  = 1;
-      this.CONFIG.height = 1;
       this.playerCssOption += `#${this.CONFIG.player_id} { opacity: 0; }`;
     }
 
@@ -120,6 +123,14 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
         this.BuildPlayer();
       });
     }
+
+    window.addEventListener('error', function(e) {
+      var message      = e.message;
+      var fileName     = e.filename;
+      var lineNumber   = e.lineno;
+      var columnNumber = e.colnoa;
+      console.log('ERROR');
+    });
 
   }
 
@@ -147,12 +158,12 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
     if(this.CONFIG.ui_default_css){
       playerCssDom.innerHTML = this.playerCss;
       playerCssDom.innerHTML += this.playerCssOption;
-      if(!dom.selectDom(`#${this.CONFIG.id} #${this.CONFIG.player_style_id}`).length){
+      if(!dom.selectDom(`#${this.CONFIG.id} #${this.CONFIG.player_style_id}`)){
         this.$playerElem[0].appendChild(playerCssDom);
       }
     } else {
       playerCssDom.innerHTML = this.playerCssOption;
-      if(!dom.selectDom(`#${this.CONFIG.id} #${this.CONFIG.player_style_id}`).length){
+      if(!dom.selectDom(`#${this.CONFIG.id} #${this.CONFIG.player_style_id}`)){
         this.$playerElem[0].appendChild(playerCssDom);
       }
     }
@@ -172,78 +183,79 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
   PlayerInstance(){
     let _that = this;
 
+    let checkPlayerTest = ()=>{
+
+      // Set Instance
+      this.Player = videojs(this.CONFIG.player_id);
+
+      // Set PlayerJson
+      this.PlayerJson = this.Player.toJSON();
+
+      // Set MediaInfo
+      this.PlayerMediaInfo = this.Player.mediainfo;
+
+      this.SetVolume();
+      this.SetInfo();
+      this.SetPoster();
+
+      this.EventPlay();
+      this.EventPause();
+      this.EventStop();
+      this.EventMute();
+      this.EventVolon();
+      this.EventVoloff();
+      this.EventBtnFull();
+      this.EventSeekbarVol();
+      this.EventSeekbarTime();
+      this.EventChangeVideo();
+
+      this.AddGlobalObject();
+
+      // For Timeupdate.
+      videojs(this.CONFIG.player_id).on('timeupdate', ()=>{
+        this.Update();
+      });
+
+      // For Volume change.
+      videojs(this.CONFIG.player_id).on('volumechange', ()=>{
+        // 音量バーの更新(％)
+        dom.setStyle( this.$uiSeekbarVolCover, { width : (this.Player.volume() * 100) + '%' } );
+      });
+
+      // For Ended movie paly.
+      videojs(this.CONFIG.player_id).on('ended', ()=>{
+        this.Stop();
+      });
+
+      // For Error
+      videojs(this.CONFIG.player_id).on( 'error' , (err)=>{
+        console.log(this.error().code);
+      });
+    };
+
     // Check Player try loaded.
+    let checkPlayerFlg        = false;
     let checkPlayerCount      = 0;
     let checkPlayerLimitCount = 100;
     let checkPlayer = setInterval(()=>{
-
+      try {
+        videojs(this.CONFIG.player_id).mediainfo.id;
+        checkPlayerFlg = true;
+      } catch (e) {
+        checkPlayerFlg = false;
+        // console.log(e.name, e.message);
+      }
       // Check upper limit of action to try.
       if(checkPlayerCount >= checkPlayerLimitCount){
         clearInterval(checkPlayer);
         console.log('ERROR: not movie loaded.');
       } else {
-        checkPlayerCount++;
+        if(checkPlayerFlg){
+          clearInterval(checkPlayer);
+          checkPlayerTest();
+        }
       }
-
-      if(videojs(this.CONFIG.player_id).mediainfo){
-
-        clearInterval(checkPlayer);
-
-        // Set Instance
-        this.Player = videojs(this.CONFIG.player_id);
-
-        // Set PlayerJson
-        this.PlayerJson = this.Player.toJSON();
-
-        // Set MediaInfo
-        this.PlayerMediaInfo = this.Player.mediainfo;
-
-        // ロードイベントが複数掛からないためのハック
-        if(this.PlayerLoadFlg === true) return false;
-
-        // Set Load Flg
-        this.PlayerLoadFlg = true;
-
-        this.SetVolume();
-        this.SetInfo();
-        this.SetPoster();
-
-        this.EventPlay();
-        this.EventPause();
-        this.EventStop();
-        this.EventMute();
-        this.EventVolon();
-        this.EventVoloff();
-        this.EventBtnFull();
-        this.EventSeekbarVol();
-        this.EventSeekbarTime();
-        this.EventChangeVideo();
-
-        this.AddGlobalObject();
-
-        // For Timeupdate.
-        videojs(this.CONFIG.player_id).on('timeupdate', ()=>{
-          this.Update();
-        });
-
-        // For Volume change.
-        videojs(this.CONFIG.player_id).on('volumechange', ()=>{
-          // 音量バーの更新(％)
-          dom.setStyle( this.$uiSeekbarVolCover, { width : (this.Player.volume() * 100) + '%' } );
-        });
-
-        // For Ended movie paly.
-        videojs(this.CONFIG.player_id).on('ended', ()=>{
-          this.Stop();
-        });
-
-        // For Error
-        videojs(this.CONFIG.player_id).on( 'error' , (err)=>{
-          console.log(this.error().code);
-        });
-
-      }
-
+      checkPlayerCount++;
     }, 100);
 
   }
@@ -303,11 +315,11 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
     this.$uiBtnChangeDisplayTime     = dom.selectDom('#'+this.CONFIG.id+' .display_time');
     this.$uiBtnChangeDisplayTimeDown = dom.selectDom('#'+this.CONFIG.id+' .display_time_down');
 
-    this.$uiBtnDataId                = dom.selectDom('[data-PMY-id]');
+    this.$uiBtnDataId                = dom.selectDom('[data-PMB-id]');
   }
 
   EventPlay(){
-    if(this.$uiBtnPlay.length){
+    if(this.$uiBtnPlay){
       dom.addEvent(this.$uiBtnPlay, 'click' , (event) => {
         if(this.Player.paused()){
           this.Play();
@@ -319,7 +331,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   EventPause(){
-    if(this.$uiBtnPause.length){
+    if(this.$uiBtnPause){
       dom.addEvent(this.$uiBtnPause, 'click' , (event) => {
         this.Pause();
       });
@@ -327,7 +339,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   EventStop(){
-    if(this.$uiBtnStop.length){
+    if(this.$uiBtnStop){
       dom.addEvent(this.$uiBtnStop, 'click' , (event) => {
         this.Stop();
       });
@@ -339,7 +351,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   EventMute(){
-    if(this.$uiBtnMute.length){
+    if(this.$uiBtnMute){
       dom.addEvent(this.$uiBtnMute, 'click' , (event) => {
         this.Mute();
       });
@@ -347,7 +359,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   EventVolon(){
-    if(this.$uiBtnVolon.length){
+    if(this.$uiBtnVolon){
       dom.addEvent(this.$uiBtnVolon, 'click' , (event) => {
         this.SetVolume(this.CONFIG.volume);
         dom.removeClass(this.$uiBtnVolon, 'active');
@@ -356,7 +368,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   EventVoloff(){
-    if(this.$uiBtnVoloff.length){
+    if(this.$uiBtnVoloff){
       dom.addEvent(this.$uiBtnVoloff, 'click' , (event) => {
         this.SetVolume(0);
         dom.addClass(this.$uiBtnVoloff, 'active');
@@ -368,7 +380,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
    * When dragging a seek bar(volume).
    */
   EventSeekbarVol(){
-    if(this.$uiSeekbarVol.length){
+    if(this.$uiSeekbarVol){
 
       let _flag = false;
       let _targetWidth = 0;
@@ -410,7 +422,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
    */
   EventSeekbarTime(){
 
-    if(this.$uiSeekbarTime.length){
+    if(this.$uiSeekbarTime){
 
       let _targetTime = 0;
 
@@ -459,18 +471,18 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   EventChangeVideo(){
-    if(this.$uiBtnChange.length){
+    if(this.$uiBtnChange){
       dom.addEvent(this.$uiBtnChange, 'click' , (event) => {
         // Get video-id.
-        // -> <data-PMY-id="">
-        let id = event.currentTarget.dataset.pmyId;
+        // -> <data-PMB-id="">
+        let id = event.currentTarget.dataset.pmbId;
         this.Change(id);
       });
     }
   }
 
   EventBtnFull(){
-    if(this.$uiBtnFull.length){
+    if(this.$uiBtnFull){
       dom.addEvent(this.$uiBtnFull, 'click' , (event) => {
         this.Fullscreen();
       });
@@ -479,15 +491,15 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
 
   ClassOn(){
     // Add className Play-Button.
-    if(this.$uiBtnPlay.length) dom.addClass(this.$uiBtnPlay, 'active');
+    if(this.$uiBtnPlay) dom.addClass(this.$uiBtnPlay, 'active');
 
     // Add className Pause-Button.
-    if(this.$uiBtnPause.length) dom.addClass(this.$uiBtnPause, 'active');
+    if(this.$uiBtnPause) dom.addClass(this.$uiBtnPause, 'active');
 
     // Add className MediaChange-Button.
-    if(this.$uiBtnDataId.length){
+    if(this.$uiBtnDataId){
       this.$uiBtnDataId.map((item,index)=>{
-        if(this.CONFIG.videoid == item.getAttribute('data-PMY-id')){
+        if(this.CONFIG.videoid == item.getAttribute('data-PMB-id')){
           dom.addClass(item, 'active');
         }
       });
@@ -496,13 +508,13 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
 
   ClassOff(){
     // Add className Play-Button.
-    if(this.$uiBtnPlay.length) dom.removeClass(this.$uiBtnPlay, 'active');
+    if(this.$uiBtnPlay) dom.removeClass(this.$uiBtnPlay, 'active');
 
     // Add className Pause-Button.
-    if(this.$uiBtnPause.length) dom.removeClass(this.$uiBtnPause, 'active');
+    if(this.$uiBtnPause) dom.removeClass(this.$uiBtnPause, 'active');
 
     // Remove className MediaChange-Button.
-    if(this.$uiBtnDataId.length) dom.removeClass(this.$uiBtnDataId, 'active');
+    if(this.$uiBtnDataId) dom.removeClass(this.$uiBtnDataId, 'active');
   }
 
   Update(){
@@ -513,38 +525,38 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
     // メディアを変更中を判定
     if(this.PlayerChangeLoadFlg){
       // 再生時間の更新(分秒)
-      if(this.$uiDisplayTime.length) dom.setHtml( this.$uiDisplayTime, this.GetTime()+'/'+this.GetTimeMax() );
-      if(this.$uiDisplayTimeNow.length) dom.setHtml( this.$uiDisplayTimeNow, this.GetTime() );
-      if(this.$uiDisplayTimeTotal.length) dom.setHtml( this.$uiDisplayTimeTotal, this.GetTimeMax() );
-      if(this.$uiDisplayTimeDown.length) dom.setHtml( this.$uiDisplayTimeDown, this.GetTimeDown() );
-      if(this.$uiBtnChangeDisplayTime.length) dom.setHtml( this.$uiBtnChangeDisplayTime, this.GetTime()+'/'+this.GetTimeMax() );
-      if(this.$uiBtnChangeDisplayTimeDown.length) dom.setHtml( this.$uiBtnChangeDisplayTimeDown, this.GetTimeDown() );
+      if(this.$uiDisplayTime) dom.setHtml( this.$uiDisplayTime, this.GetTime()+'/'+this.GetTimeMax() );
+      if(this.$uiDisplayTimeNow) dom.setHtml( this.$uiDisplayTimeNow, this.GetTime() );
+      if(this.$uiDisplayTimeTotal) dom.setHtml( this.$uiDisplayTimeTotal, this.GetTimeMax() );
+      if(this.$uiDisplayTimeDown) dom.setHtml( this.$uiDisplayTimeDown, this.GetTimeDown() );
+      if(this.$uiBtnChangeDisplayTime) dom.setHtml( this.$uiBtnChangeDisplayTime, this.GetTime()+'/'+this.GetTimeMax() );
+      if(this.$uiBtnChangeDisplayTimeDown) dom.setHtml( this.$uiBtnChangeDisplayTimeDown, this.GetTimeDown() );
 
       // 再生時間の更新(％)
-      if(this.$uiDisplayTimePar.length) dom.setHtml( this.$uiDisplayTimePar, this.GetTimePar() );
+      if(this.$uiDisplayTimePar) dom.setHtml( this.$uiDisplayTimePar, this.GetTimePar() );
 
       // シークバーの更新(％)
-      if(this.$uiSeekbarTimeCover.length) this.$uiSeekbarTimeCover[0].style.width = this.GetTimePar();
+      if(this.$uiSeekbarTimeCover) this.$uiSeekbarTimeCover[0].style.width = this.GetTimePar();
     } else {
       // 再生時間の更新(分秒)
-      if(this.$uiDisplayTime.length) dom.setHtml( this.$uiDisplayTime, '00:00' );
-      if(this.$uiDisplayTimeNow.length) dom.setHtml( this.$uiDisplayTimeNow, '00:00' );
-      if(this.$uiDisplayTimeTotal.length) dom.setHtml( this.$uiDisplayTimeTotal, '00:00' );
-      if(this.$uiDisplayTimeDown.length) dom.setHtml( this.$uiDisplayTimeDown, '00:00' );
-      if(this.$uiBtnChangeDisplayTime.length) dom.setHtml( this.$uiBtnChangeDisplayTime, '00:00' );
-      if(this.$uiBtnChangeDisplayTimeDown.length) dom.setHtml( this.$uiBtnChangeDisplayTimeDown, '00:00' );
+      if(this.$uiDisplayTime) dom.setHtml( this.$uiDisplayTime, '00:00' );
+      if(this.$uiDisplayTimeNow) dom.setHtml( this.$uiDisplayTimeNow, '00:00' );
+      if(this.$uiDisplayTimeTotal) dom.setHtml( this.$uiDisplayTimeTotal, '00:00' );
+      if(this.$uiDisplayTimeDown) dom.setHtml( this.$uiDisplayTimeDown, '00:00' );
+      if(this.$uiBtnChangeDisplayTime) dom.setHtml( this.$uiBtnChangeDisplayTime, '00:00' );
+      if(this.$uiBtnChangeDisplayTimeDown) dom.setHtml( this.$uiBtnChangeDisplayTimeDown, '00:00' );
 
       // 再生時間の更新(％)
-      if(this.$uiDisplayTimePar.length) dom.setHtml( this.$uiDisplayTimePar, '0%' );
+      if(this.$uiDisplayTimePar) dom.setHtml( this.$uiDisplayTimePar, '0%' );
 
       // シークバーの更新(％)
-      if(this.$uiSeekbarTimeCover.length) this.$uiSeekbarTimeCover[0].style.width = '0%';
+      if(this.$uiSeekbarTimeCover) this.$uiSeekbarTimeCover[0].style.width = '0%';
     }
 
   }
 
   Play(callback){
-    if(this.$uiBtnPlay.length){
+    if(this.$uiBtnPlay){
       if(this.Player.paused()){
         // When the player is stopped.
         this.Player.play();
@@ -636,6 +648,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
         setTimeout( () => {
           this.Player.play();
           this.Player.muted(false);
+          this.ClassOff();
           this.ClassOn();
         }, 100);
 
@@ -738,7 +751,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
   SetPoster(){
     if(this.CONFIG.poster != false) this.CONFIG.poster = this.Player.poster();
 
-    if(this.$uiDisplayPoster.length){
+    if(this.$uiDisplayPoster){
       if(this.CONFIG.mode == 'audio'){
         dom.setHtml(this.$uiDisplayPoster, '');
       } else {
@@ -746,13 +759,13 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
       }
     }
 
-    if(this.$uiDisplayPosterBg.length && this.CONFIG.mode != 'audio'){
+    if(this.$uiDisplayPosterBg && this.CONFIG.mode != 'audio'){
       dom.setStyle(this.$uiDisplayPosterBg, { backgroundImage : `url(${this.CONFIG.poster})` });
     }
   }
 
   SetInfo(){
-    if(this.$uiDisplayName.length) dom.setHtml(this.$uiDisplayName, this.PlayerMediaInfo.name);
+    if(this.$uiDisplayName) dom.setHtml(this.$uiDisplayName, this.PlayerMediaInfo.name);
   }
 
   SetPoster(path){
