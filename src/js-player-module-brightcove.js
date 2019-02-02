@@ -124,14 +124,6 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
       });
     }
 
-    window.addEventListener('error', function(e) {
-      var message      = e.message;
-      var fileName     = e.filename;
-      var lineNumber   = e.lineno;
-      var columnNumber = e.colnoa;
-      console.log('ERROR');
-    });
-
   }
 
   BuildPlayer(){
@@ -556,7 +548,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   Play(callback){
-    if(this.$uiBtnPlay){
+    if(this.$uiBtnPlay || this.$uiBtnDataId){
       if(this.Player.paused()){
         // When the player is stopped.
         this.Player.play();
