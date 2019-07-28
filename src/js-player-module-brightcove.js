@@ -19,7 +19,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
   constructor(options = {}){
 
     // Set Version.
-    this.VERSION = '2.5.0';
+    this.VERSION = '2.6.0';
 
     // Set Flgs.
     this.PlayerChangeLoadFlg = true;
