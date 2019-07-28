@@ -231,8 +231,10 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
     let checkPlayerLimitCount = 100;
     let checkPlayer = setInterval(()=>{
       try {
-        videojs(this.CONFIG.player_id).mediainfo.id;
-        checkPlayerFlg = true;
+        videojs(this.CONFIG.player_id).mediainfo.name;
+        if(videojs(this.CONFIG.player_id).mediainfo.name){
+          checkPlayerFlg = true;
+        }
       } catch (e) {
         checkPlayerFlg = false;
         // console.log(e.name, e.message);
