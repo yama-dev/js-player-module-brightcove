@@ -19,7 +19,7 @@ The official document is here. -> https://brightcovelearning.github.io/Brightcov
 
 - npm -> [https://www.npmjs.com/package/js-player-module-brightcove](https://www.npmjs.com/package/js-player-module-brightcove)
 
-- Standalone(CDN) -> [https://cdn.jsdelivr.net/gh/yama-dev/js-player-module-brightcove@v2.5.0/dist/js-player-module-brightcove.js](https://cdn.jsdelivr.net/gh/yama-dev/js-player-module-brightcove@v2.5.0/dist/js-player-module-brightcove.js)
+- Standalone(CDN) -> [https://cdn.jsdelivr.net/gh/yama-dev/js-player-module-brightcove@v2.6.0/dist/js-player-module-brightcove.js](https://cdn.jsdelivr.net/gh/yama-dev/js-player-module-brightcove@v2.6.0/dist/js-player-module-brightcove.js)
 
 - Zip -> [yama-dev/js-player-module-brightcove](https://github.com/yama-dev/js-player-module-brightcove/releases/latest)
 
@@ -46,9 +46,9 @@ import PLAYER_MODULE_BRIGHTCOVE from 'js-player-module-brightcove';
 <div id="brightcovePlayer1">
   <script>
     new PLAYER_MODULE_BRIGHTCOVE({
-      id:'brightcovePlayer1',
-      videoid:'4217352666001',
-      account:'20318290001',
+      id: 'brightcovePlayer1',
+      videoid: '4230322585001',
+      account: '20318290001'
     });
   </script>
 </div>
@@ -66,9 +66,9 @@ import PLAYER_MODULE_BRIGHTCOVE from 'js-player-module-brightcove';
 <div id="brightcovePlayer1">
   <script>
     new PLAYER_MODULE_BRIGHTCOVE({
-      id:'brightcovePlayer1',
-      videoid:'4217352666001',
-      account:'20318290001'
+      id: 'brightcovePlayer1',
+      videoid: '4230322585001',
+      account: '20318290001'
     });
   </script>
 </div>
@@ -83,8 +83,8 @@ import PLAYER_MODULE_BRIGHTCOVE from 'js-player-module-brightcove';
   <script>
     new PLAYER_MODULE_BRIGHTCOVE({
       id: 'brightcovePlayerOriginalimage',
-      videoid: '4217352666001',
-      account: '20318290001',
+      videoid: '4230322585001',
+      account: '20318290001'
       ui_default: false
     });
   </script>
@@ -106,9 +106,9 @@ import PLAYER_MODULE_BRIGHTCOVE from 'js-player-module-brightcove';
   <script>
     new PLAYER_MODULE_BRIGHTCOVE({
       mode: 'audio',
-      id:'brightcovePlayerAudio',
-      videoid:'4217352666001',
-      account:'20318290001'
+      id: 'brightcovePlayerAudio',
+      videoid: '4230322585001',
+      account: '20318290001'
     });
   </script>
 </div>
