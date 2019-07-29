@@ -256,7 +256,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   AddGlobalObject(){
-    // windowオブジェクトへインスタンスしたPlayerを配列で管理(Player-IDを文字列で追加)
+    // Add player instance at global object.
     // -> window.PLAYER_MODULE_ALL_PLATLIST
 
     if(window.PLAYER_MODULE_ALL_PLATLIST === undefined){
@@ -516,12 +516,12 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
 
   Update(){
 
-    // シーク中は値を更新しない
+    // Not change value at seeking.
     if(this.PlayerChangeSeekingFlg) return
 
-    // メディアを変更中を判定
+    // Determine while changing media.
     if(this.PlayerChangeLoadFlg){
-      // 再生時間の更新(分秒)
+      // update player data. (ms)
       if(this.$uiDisplayTime) dom.setHtml( this.$uiDisplayTime, this.GetTime()+'/'+this.GetTimeMax() );
       if(this.$uiDisplayTimeNow) dom.setHtml( this.$uiDisplayTimeNow, this.GetTime() );
       if(this.$uiDisplayTimeTotal) dom.setHtml( this.$uiDisplayTimeTotal, this.GetTimeMax() );
@@ -529,13 +529,13 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
       if(this.$uiBtnChangeDisplayTime) dom.setHtml( this.$uiBtnChangeDisplayTime, this.GetTime()+'/'+this.GetTimeMax() );
       if(this.$uiBtnChangeDisplayTimeDown) dom.setHtml( this.$uiBtnChangeDisplayTimeDown, this.GetTimeDown() );
 
-      // 再生時間の更新(％)
+      // update play time. (%)
       if(this.$uiDisplayTimePar) dom.setHtml( this.$uiDisplayTimePar, this.GetTimePar() );
 
-      // シークバーの更新(％)
+      // update seek-bar. (%)
       if(this.$uiSeekbarTimeCover) this.$uiSeekbarTimeCover[0].style.width = this.GetTimePar();
     } else {
-      // 再生時間の更新(分秒)
+      // update player data. (ms)
       if(this.$uiDisplayTime) dom.setHtml( this.$uiDisplayTime, '00:00' );
       if(this.$uiDisplayTimeNow) dom.setHtml( this.$uiDisplayTimeNow, '00:00' );
       if(this.$uiDisplayTimeTotal) dom.setHtml( this.$uiDisplayTimeTotal, '00:00' );
@@ -543,10 +543,10 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
       if(this.$uiBtnChangeDisplayTime) dom.setHtml( this.$uiBtnChangeDisplayTime, '00:00' );
       if(this.$uiBtnChangeDisplayTimeDown) dom.setHtml( this.$uiBtnChangeDisplayTimeDown, '00:00' );
 
-      // 再生時間の更新(％)
+      // update play time. (%)
       if(this.$uiDisplayTimePar) dom.setHtml( this.$uiDisplayTimePar, '0%' );
 
-      // シークバーの更新(％)
+      // update seek-bar. (%)
       if(this.$uiSeekbarTimeCover) this.$uiSeekbarTimeCover[0].style.width = '0%';
     }
 
@@ -623,20 +623,20 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
       // Overwrite video id.
       this.CONFIG.videoid = id;
 
-      // clickイベントの伝播内に一度再生位置をリセットする
-      // IE、Edgeでは、バグがあるため除外
-      var _ua = window.navigator.userAgent.toLowerCase();
+      // Reset playback position once in click event propagation.
+      // exclud IE, Edge, for there is a bugs
+      let _ua = window.navigator.userAgent.toLowerCase();
       if(_ua.indexOf('msie') == -1 && _ua.indexOf('trident') == -1 && _ua.indexOf('edge') == -1) {
         this.Player.currentTime(0);
       }
 
-      // clickイベントの伝播内に一度再生開始処理を走らせる
+      // Run playback start processing once in the click event propagation.
       this.Player.muted(true);
       this.Player.play();
 
       this.Player.catalog.getVideo(id, (error, video) => {
 
-        // プレーヤーの情報を再ロード
+        // reload palyer data.
         this.Player.catalog.load(video);
 
         // Set MediaInfo
@@ -644,7 +644,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
         this.SetInfo();
         this.SetPoster();
 
-        // 変更後に再生
+        // replay after data change.
         setTimeout( () => {
           this.Player.play();
           this.Player.muted(false);
@@ -661,7 +661,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
 
       });
 
-      // 次のメディア情報が取得できたかを判定
+      // Determine if the next media information could be obtained.
       this.Player.on('loadeddata',() => {
         this.PlayerChangeLoadFlg = true;
         this.Player.off('loadeddata');
