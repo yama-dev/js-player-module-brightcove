@@ -1,7 +1,7 @@
 /*!
  * JS PLAYER MODULE BRIGHTCOVE (JavaScript Library)
  *   js-player-module-brightcove.js
- * Version 2.5.0
+ * Version 2.6.0
  * Repository https://github.com/yama-dev/js-player-module-brightcove
  * Copyright yama-dev
  * Licensed under the MIT license.
@@ -19,7 +19,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
   constructor(options = {}){
 
     // Set Version.
-    this.VERSION = '2.5.0';
+    this.VERSION = '2.6.0';
 
     // Set Flgs.
     this.PlayerChangeLoadFlg = true;
@@ -231,8 +231,10 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
     let checkPlayerLimitCount = 100;
     let checkPlayer = setInterval(()=>{
       try {
-        videojs(this.CONFIG.player_id).mediainfo.id;
-        checkPlayerFlg = true;
+        videojs(this.CONFIG.player_id).mediainfo.name;
+        if(videojs(this.CONFIG.player_id).mediainfo.name){
+          checkPlayerFlg = true;
+        }
       } catch (e) {
         checkPlayerFlg = false;
         // console.log(e.name, e.message);
