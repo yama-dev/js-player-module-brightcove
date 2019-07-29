@@ -691,6 +691,14 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
     if(this.on.StopAll && typeof(this.on.StopAll) === 'function') this.on.StopAll(this.Player, this.CONFIG);
   }
 
+  SeekTo(sec){
+    if(!sec) return false;
+    if(typeof sec == 'object' || typeof sec == 'function') return false;
+    if(typeof sec == 'string') sec = Number(sec);
+    if(!sec) return false;
+    this.Player.currentTime(sec);
+  }
+
   GetTime(){
     function parseNumber(num) {
       if(typeof(num) === 'number') num = String(num);
