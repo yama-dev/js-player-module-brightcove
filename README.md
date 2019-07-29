@@ -5,7 +5,7 @@
 ## Feature
 
 Brightcove custom player using the Brightcove Player API.  
-The official document is here. -> https://brightcovelearning.github.io/Brightcove-API-References/
+The official document is here. -> https://docs.brightcove.com/brightcove-player/current-release/Player.html
 
 <br>
 
@@ -19,7 +19,7 @@ The official document is here. -> https://brightcovelearning.github.io/Brightcov
 
 - npm -> [https://www.npmjs.com/package/js-player-module-brightcove](https://www.npmjs.com/package/js-player-module-brightcove)
 
-- Standalone(CDN) -> [https://cdn.jsdelivr.net/gh/yama-dev/js-player-module-brightcove@v2.6.0/dist/js-player-module-brightcove.js](https://cdn.jsdelivr.net/gh/yama-dev/js-player-module-brightcove@v2.6.0/dist/js-player-module-brightcove.js)
+- Standalone(CDN) -> [https://cdn.jsdelivr.net/gh/yama-dev/js-player-module-brightcove@v2.7.0/dist/js-player-module-brightcove.js](https://cdn.jsdelivr.net/gh/yama-dev/js-player-module-brightcove@v2.7.0/dist/js-player-module-brightcove.js)
 
 - Zip -> [yama-dev/js-player-module-brightcove](https://github.com/yama-dev/js-player-module-brightcove/releases/latest)
 
