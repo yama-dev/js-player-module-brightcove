@@ -67,6 +67,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
       options.on = {}
     }
     this.on = {
+      PlayPrep: options.on.PlayPrep||'',
       Play    : options.on.Play||'',
       Pause   : options.on.Pause||'',
       Stop    : options.on.Stop||'',
@@ -552,6 +553,9 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
   Play(callback){
     if(this.$uiBtnPlay || this.$uiBtnDataId){
       if(this.Player.paused()){
+        if(!this.on.PlayPrep && callback) this.on.PlayPrep = callback;
+        if(this.on.PlayPrep && typeof(this.on.PlayPrep) === 'function') this.on.PlayPrep(this.Player, this.CONFIG);
+
         // When the player is stopped.
         this.Player.play();
         this.ClassOn();
