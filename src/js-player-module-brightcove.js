@@ -257,18 +257,20 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
 
   AddGlobalObject(){
     // windowオブジェクトへインスタンスしたPlayerを配列で管理(Player-IDを文字列で追加)
-    // -> window.PLAYER_MODULE_YOUTUBE_PLATLIST
+    // -> window.PLAYER_MODULE_ALL_PLATLIST
 
-    if(window.PLAYER_MODULE_YOUTUBE_PLATLIST === undefined){
-      window.PLAYER_MODULE_YOUTUBE_PLATLIST = [];
-      window.PLAYER_MODULE_YOUTUBE_PLATLIST.push({
+    if(window.PLAYER_MODULE_ALL_PLATLIST === undefined){
+      window.PLAYER_MODULE_ALL_PLATLIST = [];
+      window.PLAYER_MODULE_ALL_PLATLIST.push({
+        instance: this,
         Player: this.Player,
         videoid: this.CONFIG.videoid,
         id: this.CONFIG.id,
         player_id: this.CONFIG.player_id
       });
     }else{
-      window.PLAYER_MODULE_YOUTUBE_PLATLIST.push({
+      window.PLAYER_MODULE_ALL_PLATLIST.push({
+        instance: this,
         Player: this.Player,
         videoid: this.CONFIG.videoid,
         id: this.CONFIG.id,
@@ -677,8 +679,8 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   PauseAll(callback){
-    window.PLAYER_MODULE_YOUTUBE_PLATLIST.map((item,index)=>{
-      item.Player.pause();
+    window.PLAYER_MODULE_ALL_PLATLIST.map((item,index)=>{
+      item.instance.Pause();
     });
 
     if(!this.on.PauseAll && callback) this.on.PauseAll = callback;
@@ -686,9 +688,8 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   StopAll(callback){
-    window.PLAYER_MODULE_YOUTUBE_PLATLIST.map((item,index)=>{
-      item.Player.pause();
-      item.Player.currentTime(0);
+    window.PLAYER_MODULE_ALL_PLATLIST.map((item,index)=>{
+      item.instance.Stop();
     });
 
     if(!this.on.StopAll && callback) this.on.StopAll = callback;
