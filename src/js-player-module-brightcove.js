@@ -1,7 +1,7 @@
 /*!
  * JS PLAYER MODULE BRIGHTCOVE (JavaScript Library)
  *   js-player-module-brightcove.js
- * Version 3.0.1
+ * Version 3.1.0
  * Repository https://github.com/yama-dev/js-player-module-brightcove
  * Copyright yama-dev
  * Licensed under the MIT license.
@@ -19,7 +19,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
   constructor(options = {}){
 
     // Set Version.
-    this.VERSION = '3.0.1';
+    this.VERSION = '3.1.0';
 
     // Set Flgs.
     this.PlayerChangeLoadFlg = true;
@@ -187,10 +187,6 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
       // Set MediaInfo
       this.PlayerMediaInfo = this.Player.mediainfo;
 
-      this.SetVolume();
-      this.SetInfo();
-      this.SetPoster();
-
       this.EventPlay();
       this.EventPause();
       this.EventStop();
@@ -203,6 +199,13 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
       this.EventChangeVideo();
 
       this.AddGlobalObject();
+
+      videojs(this.CONFIG.player_id).on('loadedmetadata', ()=>{
+        this.SetVolume();
+        this.SetInfo();
+        this.SetPoster();
+        this.Update();
+      });
 
       // For Timeupdate.
       videojs(this.CONFIG.player_id).on('timeupdate', ()=>{
@@ -750,33 +753,33 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
     else return '0%';
   }
 
+  SetPoster(path){
+    if(path){
+      this.Player.poster(path);
+    } else {
+      if(this.CONFIG.poster != false) this.CONFIG.poster = this.Player.poster();
+
+      if(this.$uiDisplayPoster){
+        if(this.CONFIG.mode == 'audio'){
+          dom.setHtml(this.$uiDisplayPoster, '');
+        } else {
+          dom.setHtml(this.$uiDisplayPoster, `<img src="${this.CONFIG.poster}" alt="">`);
+        }
+      }
+
+      if(this.$uiDisplayPosterBg && this.CONFIG.mode != 'audio'){
+        dom.setStyle(this.$uiDisplayPosterBg, { backgroundImage : `url(${this.CONFIG.poster})` });
+      }
+    }
+  }
+
   SetVolume(vol){
     this.CONFIG.volume = vol ? vol : this.CONFIG.volume;
     this.Player.volume(this.CONFIG.volume);
   }
 
-  SetPoster(){
-    if(this.CONFIG.poster != false) this.CONFIG.poster = this.Player.poster();
-
-    if(this.$uiDisplayPoster){
-      if(this.CONFIG.mode == 'audio'){
-        dom.setHtml(this.$uiDisplayPoster, '');
-      } else {
-        dom.setHtml(this.$uiDisplayPoster, `<img src="${this.CONFIG.poster}" alt="">`);
-      }
-    }
-
-    if(this.$uiDisplayPosterBg && this.CONFIG.mode != 'audio'){
-      dom.setStyle(this.$uiDisplayPosterBg, { backgroundImage : `url(${this.CONFIG.poster})` });
-    }
-  }
-
   SetInfo(){
     if(this.$uiDisplayName) dom.setHtml(this.$uiDisplayName, this.PlayerMediaInfo.name);
-  }
-
-  SetPoster(path){
-    this.Player.poster(path);
   }
 
   Destroy(){
