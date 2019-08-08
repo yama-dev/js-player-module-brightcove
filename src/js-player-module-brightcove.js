@@ -187,10 +187,6 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
       // Set MediaInfo
       this.PlayerMediaInfo = this.Player.mediainfo;
 
-      this.SetVolume();
-      this.SetInfo();
-      this.SetPoster();
-
       this.EventPlay();
       this.EventPause();
       this.EventStop();
@@ -203,6 +199,13 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
       this.EventChangeVideo();
 
       this.AddGlobalObject();
+
+      videojs(this.CONFIG.player_id).on('loadedmetadata', ()=>{
+        this.SetVolume();
+        this.SetInfo();
+        this.SetPoster();
+        this.Update();
+      });
 
       // For Timeupdate.
       videojs(this.CONFIG.player_id).on('timeupdate', ()=>{
