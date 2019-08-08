@@ -753,33 +753,33 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
     else return '0%';
   }
 
+  SetPoster(path){
+    if(path){
+      this.Player.poster(path);
+    } else {
+      if(this.CONFIG.poster != false) this.CONFIG.poster = this.Player.poster();
+
+      if(this.$uiDisplayPoster){
+        if(this.CONFIG.mode == 'audio'){
+          dom.setHtml(this.$uiDisplayPoster, '');
+        } else {
+          dom.setHtml(this.$uiDisplayPoster, `<img src="${this.CONFIG.poster}" alt="">`);
+        }
+      }
+
+      if(this.$uiDisplayPosterBg && this.CONFIG.mode != 'audio'){
+        dom.setStyle(this.$uiDisplayPosterBg, { backgroundImage : `url(${this.CONFIG.poster})` });
+      }
+    }
+  }
+
   SetVolume(vol){
     this.CONFIG.volume = vol ? vol : this.CONFIG.volume;
     this.Player.volume(this.CONFIG.volume);
   }
 
-  SetPoster(){
-    if(this.CONFIG.poster != false) this.CONFIG.poster = this.Player.poster();
-
-    if(this.$uiDisplayPoster){
-      if(this.CONFIG.mode == 'audio'){
-        dom.setHtml(this.$uiDisplayPoster, '');
-      } else {
-        dom.setHtml(this.$uiDisplayPoster, `<img src="${this.CONFIG.poster}" alt="">`);
-      }
-    }
-
-    if(this.$uiDisplayPosterBg && this.CONFIG.mode != 'audio'){
-      dom.setStyle(this.$uiDisplayPosterBg, { backgroundImage : `url(${this.CONFIG.poster})` });
-    }
-  }
-
   SetInfo(){
     if(this.$uiDisplayName) dom.setHtml(this.$uiDisplayName, this.PlayerMediaInfo.name);
-  }
-
-  SetPoster(path){
-    this.Player.poster(path);
   }
 
   Destroy(){
