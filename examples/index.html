@@ -133,6 +133,7 @@
             volume: 0.5,
             on: {
               Play: function(){ console.log('Play') },
+              PlayPrep: function(){ console.log('PlayPrep') },
               Pause: function(){ console.log('Pause') },
               Stop: function(){ console.log('Stop') },
               StopAll: function(){ console.log('StopAll') },
@@ -142,7 +143,10 @@
         </script>
 
         <button class="btn btn btn-secondary" onclick="PMB.Stop()">Media停止(Stop)</button>
+        <button class="btn btn btn-secondary" onclick="PMB.PauseAll()">Media全一時停止(PauseAll)</button>
         <button class="btn btn btn-secondary" onclick="PMB.StopAll()">Media全停止(StopAll)</button>
+
+        <br>
 
         <button class="btn btn btn-secondary" data-PMB-id="4230322585001" onclick="PMB.Change('4230322585001')">Media変更 id=4230322585001</button>
         <button class="btn_change btn btn btn-secondary" data-PMB-id="4230322585001">Media変更 id=4230322585001</button>
@@ -151,6 +155,8 @@
           <p class="display_time">00:00</p>
           <p class="display_time_down">00:00</p>
         </div>
+
+        <br>
 
         <button class="btn btn btn-secondary" onclick="PMB.SeekTo(30)">Media再生位置変更(SeekTo 30s)</button>
         <button class="btn btn btn-secondary" onclick="PMB.SeekTo(60)">Media再生位置変更(SeekTo 60s)</button>
@@ -169,6 +175,7 @@
               volume: 0.5,
               on: {
                 Play: function(){ console.log(&#039;Play&#039;) },
+                PlayPrep: function(){ console.log(&#039;PlayPrep&#039;) },
                 Pause: function(){ console.log(&#039;Pause&#039;) },
                 Stop: function(){ console.log(&#039;Stop&#039;) },
                 StopAll: function(){ console.log(&#039;StopAll&#039;) },

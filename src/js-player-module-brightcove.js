@@ -1,7 +1,7 @@
 /*!
  * JS PLAYER MODULE BRIGHTCOVE (JavaScript Library)
  *   js-player-module-brightcove.js
- * Version 2.7.0
+ * Version 3.0.1
  * Repository https://github.com/yama-dev/js-player-module-brightcove
  * Copyright yama-dev
  * Licensed under the MIT license.
@@ -19,7 +19,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
   constructor(options = {}){
 
     // Set Version.
-    this.VERSION = '2.7.0';
+    this.VERSION = '3.0.1';
 
     // Set Flgs.
     this.PlayerChangeLoadFlg = true;
@@ -67,6 +67,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
       options.on = {}
     }
     this.on = {
+      PlayPrep: options.on.PlayPrep||'',
       Play    : options.on.Play||'',
       Pause   : options.on.Pause||'',
       Stop    : options.on.Stop||'',
@@ -255,19 +256,21 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   AddGlobalObject(){
-    // windowオブジェクトへインスタンスしたPlayerを配列で管理(Player-IDを文字列で追加)
-    // -> window.PLAYER_MODULE_YOUTUBE_PLATLIST
+    // Add player instance at global object.
+    // -> window.PLAYER_MODULE_ALL_PLATLIST
 
-    if(window.PLAYER_MODULE_YOUTUBE_PLATLIST === undefined){
-      window.PLAYER_MODULE_YOUTUBE_PLATLIST = [];
-      window.PLAYER_MODULE_YOUTUBE_PLATLIST.push({
+    if(window.PLAYER_MODULE_ALL_PLATLIST === undefined){
+      window.PLAYER_MODULE_ALL_PLATLIST = [];
+      window.PLAYER_MODULE_ALL_PLATLIST.push({
+        instance: this,
         Player: this.Player,
         videoid: this.CONFIG.videoid,
         id: this.CONFIG.id,
         player_id: this.CONFIG.player_id
       });
     }else{
-      window.PLAYER_MODULE_YOUTUBE_PLATLIST.push({
+      window.PLAYER_MODULE_ALL_PLATLIST.push({
+        instance: this,
         Player: this.Player,
         videoid: this.CONFIG.videoid,
         id: this.CONFIG.id,
@@ -513,12 +516,12 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
 
   Update(){
 
-    // シーク中は値を更新しない
+    // Not change value at seeking.
     if(this.PlayerChangeSeekingFlg) return
 
-    // メディアを変更中を判定
+    // Determine while changing media.
     if(this.PlayerChangeLoadFlg){
-      // 再生時間の更新(分秒)
+      // update player data. (ms)
       if(this.$uiDisplayTime) dom.setHtml( this.$uiDisplayTime, this.GetTime()+'/'+this.GetTimeMax() );
       if(this.$uiDisplayTimeNow) dom.setHtml( this.$uiDisplayTimeNow, this.GetTime() );
       if(this.$uiDisplayTimeTotal) dom.setHtml( this.$uiDisplayTimeTotal, this.GetTimeMax() );
@@ -526,13 +529,13 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
       if(this.$uiBtnChangeDisplayTime) dom.setHtml( this.$uiBtnChangeDisplayTime, this.GetTime()+'/'+this.GetTimeMax() );
       if(this.$uiBtnChangeDisplayTimeDown) dom.setHtml( this.$uiBtnChangeDisplayTimeDown, this.GetTimeDown() );
 
-      // 再生時間の更新(％)
+      // update play time. (%)
       if(this.$uiDisplayTimePar) dom.setHtml( this.$uiDisplayTimePar, this.GetTimePar() );
 
-      // シークバーの更新(％)
+      // update seek-bar. (%)
       if(this.$uiSeekbarTimeCover) this.$uiSeekbarTimeCover[0].style.width = this.GetTimePar();
     } else {
-      // 再生時間の更新(分秒)
+      // update player data. (ms)
       if(this.$uiDisplayTime) dom.setHtml( this.$uiDisplayTime, '00:00' );
       if(this.$uiDisplayTimeNow) dom.setHtml( this.$uiDisplayTimeNow, '00:00' );
       if(this.$uiDisplayTimeTotal) dom.setHtml( this.$uiDisplayTimeTotal, '00:00' );
@@ -540,10 +543,10 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
       if(this.$uiBtnChangeDisplayTime) dom.setHtml( this.$uiBtnChangeDisplayTime, '00:00' );
       if(this.$uiBtnChangeDisplayTimeDown) dom.setHtml( this.$uiBtnChangeDisplayTimeDown, '00:00' );
 
-      // 再生時間の更新(％)
+      // update play time. (%)
       if(this.$uiDisplayTimePar) dom.setHtml( this.$uiDisplayTimePar, '0%' );
 
-      // シークバーの更新(％)
+      // update seek-bar. (%)
       if(this.$uiSeekbarTimeCover) this.$uiSeekbarTimeCover[0].style.width = '0%';
     }
 
@@ -552,6 +555,9 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
   Play(callback){
     if(this.$uiBtnPlay || this.$uiBtnDataId){
       if(this.Player.paused()){
+        if(!this.on.PlayPrep && callback) this.on.PlayPrep = callback;
+        if(this.on.PlayPrep && typeof(this.on.PlayPrep) === 'function') this.on.PlayPrep(this.Player, this.CONFIG);
+
         // When the player is stopped.
         this.Player.play();
         this.ClassOn();
@@ -617,20 +623,20 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
       // Overwrite video id.
       this.CONFIG.videoid = id;
 
-      // clickイベントの伝播内に一度再生位置をリセットする
-      // IE、Edgeでは、バグがあるため除外
-      var _ua = window.navigator.userAgent.toLowerCase();
+      // Reset playback position once in click event propagation.
+      // exclud IE, Edge, for there is a bugs
+      let _ua = window.navigator.userAgent.toLowerCase();
       if(_ua.indexOf('msie') == -1 && _ua.indexOf('trident') == -1 && _ua.indexOf('edge') == -1) {
         this.Player.currentTime(0);
       }
 
-      // clickイベントの伝播内に一度再生開始処理を走らせる
+      // Run playback start processing once in the click event propagation.
       this.Player.muted(true);
       this.Player.play();
 
       this.Player.catalog.getVideo(id, (error, video) => {
 
-        // プレーヤーの情報を再ロード
+        // reload palyer data.
         this.Player.catalog.load(video);
 
         // Set MediaInfo
@@ -638,7 +644,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
         this.SetInfo();
         this.SetPoster();
 
-        // 変更後に再生
+        // replay after data change.
         setTimeout( () => {
           this.Player.play();
           this.Player.muted(false);
@@ -655,7 +661,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
 
       });
 
-      // 次のメディア情報が取得できたかを判定
+      // Determine if the next media information could be obtained.
       this.Player.on('loadeddata',() => {
         this.PlayerChangeLoadFlg = true;
         this.Player.off('loadeddata');
@@ -673,8 +679,8 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   PauseAll(callback){
-    window.PLAYER_MODULE_YOUTUBE_PLATLIST.map((item,index)=>{
-      item.Player.pause();
+    window.PLAYER_MODULE_ALL_PLATLIST.map((item,index)=>{
+      item.instance.Pause();
     });
 
     if(!this.on.PauseAll && callback) this.on.PauseAll = callback;
@@ -682,9 +688,8 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   StopAll(callback){
-    window.PLAYER_MODULE_YOUTUBE_PLATLIST.map((item,index)=>{
-      item.Player.pause();
-      item.Player.currentTime(0);
+    window.PLAYER_MODULE_ALL_PLATLIST.map((item,index)=>{
+      item.instance.Stop();
     });
 
     if(!this.on.StopAll && callback) this.on.StopAll = callback;
