@@ -67,6 +67,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
       options.on = {}
     }
     this.on = {
+      Init    : options.on.Init||'',
       PlayPrep: options.on.PlayPrep||'',
       Play    : options.on.Play||'',
       Pause   : options.on.Pause||'',
@@ -205,6 +206,8 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
         this.SetInfo();
         this.SetPoster();
         this.Update();
+
+        if(_that.on.Init && typeof(_that.on.Init) === 'function') _that.on.Init(_that, _that.Player);
       });
 
       // For Timeupdate.
