@@ -7,7 +7,7 @@
  * Licensed under the MIT license.
  */
 
-import {PARSE_MODULE} from 'js-parse-module';
+import { Str2Mustache } from '@yama-dev/js-parse-module/libs/';
 
 import { viewPlayerScriptcode, viewPlayerMain, viewPlayerUi, viewPlayerStyle } from './view.js';
 
@@ -102,9 +102,9 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
     // -> playerHtml
     // -> playerCss
     // -> playerScriptCode
-    this.playerHtml        = PARSE_MODULE.Str2Mustache(this.playerHtml, this.CONFIG);
-    this.playerCss         = PARSE_MODULE.Str2Mustache(this.playerCss, this.CONFIG);
-    this.playerScriptCode  = PARSE_MODULE.Str2Mustache(this.playerScriptCode, this.CONFIG);
+    this.playerHtml        = Str2Mustache(this.playerHtml, this.CONFIG);
+    this.playerCss         = Str2Mustache(this.playerCss, this.CONFIG);
+    this.playerScriptCode  = Str2Mustache(this.playerScriptCode, this.CONFIG);
 
     // Check Audio mode.
     if(this.CONFIG.mode == 'audio'){
