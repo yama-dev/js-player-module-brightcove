@@ -562,14 +562,14 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
     if(this.$uiBtnPlay || this.$uiBtnDataId){
       if(this.Player.paused()){
         if(!this.on.PlayPrep && callback) this.on.PlayPrep = callback;
-        if(this.on.PlayPrep && typeof(this.on.PlayPrep) === 'function') this.on.PlayPrep(this.Player, this.CONFIG);
+        if(this.on.PlayPrep && typeof(this.on.PlayPrep) === 'function') this.on.PlayPrep(this, this.Player);
 
         // When the player is stopped.
         this.Player.play();
         this.ClassOn();
 
         if(!this.on.Play && callback) this.on.Play = callback;
-        if(this.on.Play && typeof(this.on.Play) === 'function') this.on.Play(this.Player, this.CONFIG);
+        if(this.on.Play && typeof(this.on.Play) === 'function') this.on.Play(this, this.Player);
       } else {
         // When the player is playing.
         this.Pause();
@@ -584,7 +584,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
     this.ClassOff();
 
     if(!this.on.Stop && callback) this.on.Stop = callback;
-    if(this.on.Stop && typeof(this.on.Stop) === 'function') this.on.Stop(this.Player, this.CONFIG);
+    if(this.on.Stop && typeof(this.on.Stop) === 'function') this.on.Stop(this, this.Player);
   }
 
   Pause(callback){
@@ -592,7 +592,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
     this.ClassOff();
 
     if(!this.on.Pause && callback) this.on.Pause = callback;
-    if(this.on.Pause && typeof(this.on.Pause) === 'function') this.on.Pause(this.Player, this.CONFIG);
+    if(this.on.Pause && typeof(this.on.Pause) === 'function') this.on.Pause(this, this.Player);
   }
 
   Mute(){
@@ -662,7 +662,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
           this.PlayerChangeLoadFlg = true;
 
           if(!this.on.Change && callback) this.on.Change = callback;
-          if(this.on.Change && typeof(this.on.Change) === 'function') this.on.Change(this.Player, this.CONFIG);
+          if(this.on.Change && typeof(this.on.Change) === 'function') this.on.Change(this, this.Player);
         }, 300);
 
       });
@@ -678,7 +678,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
       this.Play();
 
       if(!this.on.Change && callback) this.on.Change = callback;
-      if(this.on.Change && typeof(this.on.Change) === 'function') this.on.Change();
+      if(this.on.Change && typeof(this.on.Change) === 'function') this.on.Change(this, this.Player);
 
     }
 
@@ -690,7 +690,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
     });
 
     if(!this.on.PauseAll && callback) this.on.PauseAll = callback;
-    if(this.on.PauseAll && typeof(this.on.PauseAll) === 'function') this.on.PauseAll(this.Player, this.CONFIG);
+    if(this.on.PauseAll && typeof(this.on.PauseAll) === 'function') this.on.PauseAll(this, this.Player);
   }
 
   StopAll(callback){
@@ -699,7 +699,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
     });
 
     if(!this.on.StopAll && callback) this.on.StopAll = callback;
-    if(this.on.StopAll && typeof(this.on.StopAll) === 'function') this.on.StopAll(this.Player, this.CONFIG);
+    if(this.on.StopAll && typeof(this.on.StopAll) === 'function') this.on.StopAll(this, this.Player);
   }
 
   SeekTo(sec){
