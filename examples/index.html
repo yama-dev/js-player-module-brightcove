@@ -136,9 +136,25 @@
             width: '480px',
             height: '300px',
             volume: 0.5,
+            classname_active: 'is-pmb-active',
             on: {
-              Init: function(player){
-                console.log('Init', player);
+              PlayerInit: function(player){
+                console.log('PlayerInit', player);
+                console.log(player.GetMediaInfo());
+                console.log(player.GetPoster());
+              },
+              PlayerEnded: function(player){
+                console.log('PlayerEnded', player);
+              },
+              PlayerPlay: function(player){
+                console.log('PlayerPlay', player);
+              },
+              PlayerPause: function(player){
+                console.log('PlayerPause', player);
+                console.log(player.GetTime());
+                console.log(player.GetTimeMax());
+                console.log(player.GetTimeRatio());
+                console.log(player.GetTimeDown());
               },
               Play: function(player){
                 console.log('Play', player);
@@ -157,6 +173,8 @@
               },
               Change: function(player){
                 console.log('Change', player);
+                console.log(player.GetMediaInfo());
+                console.log(player.GetPoster());
               }
             }
           });
@@ -184,39 +202,57 @@
         <pre class="prettyprint lang-html mt-2">
           <code>
           &lt;script&gt;
-          var PMB = new PLAYER_MODULE_BRIGHTCOVE({
-            id:&#039;brightcovePlayerCustom&#039;,
-            ui_controls:true,
-            ui_default:true,
-            videoid:&#039;4230322585001&#039;,
-            account:&#039;20318290001&#039;,
-            width: &#039;480px&#039;,
-            height: &#039;300px&#039;,
-            volume: 0.5,
-            on: {
-              Init: function(player){
-                console.log(&#039;Init&#039;, player);
-              },
-              Play: function(player){
-                console.log(&#039;Play&#039;, player);
-              },
-              PlayPrep: function(player){
-                console.log(&#039;PlayPrep&#039;, player);
-              },
-              Pause: function(player){
-                console.log(&#039;Pause&#039;, player);
-              },
-              Stop: function(player){
-                console.log(&#039;Stop&#039;, player);
-              },
-              StopAll: function(player){
-                console.log(&#039;StopAll&#039;, player);
-              },
-              Change: function(player){
-                console.log(&#039;Change&#039;, player);
+            var PMB = new PLAYER_MODULE_BRIGHTCOVE({
+              id:&#039;brightcovePlayerCustom&#039;,
+              ui_controls:true,
+              ui_default:true,
+              videoid:&#039;4230322585001&#039;,
+              account:&#039;20318290001&#039;,
+              width: &#039;480px&#039;,
+              height: &#039;300px&#039;,
+              volume: 0.5,
+              classname_active: &#039;is-pmb-active&#039;,
+              on: {
+                PlayerInit: function(player){
+                  console.log(&#039;PlayerInit&#039;, player);
+                  console.log(player.GetMediaInfo());
+                  console.log(player.GetPoster());
+                },
+                PlayerEnded: function(player){
+                  console.log(&#039;PlayerEnded&#039;, player);
+                },
+                PlayerPlay: function(player){
+                  console.log(&#039;PlayerPlay&#039;, player);
+                },
+                PlayerPause: function(player){
+                  console.log(&#039;PlayerPause&#039;, player);
+                  console.log(player.GetTime());
+                  console.log(player.GetTimeMax());
+                  console.log(player.GetTimeRatio());
+                  console.log(player.GetTimeDown());
+                },
+                Play: function(player){
+                  console.log(&#039;Play&#039;, player);
+                },
+                PlayPrep: function(player){
+                  console.log(&#039;PlayPrep&#039;, player);
+                },
+                Pause: function(player){
+                  console.log(&#039;Pause&#039;, player);
+                },
+                Stop: function(player){
+                  console.log(&#039;Stop&#039;, player);
+                },
+                StopAll: function(player){
+                  console.log(&#039;StopAll&#039;, player);
+                },
+                Change: function(player){
+                  console.log(&#039;Change&#039;, player);
+                  console.log(player.GetMediaInfo());
+                  console.log(player.GetPoster());
+                }
               }
-            }
-          });
+            });
           &lt;/script&gt;
 
           &lt;button class=&quot;btn btn btn-secondary&quot; onclick=&quot;PMB.Stop()&quot;&gt;Media停止(Stop)&lt;/button&gt;
