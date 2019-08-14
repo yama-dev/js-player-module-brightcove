@@ -67,7 +67,11 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
       options.on = {}
     }
     this.on = {
-      Init    : options.on.Init||'',
+      PlayerInit  : options.on.PlayerInit||'',
+      PlayerEnded : options.on.PlayerEnded||'',
+      PlayerPlay  : options.on.PlayerPlay||'',
+      PlayerPause : options.on.PlayerPause||'',
+
       PlayPrep: options.on.PlayPrep||'',
       Play    : options.on.Play||'',
       Pause   : options.on.Pause||'',
@@ -210,7 +214,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
         this.SetPoster();
         this.Update();
 
-        if(_that.on.Init && typeof(_that.on.Init) === 'function') _that.on.Init(_that, _that.Player);
+        if(_that.on.PlayerInit && typeof(_that.on.PlayerInit) === 'function') _that.on.PlayerInit(_that, _that.Player);
       });
 
       // For Timeupdate.
@@ -227,6 +231,17 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
       // For Ended movie paly.
       videojs(this.CONFIG.player_id).on('ended', ()=>{
         this.Stop();
+        if(_that.on.PlayerEnded && typeof(_that.on.PlayerEnded) === 'function') _that.on.PlayerEnded(_that, _that.Player);
+      });
+
+      videojs(this.CONFIG.player_id).on('play', ()=>{
+        this.ClassOn();
+        if(_that.on.PlayerPlay && typeof(_that.on.PlayerPlay) === 'function') _that.on.PlayerPlay(_that, _that.Player);
+      });
+
+      videojs(this.CONFIG.player_id).on('pause', ()=>{
+        this.ClassOff();
+        if(_that.on.PlayerPause && typeof(_that.on.PlayerPause) === 'function') _that.on.PlayerPause(_that, _that.Player);
       });
 
       // For Error
