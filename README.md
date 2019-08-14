@@ -19,7 +19,7 @@ The official document is here. -> https://docs.brightcove.com/brightcove-player/
 
 - npm -> [https://www.npmjs.com/package/js-player-module-brightcove](https://www.npmjs.com/package/js-player-module-brightcove)
 
-- Standalone(CDN) -> [https://cdn.jsdelivr.net/gh/yama-dev/js-player-module-brightcove@v3.1.0/dist/js-player-module-brightcove.js](https://cdn.jsdelivr.net/gh/yama-dev/js-player-module-brightcove@v3.1.0/dist/js-player-module-brightcove.js)
+- Standalone(CDN) -> [https://cdn.jsdelivr.net/gh/yama-dev/js-player-module-brightcove@v3.2.0/dist/js-player-module-brightcove.js](https://cdn.jsdelivr.net/gh/yama-dev/js-player-module-brightcove@v3.2.0/dist/js-player-module-brightcove.js)
 
 - Zip -> [yama-dev/js-player-module-brightcove](https://github.com/yama-dev/js-player-module-brightcove/releases/latest)
 
@@ -31,7 +31,7 @@ The official document is here. -> https://docs.brightcove.com/brightcove-player/
 
 ``` bash
 # install npm.
-npm install --save-dev js-player-module-brightcove
+npm install --save js-player-module-brightcove
 ```
 
 ``` javascript
