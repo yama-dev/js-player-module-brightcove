@@ -59,7 +59,9 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
       stop_outfocus  : options.stop_outfocus === true ? true : false,
       poster         : options.poster||null,
 
-      add_style        : options.add_style||''
+      add_style        : options.add_style||'',
+      classname_active_wrap : options.classname_active_wrap||'is-pmb-wrap',
+      classname_active : options.classname_active||'active'
     }
 
     // Set config, callback functions.
