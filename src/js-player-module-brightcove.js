@@ -1,7 +1,7 @@
 /*!
  * JS PLAYER MODULE BRIGHTCOVE (JavaScript Library)
  *   js-player-module-brightcove.js
- * Version 3.2.0
+ * Version 4.0.0
  * Repository https://github.com/yama-dev/js-player-module-brightcove
  * Copyright yama-dev
  * Licensed under the MIT license.
@@ -19,7 +19,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
   constructor(options = {}){
 
     // Set Version.
-    this.VERSION = '3.2.0';
+    this.VERSION = '4.0.0';
 
     // Set Flgs.
     this.PlayerChangeLoadFlg = true;
@@ -59,7 +59,9 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
       stop_outfocus  : options.stop_outfocus === true ? true : false,
       poster         : options.poster||null,
 
-      add_style        : options.add_style||''
+      add_style        : options.add_style||'',
+      classname_active_wrap : options.classname_active_wrap||'is-pmb-wrap',
+      classname_active : options.classname_active||'active'
     }
 
     // Set config, callback functions.
@@ -67,7 +69,11 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
       options.on = {}
     }
     this.on = {
-      Init    : options.on.Init||'',
+      PlayerInit  : options.on.PlayerInit||'',
+      PlayerEnded : options.on.PlayerEnded||'',
+      PlayerPlay  : options.on.PlayerPlay||'',
+      PlayerPause : options.on.PlayerPause||'',
+
       PlayPrep: options.on.PlayPrep||'',
       Play    : options.on.Play||'',
       Pause   : options.on.Pause||'',
@@ -83,8 +89,11 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
     // BrightcovePlayer Instance.
     this.Player = '';
 
+    // BrightcovePlayer dom.
+    this.$ = {};
+
     // Player wrapper.
-    this.$playerElem = dom.selectDom(`#${this.CONFIG.id}`);
+    this.$.playerElem = dom.selectDom(`#${this.CONFIG.id}`);
 
     // Import Views.
     this.playerHtml       = viewPlayerMain;
@@ -133,7 +142,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
     let playerUiHtmlDom       = document.createElement('div');
     playerUiHtmlDom.innerHTML = this.playerUiHtml;
     if(this.CONFIG.ui_default){
-      this.$playerElem[0].insertBefore(playerUiHtmlDom, this.$playerElem[0].firstElementChild);
+      this.$.playerElem[0].insertBefore(playerUiHtmlDom, this.$.playerElem[0].firstElementChild);
     }
 
     // Player Main.
@@ -143,7 +152,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
     playerHtmlDomWrap.id  = this.CONFIG.player_id_wrap;
     playerHtmlDom.innerHTML   = this.playerHtml;
     playerHtmlDomWrap.appendChild(playerHtmlDom);
-    this.$playerElem[0].insertBefore(playerHtmlDomWrap, this.$playerElem[0].firstElementChild);
+    this.$.playerElem[0].insertBefore(playerHtmlDomWrap, this.$.playerElem[0].firstElementChild);
 
     // Player Style.
     let playerCssDom          = document.createElement('style');
@@ -153,12 +162,12 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
       playerCssDom.innerHTML = this.playerCss;
       playerCssDom.innerHTML += this.playerCssOption;
       if(!dom.selectDom(`#${this.CONFIG.id} #${this.CONFIG.player_style_id}`)){
-        this.$playerElem[0].appendChild(playerCssDom);
+        this.$.playerElem[0].appendChild(playerCssDom);
       }
     } else {
       playerCssDom.innerHTML = this.playerCssOption;
       if(!dom.selectDom(`#${this.CONFIG.id} #${this.CONFIG.player_style_id}`)){
-        this.$playerElem[0].appendChild(playerCssDom);
+        this.$.playerElem[0].appendChild(playerCssDom);
       }
     }
 
@@ -207,7 +216,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
         this.SetPoster();
         this.Update();
 
-        if(_that.on.Init && typeof(_that.on.Init) === 'function') _that.on.Init(_that, _that.Player);
+        if(_that.on.PlayerInit && typeof(_that.on.PlayerInit) === 'function') _that.on.PlayerInit(_that, _that.Player);
       });
 
       // For Timeupdate.
@@ -218,12 +227,23 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
       // For Volume change.
       videojs(this.CONFIG.player_id).on('volumechange', ()=>{
         // 音量バーの更新(％)
-        dom.setStyle( this.$uiSeekbarVolCover, { width : (this.Player.volume() * 100) + '%' } );
+        dom.setStyle( this.$.uiSeekbarVolCover, { width : (this.Player.volume() * 100) + '%' } );
       });
 
       // For Ended movie paly.
       videojs(this.CONFIG.player_id).on('ended', ()=>{
         this.Stop();
+        if(_that.on.PlayerEnded && typeof(_that.on.PlayerEnded) === 'function') _that.on.PlayerEnded(_that, _that.Player);
+      });
+
+      videojs(this.CONFIG.player_id).on('play', ()=>{
+        this.ClassOn();
+        if(_that.on.PlayerPlay && typeof(_that.on.PlayerPlay) === 'function') _that.on.PlayerPlay(_that, _that.Player);
+      });
+
+      videojs(this.CONFIG.player_id).on('pause', ()=>{
+        this.ClassOff();
+        if(_that.on.PlayerPause && typeof(_that.on.PlayerPause) === 'function') _that.on.PlayerPause(_that, _that.Player);
       });
 
       // For Error
@@ -286,44 +306,44 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   CacheElement(){
-    this.$playerElem                 = dom.selectDom(`#${this.CONFIG.id}`);
-    this.$playerElemMain             = dom.selectDom(`#${this.CONFIG.id} #${this.CONFIG.player_id}`);
-    this.$playerElemMainWrap         = dom.selectDom(`#${this.CONFIG.id} #${this.CONFIG.player_id_wrap}`);
+    this.$.playerElem                 = dom.selectDom(`#${this.CONFIG.id}`);
+    this.$.playerElemMain             = dom.selectDom(`#${this.CONFIG.id} #${this.CONFIG.player_id}`);
+    this.$.playerElemMainWrap         = dom.selectDom(`#${this.CONFIG.id} #${this.CONFIG.player_id_wrap}`);
 
-    this.$uiBtnPlay                  = dom.selectDom('#'+this.CONFIG.id+' .btn_play');
-    this.$uiBtnStop                  = dom.selectDom('#'+this.CONFIG.id+' .btn_stop');
-    this.$uiBtnPause                 = dom.selectDom('#'+this.CONFIG.id+' .btn_pause');
-    this.$uiBtnMute                  = dom.selectDom('#'+this.CONFIG.id+' .btn_mute');
-    this.$uiBtnVolon                 = dom.selectDom('#'+this.CONFIG.id+' .btn_volon');
-    this.$uiBtnVoloff                = dom.selectDom('#'+this.CONFIG.id+' .btn_voloff');
-    this.$uiBtnFull                  = dom.selectDom('#'+this.CONFIG.id+' .btn_full');
+    this.$.uiBtnPlay                  = dom.selectDom('#'+this.CONFIG.id+' .btn_play');
+    this.$.uiBtnStop                  = dom.selectDom('#'+this.CONFIG.id+' .btn_stop');
+    this.$.uiBtnPause                 = dom.selectDom('#'+this.CONFIG.id+' .btn_pause');
+    this.$.uiBtnMute                  = dom.selectDom('#'+this.CONFIG.id+' .btn_mute');
+    this.$.uiBtnVolon                 = dom.selectDom('#'+this.CONFIG.id+' .btn_volon');
+    this.$.uiBtnVoloff                = dom.selectDom('#'+this.CONFIG.id+' .btn_voloff');
+    this.$.uiBtnFull                  = dom.selectDom('#'+this.CONFIG.id+' .btn_full');
 
-    this.$uiDisplayTime              = dom.selectDom('#'+this.CONFIG.id+' .display_time');
-    this.$uiDisplayTimeNow           = dom.selectDom('#'+this.CONFIG.id+' .display_time_now');
-    this.$uiDisplayTimeTotal         = dom.selectDom('#'+this.CONFIG.id+' .display_time_total');
-    this.$uiDisplayTimeDown          = dom.selectDom('#'+this.CONFIG.id+' .display_time_down');
-    this.$uiDisplayTimePar           = dom.selectDom('#'+this.CONFIG.id+' .display_time_par');
-    this.$uiDisplayPoster            = dom.selectDom('#'+this.CONFIG.id+' .display_poster');
-    this.$uiDisplayPosterBg          = dom.selectDom('#'+this.CONFIG.id+' .display_poster_background');
-    this.$uiDisplayName              = dom.selectDom('#'+this.CONFIG.id+' .display_name');
+    this.$.uiDisplayTime              = dom.selectDom('#'+this.CONFIG.id+' .display_time');
+    this.$.uiDisplayTimeNow           = dom.selectDom('#'+this.CONFIG.id+' .display_time_now');
+    this.$.uiDisplayTimeTotal         = dom.selectDom('#'+this.CONFIG.id+' .display_time_total');
+    this.$.uiDisplayTimeDown          = dom.selectDom('#'+this.CONFIG.id+' .display_time_down');
+    this.$.uiDisplayTimePar           = dom.selectDom('#'+this.CONFIG.id+' .display_time_par');
+    this.$.uiDisplayPoster            = dom.selectDom('#'+this.CONFIG.id+' .display_poster');
+    this.$.uiDisplayPosterBg          = dom.selectDom('#'+this.CONFIG.id+' .display_poster_background');
+    this.$.uiDisplayName              = dom.selectDom('#'+this.CONFIG.id+' .display_name');
 
-    this.$uiSeekbarVol               = dom.selectDom('#'+this.CONFIG.id+' .seekbar_vol');
-    this.$uiSeekbarVolBg             = dom.selectDom('#'+this.CONFIG.id+' .seekbar_vol .seekbar_vol_bg');
-    this.$uiSeekbarVolCover          = dom.selectDom('#'+this.CONFIG.id+' .seekbar_vol span');
-    this.$uiSeekbarTime              = dom.selectDom('#'+this.CONFIG.id+' .seekbar_time');
-    this.$uiSeekbarTimeBg            = dom.selectDom('#'+this.CONFIG.id+' .seekbar_time .seekbar_time_bg');
-    this.$uiSeekbarTimeCover         = dom.selectDom('#'+this.CONFIG.id+' .seekbar_time span');
+    this.$.uiSeekbarVol               = dom.selectDom('#'+this.CONFIG.id+' .seekbar_vol');
+    this.$.uiSeekbarVolBg             = dom.selectDom('#'+this.CONFIG.id+' .seekbar_vol .seekbar_vol_bg');
+    this.$.uiSeekbarVolCover          = dom.selectDom('#'+this.CONFIG.id+' .seekbar_vol span');
+    this.$.uiSeekbarTime              = dom.selectDom('#'+this.CONFIG.id+' .seekbar_time');
+    this.$.uiSeekbarTimeBg            = dom.selectDom('#'+this.CONFIG.id+' .seekbar_time .seekbar_time_bg');
+    this.$.uiSeekbarTimeCover         = dom.selectDom('#'+this.CONFIG.id+' .seekbar_time span');
 
-    this.$uiBtnChange                = dom.selectDom('#'+this.CONFIG.id+' .btn_change');
-    this.$uiBtnChangeDisplayTime     = dom.selectDom('#'+this.CONFIG.id+' .display_time');
-    this.$uiBtnChangeDisplayTimeDown = dom.selectDom('#'+this.CONFIG.id+' .display_time_down');
+    this.$.uiBtnChange                = dom.selectDom('#'+this.CONFIG.id+' .btn_change');
+    this.$.uiBtnChangeDisplayTime     = dom.selectDom('#'+this.CONFIG.id+' .display_time');
+    this.$.uiBtnChangeDisplayTimeDown = dom.selectDom('#'+this.CONFIG.id+' .display_time_down');
 
-    this.$uiBtnDataId                = dom.selectDom('[data-PMB-id]');
+    this.$.uiBtnDataId                = dom.selectDom('[data-PMB-id]');
   }
 
   EventPlay(){
-    if(this.$uiBtnPlay){
-      dom.addEvent(this.$uiBtnPlay, 'click' , (event) => {
+    if(this.$.uiBtnPlay){
+      dom.addEvent(this.$.uiBtnPlay, 'click' , (event) => {
         if(this.Player.paused()){
           this.Play();
         } else {
@@ -334,16 +354,16 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   EventPause(){
-    if(this.$uiBtnPause){
-      dom.addEvent(this.$uiBtnPause, 'click' , (event) => {
+    if(this.$.uiBtnPause){
+      dom.addEvent(this.$.uiBtnPause, 'click' , (event) => {
         this.Pause();
       });
     }
   }
 
   EventStop(){
-    if(this.$uiBtnStop){
-      dom.addEvent(this.$uiBtnStop, 'click' , (event) => {
+    if(this.$.uiBtnStop){
+      dom.addEvent(this.$.uiBtnStop, 'click' , (event) => {
         this.Stop();
       });
     }
@@ -354,27 +374,27 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   EventMute(){
-    if(this.$uiBtnMute){
-      dom.addEvent(this.$uiBtnMute, 'click' , (event) => {
+    if(this.$.uiBtnMute){
+      dom.addEvent(this.$.uiBtnMute, 'click' , (event) => {
         this.Mute();
       });
     }
   }
 
   EventVolon(){
-    if(this.$uiBtnVolon){
-      dom.addEvent(this.$uiBtnVolon, 'click' , (event) => {
+    if(this.$.uiBtnVolon){
+      dom.addEvent(this.$.uiBtnVolon, 'click' , (event) => {
         this.SetVolume(this.CONFIG.volume);
-        dom.removeClass(this.$uiBtnVolon, 'active');
+        dom.removeClass(this.$.uiBtnVolon, this.CONFIG.classname_active);
       });
     }
   }
 
   EventVoloff(){
-    if(this.$uiBtnVoloff){
-      dom.addEvent(this.$uiBtnVoloff, 'click' , (event) => {
+    if(this.$.uiBtnVoloff){
+      dom.addEvent(this.$.uiBtnVoloff, 'click' , (event) => {
         this.SetVolume(0);
-        dom.addClass(this.$uiBtnVoloff, 'active');
+        dom.addClass(this.$.uiBtnVoloff, this.CONFIG.classname_active);
       });
     }
   }
@@ -383,14 +403,14 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
    * When dragging a seek bar(volume).
    */
   EventSeekbarVol(){
-    if(this.$uiSeekbarVol){
+    if(this.$.uiSeekbarVol){
 
       let _flag = false;
       let _targetWidth = 0;
 
-      dom.setStyle( this.$uiSeekbarVolCover, { width : 100 + '%' } );
+      dom.setStyle( this.$.uiSeekbarVolCover, { width : 100 + '%' } );
 
-      dom.addEvent(this.$uiSeekbarVol, 'mousedown' , (event) => {
+      dom.addEvent(this.$.uiSeekbarVol, 'mousedown' , (event) => {
         _flag = true;
         let _currentWidth  = event.currentTarget.clientWidth;
         let _clickPosition = event.currentTarget.getBoundingClientRect().left;
@@ -398,14 +418,14 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
         this.SetVolume(_targetWidth);
       });
 
-      dom.addEvent(this.$uiSeekbarVol, 'mouseleave' , (event) => {
+      dom.addEvent(this.$.uiSeekbarVol, 'mouseleave' , (event) => {
         _flag = false;
       });
-      dom.addEvent(this.$uiSeekbarVol, 'mouseup' , (event) => {
+      dom.addEvent(this.$.uiSeekbarVol, 'mouseup' , (event) => {
         _flag = false;
       });
 
-      dom.addEvent(this.$uiSeekbarVol, 'mousemove' , (event) => {
+      dom.addEvent(this.$.uiSeekbarVol, 'mousemove' , (event) => {
         if(_flag === true){
           let _currentWidth  = event.currentTarget.clientWidth;
           let _clickPosition = event.currentTarget.getBoundingClientRect().left;
@@ -425,21 +445,21 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
    */
   EventSeekbarTime(){
 
-    if(this.$uiSeekbarTime){
+    if(this.$.uiSeekbarTime){
 
       let _targetTime = 0;
 
-      dom.addEvent(this.$uiSeekbarTime, 'mousedown', (event) => {
+      dom.addEvent(this.$.uiSeekbarTime, 'mousedown', (event) => {
         this.PlayerChangeSeekingFlg = true;
         let _currentWidth    = event.currentTarget.clientWidth;
         let _clickPosition  = event.currentTarget.getBoundingClientRect().left;
         let _targetWidth = (event.pageX - _clickPosition) / _currentWidth;
         _targetTime = this.Player.duration() * _targetWidth;
-        dom.setStyle( this.$uiSeekbarTimeCover, { width : (_targetWidth * 100) + '%' } );
+        dom.setStyle( this.$.uiSeekbarTimeCover, { width : (_targetWidth * 100) + '%' } );
         this.Player.currentTime(_targetTime);
       });
 
-      dom.addEvent(this.$uiSeekbarTime, 'mouseleave', (event) => {
+      dom.addEvent(this.$.uiSeekbarTime, 'mouseleave', (event) => {
         if(this.PlayerChangeSeekingFlg){
           this.Play();
           setTimeout(()=>{
@@ -449,7 +469,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
         }
       });
 
-      dom.addEvent(this.$uiSeekbarTime, 'mouseup', (event) => {
+      dom.addEvent(this.$.uiSeekbarTime, 'mouseup', (event) => {
         if(this.PlayerChangeSeekingFlg){
           this.Play();
           setTimeout(()=>{
@@ -459,13 +479,13 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
         }
       });
 
-      dom.addEvent(this.$uiSeekbarTime, 'mousemove', (event) => {
+      dom.addEvent(this.$.uiSeekbarTime, 'mousemove', (event) => {
         if(this.PlayerChangeSeekingFlg){
           let _currentWidth    = event.currentTarget.clientWidth;
           let _clickPosition  = event.currentTarget.getBoundingClientRect().left;
           let _targetWidth = (event.pageX - _clickPosition) / _currentWidth;
           let _targetTime = this.Player.duration() * _targetWidth;
-          dom.setStyle( this.$uiSeekbarTimeCover, { width : (_targetWidth * 100) + '%' } );
+          dom.setStyle( this.$.uiSeekbarTimeCover, { width : (_targetWidth * 100) + '%' } );
           this.Player.currentTime(_targetTime);
         }
       });
@@ -474,8 +494,8 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   EventChangeVideo(){
-    if(this.$uiBtnChange){
-      dom.addEvent(this.$uiBtnChange, 'click' , (event) => {
+    if(this.$.uiBtnChange){
+      dom.addEvent(this.$.uiBtnChange, 'click' , (event) => {
         // Get video-id.
         // -> <data-PMB-id="">
         let id = event.currentTarget.dataset.pmbId;
@@ -485,39 +505,45 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   EventBtnFull(){
-    if(this.$uiBtnFull){
-      dom.addEvent(this.$uiBtnFull, 'click' , (event) => {
+    if(this.$.uiBtnFull){
+      dom.addEvent(this.$.uiBtnFull, 'click' , (event) => {
         this.Fullscreen();
       });
     }
   }
 
   ClassOn(){
+    // Add className Player wrapper.
+    if(this.$.playerElem) dom.addClass(this.$.playerElem, this.CONFIG.classname_active_wrap);
+
     // Add className Play-Button.
-    if(this.$uiBtnPlay) dom.addClass(this.$uiBtnPlay, 'active');
+    if(this.$.uiBtnPlay) dom.addClass(this.$.uiBtnPlay, this.CONFIG.classname_active);
 
     // Add className Pause-Button.
-    if(this.$uiBtnPause) dom.addClass(this.$uiBtnPause, 'active');
+    if(this.$.uiBtnPause) dom.addClass(this.$.uiBtnPause, this.CONFIG.classname_active);
 
     // Add className MediaChange-Button.
-    if(this.$uiBtnDataId){
-      this.$uiBtnDataId.map((item,index)=>{
+    if(this.$.uiBtnDataId){
+      this.$.uiBtnDataId.map((item,index)=>{
         if(this.CONFIG.videoid == item.getAttribute('data-PMB-id')){
-          dom.addClass(item, 'active');
+          dom.addClass(item, this.CONFIG.classname_active);
         }
       });
     }
   }
 
   ClassOff(){
-    // Add className Play-Button.
-    if(this.$uiBtnPlay) dom.removeClass(this.$uiBtnPlay, 'active');
+    // Remove className Player wrapper.
+    if(this.$.playerElem) dom.removeClass(this.$.playerElem, this.CONFIG.classname_active_wrap);
 
-    // Add className Pause-Button.
-    if(this.$uiBtnPause) dom.removeClass(this.$uiBtnPause, 'active');
+    // Remove className Play-Button.
+    if(this.$.uiBtnPlay) dom.removeClass(this.$.uiBtnPlay, this.CONFIG.classname_active);
+
+    // Remove className Pause-Button.
+    if(this.$.uiBtnPause) dom.removeClass(this.$.uiBtnPause, this.CONFIG.classname_active);
 
     // Remove className MediaChange-Button.
-    if(this.$uiBtnDataId) dom.removeClass(this.$uiBtnDataId, 'active');
+    if(this.$.uiBtnDataId) dom.removeClass(this.$.uiBtnDataId, this.CONFIG.classname_active);
   }
 
   Update(){
@@ -528,38 +554,38 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
     // Determine while changing media.
     if(this.PlayerChangeLoadFlg){
       // update player data. (ms)
-      if(this.$uiDisplayTime) dom.setHtml( this.$uiDisplayTime, this.GetTime()+'/'+this.GetTimeMax() );
-      if(this.$uiDisplayTimeNow) dom.setHtml( this.$uiDisplayTimeNow, this.GetTime() );
-      if(this.$uiDisplayTimeTotal) dom.setHtml( this.$uiDisplayTimeTotal, this.GetTimeMax() );
-      if(this.$uiDisplayTimeDown) dom.setHtml( this.$uiDisplayTimeDown, this.GetTimeDown() );
-      if(this.$uiBtnChangeDisplayTime) dom.setHtml( this.$uiBtnChangeDisplayTime, this.GetTime()+'/'+this.GetTimeMax() );
-      if(this.$uiBtnChangeDisplayTimeDown) dom.setHtml( this.$uiBtnChangeDisplayTimeDown, this.GetTimeDown() );
+      if(this.$.uiDisplayTime) dom.setHtml( this.$.uiDisplayTime, this.GetTime()+'/'+this.GetTimeMax() );
+      if(this.$.uiDisplayTimeNow) dom.setHtml( this.$.uiDisplayTimeNow, this.GetTime() );
+      if(this.$.uiDisplayTimeTotal) dom.setHtml( this.$.uiDisplayTimeTotal, this.GetTimeMax() );
+      if(this.$.uiDisplayTimeDown) dom.setHtml( this.$.uiDisplayTimeDown, this.GetTimeDown() );
+      if(this.$.uiBtnChangeDisplayTime) dom.setHtml( this.$.uiBtnChangeDisplayTime, this.GetTime()+'/'+this.GetTimeMax() );
+      if(this.$.uiBtnChangeDisplayTimeDown) dom.setHtml( this.$.uiBtnChangeDisplayTimeDown, this.GetTimeDown() );
 
       // update play time. (%)
-      if(this.$uiDisplayTimePar) dom.setHtml( this.$uiDisplayTimePar, this.GetTimePar() );
+      if(this.$.uiDisplayTimePar) dom.setHtml( this.$.uiDisplayTimePar, this.GetTimePar() );
 
       // update seek-bar. (%)
-      if(this.$uiSeekbarTimeCover) this.$uiSeekbarTimeCover[0].style.width = this.GetTimePar();
+      if(this.$.uiSeekbarTimeCover) this.$.uiSeekbarTimeCover[0].style.width = this.GetTimePar();
     } else {
       // update player data. (ms)
-      if(this.$uiDisplayTime) dom.setHtml( this.$uiDisplayTime, '00:00' );
-      if(this.$uiDisplayTimeNow) dom.setHtml( this.$uiDisplayTimeNow, '00:00' );
-      if(this.$uiDisplayTimeTotal) dom.setHtml( this.$uiDisplayTimeTotal, '00:00' );
-      if(this.$uiDisplayTimeDown) dom.setHtml( this.$uiDisplayTimeDown, '00:00' );
-      if(this.$uiBtnChangeDisplayTime) dom.setHtml( this.$uiBtnChangeDisplayTime, '00:00' );
-      if(this.$uiBtnChangeDisplayTimeDown) dom.setHtml( this.$uiBtnChangeDisplayTimeDown, '00:00' );
+      if(this.$.uiDisplayTime) dom.setHtml( this.$.uiDisplayTime, '00:00' );
+      if(this.$.uiDisplayTimeNow) dom.setHtml( this.$.uiDisplayTimeNow, '00:00' );
+      if(this.$.uiDisplayTimeTotal) dom.setHtml( this.$.uiDisplayTimeTotal, '00:00' );
+      if(this.$.uiDisplayTimeDown) dom.setHtml( this.$.uiDisplayTimeDown, '00:00' );
+      if(this.$.uiBtnChangeDisplayTime) dom.setHtml( this.$.uiBtnChangeDisplayTime, '00:00' );
+      if(this.$.uiBtnChangeDisplayTimeDown) dom.setHtml( this.$.uiBtnChangeDisplayTimeDown, '00:00' );
 
       // update play time. (%)
-      if(this.$uiDisplayTimePar) dom.setHtml( this.$uiDisplayTimePar, '0%' );
+      if(this.$.uiDisplayTimePar) dom.setHtml( this.$.uiDisplayTimePar, '0%' );
 
       // update seek-bar. (%)
-      if(this.$uiSeekbarTimeCover) this.$uiSeekbarTimeCover[0].style.width = '0%';
+      if(this.$.uiSeekbarTimeCover) this.$.uiSeekbarTimeCover[0].style.width = '0%';
     }
 
   }
 
   Play(callback){
-    if(this.$uiBtnPlay || this.$uiBtnDataId){
+    if(this.$.uiBtnPlay || this.$.uiBtnDataId){
       if(this.Player.paused()){
         if(!this.on.PlayPrep && callback) this.on.PlayPrep = callback;
         if(this.on.PlayPrep && typeof(this.on.PlayPrep) === 'function') this.on.PlayPrep(this, this.Player);
@@ -600,12 +626,12 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
       this.CONFIG.muted = false;
       this.Player.muted(false);
       this.SetVolume(this.CONFIG.volume);
-      dom.removeClass(this.$uiBtnMute, 'active');
+      dom.removeClass(this.$.uiBtnMute, this.CONFIG.classname_active);
     }else{
       this.CONFIG.muted = true;
       this.Player.muted(true);
       this.Player.volume(0);
-      dom.addClass(this.$uiBtnMute, 'active');
+      dom.addClass(this.$.uiBtnMute, this.CONFIG.classname_active);
     }
   }
 
@@ -756,22 +782,30 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
     else return '0%';
   }
 
+  GetPoster(){
+    return this.Player.poster();
+  }
+
+  GetMediaInfo(){
+    return this.Player.mediainfo;
+  }
+
   SetPoster(path){
     if(path){
       this.Player.poster(path);
     } else {
       if(this.CONFIG.poster != false) this.CONFIG.poster = this.Player.poster();
 
-      if(this.$uiDisplayPoster){
+      if(this.$.uiDisplayPoster){
         if(this.CONFIG.mode == 'audio'){
-          dom.setHtml(this.$uiDisplayPoster, '');
+          dom.setHtml(this.$.uiDisplayPoster, '');
         } else {
-          dom.setHtml(this.$uiDisplayPoster, `<img src="${this.CONFIG.poster}" alt="">`);
+          dom.setHtml(this.$.uiDisplayPoster, `<img src="${this.CONFIG.poster}" alt="">`);
         }
       }
 
-      if(this.$uiDisplayPosterBg && this.CONFIG.mode != 'audio'){
-        dom.setStyle(this.$uiDisplayPosterBg, { backgroundImage : `url(${this.CONFIG.poster})` });
+      if(this.$.uiDisplayPosterBg && this.CONFIG.mode != 'audio'){
+        dom.setStyle(this.$.uiDisplayPosterBg, { backgroundImage : `url(${this.CONFIG.poster})` });
       }
     }
   }
@@ -782,7 +816,7 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   SetInfo(){
-    if(this.$uiDisplayName) dom.setHtml(this.$uiDisplayName, this.PlayerMediaInfo.name);
+    if(this.$.uiDisplayName) dom.setHtml(this.$.uiDisplayName, this.PlayerMediaInfo.name);
   }
 
   Destroy(){
