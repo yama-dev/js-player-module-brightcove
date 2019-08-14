@@ -765,6 +765,14 @@ export default class PLAYER_MODULE_BRIGHTCOVE {
     else return '0%';
   }
 
+  GetPoster(){
+    return this.Player.poster();
+  }
+
+  GetMediaInfo(){
+    return this.Player.mediainfo;
+  }
+
   SetPoster(path){
     if(path){
       this.Player.poster(path);
