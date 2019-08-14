@@ -1,6 +1,6 @@
 {
   "name": "js-player-module-brightcove",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "Brightcove custom player using the Brightcove Player API.",
   "keywords": [
     "Brightcove",
@@ -42,6 +42,6 @@
   },
   "dependencies": {
     "@yama-dev/js-dom": "0.0.6",
-    "js-parse-module": "0.0.4"
+    "@yama-dev/js-parse-module": "0.2.0"
   }
 }

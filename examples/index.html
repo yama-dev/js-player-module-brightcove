@@ -137,12 +137,27 @@
             height: '300px',
             volume: 0.5,
             on: {
-              Play: function(){ console.log('Play') },
-              PlayPrep: function(){ console.log('PlayPrep') },
-              Pause: function(){ console.log('Pause') },
-              Stop: function(){ console.log('Stop') },
-              StopAll: function(){ console.log('StopAll') },
-              Change: function(){ console.log('Change') }
+              Init: function(player){
+                console.log('Init', player);
+              },
+              Play: function(player){
+                console.log('Play', player);
+              },
+              PlayPrep: function(player){
+                console.log('PlayPrep', player);
+              },
+              Pause: function(player){
+                console.log('Pause', player);
+              },
+              Stop: function(player){
+                console.log('Stop', player);
+              },
+              StopAll: function(player){
+                console.log('StopAll', player);
+              },
+              Change: function(player){
+                console.log('Change', player);
+              }
             }
           });
         </script>
@@ -169,24 +184,39 @@
         <pre class="prettyprint lang-html mt-2">
           <code>
           &lt;script&gt;
-            var PMB = new PLAYER_MODULE_BRIGHTCOVE({
-              id:&#039;brightcovePlayerCustom&#039;,
-              ui_controls:true,
-              ui_default:true,
-              videoid:&#039;4230322585001&#039;,
-              account:&#039;20318290001&#039;,
-              width: &#039;480px&#039;,
-              height: &#039;300px&#039;,
-              volume: 0.5,
-              on: {
-                Play: function(){ console.log(&#039;Play&#039;) },
-                PlayPrep: function(){ console.log(&#039;PlayPrep&#039;) },
-                Pause: function(){ console.log(&#039;Pause&#039;) },
-                Stop: function(){ console.log(&#039;Stop&#039;) },
-                StopAll: function(){ console.log(&#039;StopAll&#039;) },
-                Change: function(){ console.log(&#039;Change&#039;) }
+          var PMB = new PLAYER_MODULE_BRIGHTCOVE({
+            id:&#039;brightcovePlayerCustom&#039;,
+            ui_controls:true,
+            ui_default:true,
+            videoid:&#039;4230322585001&#039;,
+            account:&#039;20318290001&#039;,
+            width: &#039;480px&#039;,
+            height: &#039;300px&#039;,
+            volume: 0.5,
+            on: {
+              Init: function(player){
+                console.log(&#039;Init&#039;, player);
+              },
+              Play: function(player){
+                console.log(&#039;Play&#039;, player);
+              },
+              PlayPrep: function(player){
+                console.log(&#039;PlayPrep&#039;, player);
+              },
+              Pause: function(player){
+                console.log(&#039;Pause&#039;, player);
+              },
+              Stop: function(player){
+                console.log(&#039;Stop&#039;, player);
+              },
+              StopAll: function(player){
+                console.log(&#039;StopAll&#039;, player);
+              },
+              Change: function(player){
+                console.log(&#039;Change&#039;, player);
               }
-            });
+            }
+          });
           &lt;/script&gt;
 
           &lt;button class=&quot;btn btn btn-secondary&quot; onclick=&quot;PMB.Stop()&quot;&gt;Media停止(Stop)&lt;/button&gt;
