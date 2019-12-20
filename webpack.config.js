@@ -1,15 +1,37 @@
+const pkg = require('./package.json');
+
+const comment = `@${pkg.author}/${pkg.name}
+version ${pkg.version}
+repository ${pkg.repository.url}
+copyright ${pkg.author}
+licensed ${pkg.license}`;
+
 const env = process.env.NODE_ENV;
 
 const webpack = require('webpack');
 
+const webpackPlugEnv = new webpack.EnvironmentPlugin({
+  NODE_ENV: 'development',
+  VERSION: pkg.version,
+  DEBUG: false
+});
+
+const webpackPlugBnr = new webpack.BannerPlugin({
+  banner: comment,
+});
+
+const babelPlugin = [
+  '@babel/plugin-transform-object-assign'
+];
+
 const config = {
   mode: env || 'development',
-  entry: './src/js-player-module-brightcove.js',
+  entry: {
+    'js-player-module-brightcove': './src/js-player-module-brightcove.js',
+  },
   output: {
     path: `${__dirname}/dist`,
-    filename: 'js-player-module-brightcove.js',
-    library: 'PLAYER_MODULE_BRIGHTCOVE',
-    libraryExport: 'default',
+    filename: '[name].js',
     libraryTarget: 'umd'
   },
   module: {
@@ -22,20 +44,30 @@ const config = {
       },
       {
         test: /\.js$/,
+        exclude: /node_modules[//\/](?!(@yama\-dev)\/).*/,
         use: [
           {
             loader: 'babel-loader',
             options: {
               presets: [
-                ['env', {'modules': false}]
-              ]
+                [
+                  '@babel/preset-env',
+                  {
+                    modules: false
+                  }
+                ]
+              ],
+              plugins: babelPlugin
             }
           }
         ],
-        exclude: /node_modules/,
       }
     ]
-  }
+  },
+  plugins: [
+    webpackPlugEnv,
+    webpackPlugBnr
+  ]
 };
 
 module.exports = config;
