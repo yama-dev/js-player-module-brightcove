@@ -15,13 +15,12 @@
   "license": "MIT",
   "main": "./dist/js-player-module-brightcove.js",
   "scripts": {
-    "start": "npm install && npm run develop",
-    "develop": "npm-run-all -p build:develop server:develop",
-    "server:develop": "browser-sync start --server ./ --directory ./sample --files **/*.css **/*.js **/*.html",
-    "build:develop": "webpack --mode=development --progress --colors --watch",
-    "production": "npm-run-all -p build:production server:production",
-    "server:production": "browser-sync start --server ./ --directory ./sample --files **/*.css **/*.js **/*.html",
-    "build:production": "webpack --mode=production --progress --colors --watch"
+    "start": "npm install && npm run dev",
+    "dev": "npm-run-all -p webpack:develop server",
+    "prod": "npm-run-all -p webpack:build server",
+    "server": "browser-sync start --server ./ --directory ./examples --files **/*.css **/*.js **/*.html",
+    "webpack:develop": "webpack --progress --colors --watch",
+    "webpack:build": "webpack --mode=production --progress --colors"
   },
   "repository": {
     "type": "git",
