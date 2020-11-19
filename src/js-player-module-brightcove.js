@@ -68,6 +68,7 @@ export class PLAYER_MODULE_BRIGHTCOVE {
       PlayerPlay  : options.on.PlayerPlay||'',
       PlayerPause : options.on.PlayerPause||'',
 
+      TimeUpdate : options.on.TimeUpdate||'',
       VolumeChange : options.on.VolumeChange||'',
 
       PlayPrep: options.on.PlayPrep||'',
@@ -751,38 +752,23 @@ export class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   GetTime(){
-    function parseNumber(num) {
-      if(typeof(num) === 'number') num = String(num);
-      if (num < 10) return '0'+num;
-      if (num >= 10) return num;
-    }
-    let _m = parseNumber(Math.floor(this.Player.currentTime()/60));
-    let _s = parseNumber(Math.floor(this.Player.currentTime()%60));
+    let _m = PLAYER_MODULE_BRIGHTCOVE.parseNumber(Math.floor(this.Player.currentTime()/60));
+    let _s = PLAYER_MODULE_BRIGHTCOVE.parseNumber(Math.floor(this.Player.currentTime()%60));
     if(isFinite(_s) && isFinite(_m)) return _m+':'+_s;
     else return '00:00';
   }
 
   GetTimeDown(){
-    function parseNumber(num) {
-      if(typeof(num) === 'number') num = String(num);
-      if (num < 10) return '0'+num;
-      if (num >= 10) return num;
-    }
     let _countDownTime = this.Player.duration() - this.Player.currentTime();
-    let _m_down        = parseNumber(Math.floor(_countDownTime / 60));
-    let _s_down        = parseNumber(Math.floor(_countDownTime % 60));
+    let _m_down        = PLAYER_MODULE_BRIGHTCOVE.parseNumber(Math.floor(_countDownTime / 60));
+    let _s_down        = PLAYER_MODULE_BRIGHTCOVE.parseNumber(Math.floor(_countDownTime % 60));
     if(isFinite(_s_down) && isFinite(_m_down)) return _m_down+':'+_s_down;
     else return '00:00';
   }
 
   GetTimeMax(){
-    function parseNumber(num) {
-      if(typeof(num) === 'number') num = String(num);
-      if (num < 10) return '0'+num;
-      if (num >= 10) return num;
-    }
-    let _m_max = parseNumber(Math.floor(this.Player.duration()/60));
-    let _s_max = parseNumber(Math.floor(this.Player.duration()%60));
+    let _m_max = PLAYER_MODULE_BRIGHTCOVE.parseNumber(Math.floor(this.Player.duration()/60));
+    let _s_max = PLAYER_MODULE_BRIGHTCOVE.parseNumber(Math.floor(this.Player.duration()%60));
     return _m_max+':'+_s_max;
   }
 
