@@ -571,6 +571,16 @@ export class PLAYER_MODULE_BRIGHTCOVE {
 
       // update seek-bar. (%)
       if(this.$.uiSeekbarTimeCover) this.$.uiSeekbarTimeCover[0].style.width = this.GetTimePar();
+
+      if(this.on.TimeUpdate && typeof(this.on.TimeUpdate) === 'function'){
+        this.on.TimeUpdate({
+          current : this.GetTime(),
+          max     : this.GetTimeMax(),
+          down    : this.GetTimeDown(),
+          ratio   : this.GetTimeRatio(),
+          par     : this.GetTimePar()
+        });
+      }
     } else {
       // update player data. (ms)
       if(this.$.uiDisplayTime) DOM.setHtml( this.$.uiDisplayTime, '00:00' );
