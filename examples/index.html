@@ -156,6 +156,14 @@
                 console.log(player.GetTimeRatio());
                 console.log(player.GetTimeDown());
               },
+
+              TimeUpdate : function(obj){
+                console.log('TimeUpdate', obj);
+              },
+              VolumeChange : function(obj){
+                console.log('VolumeChange', obj);
+              },
+
               Play: function(player){
                 console.log('Play', player);
               },
@@ -231,6 +239,12 @@
                   console.log(player.GetTimeMax());
                   console.log(player.GetTimeRatio());
                   console.log(player.GetTimeDown());
+                },
+                TimeUpdate : function(obj){
+                  console.log(&#039;TimeUpdate&#039;, obj);
+                },
+                VolumeChange : function(obj){
+                  console.log(&#039;VolumeChange&#039;, obj);
                 },
                 Play: function(player){
                   console.log(&#039;Play&#039;, player);
