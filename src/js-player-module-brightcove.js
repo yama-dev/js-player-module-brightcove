@@ -68,6 +68,8 @@ export class PLAYER_MODULE_BRIGHTCOVE {
       PlayerPlay  : options.on.PlayerPlay||'',
       PlayerPause : options.on.PlayerPause||'',
 
+      VolumeChange : options.on.VolumeChange||'',
+
       PlayPrep: options.on.PlayPrep||'',
       Play    : options.on.Play||'',
       Pause   : options.on.Pause||'',
@@ -221,7 +223,16 @@ export class PLAYER_MODULE_BRIGHTCOVE {
       // For Volume change.
       videojs(this.CONFIG.player_id).on('volumechange', ()=>{
         // 音量バーの更新(％)
-        DOM.setStyle( this.$.uiSeekbarVolCover, { width : (this.Player.volume() * 100) + '%' } );
+        let _volume = this.Player.volume();
+
+        DOM.setStyle( this.$.uiSeekbarVolCover, { width : (_volume * 100) + '%' } );
+
+        if(_that.on.VolumeChange && typeof(_that.on.VolumeChange) === 'function'){
+          _that.on.VolumeChange({
+            volume: PLAYER_MODULE_BRIGHTCOVE.toFixedNumber(_volume, 3),
+            par   : PLAYER_MODULE_BRIGHTCOVE.toFixedNumber(_volume * 100, 1)
+          });
+        }
       });
 
       // For Ended movie paly.
