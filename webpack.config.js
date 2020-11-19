@@ -1,23 +1,21 @@
+const webpack = require('webpack');
+const TerserPlugin = require('terser-webpack-plugin');
 const pkg = require('./package.json');
 
-const comment = `@${pkg.author}/${pkg.name}
-version ${pkg.version}
-repository ${pkg.repository.url}
-copyright ${pkg.author}
-licensed ${pkg.license}`;
+const comment = `/*!
+ * @${pkg.author}/${pkg.name}
+ * version ${pkg.version}
+ * repository ${pkg.repository.url}
+ * copyright ${pkg.author}
+ * licensed ${pkg.license}
+ */`;
 
 const env = process.env.NODE_ENV;
-
-const webpack = require('webpack');
 
 const webpackPlugEnv = new webpack.EnvironmentPlugin({
   NODE_ENV: 'development',
   VERSION: pkg.version,
   DEBUG: false
-});
-
-const webpackPlugBnr = new webpack.BannerPlugin({
-  banner: comment,
 });
 
 const babelPlugin = [
@@ -65,9 +63,24 @@ const config = {
     ]
   },
   plugins: [
-    webpackPlugEnv,
-    webpackPlugBnr
-  ]
+    webpackPlugEnv
+  ],
+  optimization: {
+    minimizer: [
+      new TerserPlugin({
+        extractComments: false,
+        terserOptions: {
+          output: {
+            preamble: comment,
+            comments: false,
+          },
+          compress: {
+            drop_console: true
+          }
+        },
+      }),
+    ],
+  }
 };
 
 module.exports = config;
