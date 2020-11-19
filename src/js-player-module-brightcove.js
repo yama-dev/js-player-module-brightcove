@@ -837,4 +837,24 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     this.Player.reset();
   }
 
+  // 0 -> 00
+  // 1 -> 01
+  // 10 -> 10
+  static parseNumber(num) {
+    if(typeof(num) === 'number') num = String(num);
+    if (num < 10) return '0'+num;
+    if (num >= 10) return num;
+  }
+
+  static pad(n, width, z) {
+    z = z || '0';
+    n = n + '';
+    return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+  }
+
+  static toFixedNumber(num, digits, base){
+    var pow = Math.pow(base||10, digits);
+    return Math.round(num*pow) / pow;
+  }
+
 }
