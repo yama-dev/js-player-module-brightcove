@@ -1,6 +1,6 @@
 /*!
  * @yama-dev/js-player-module-brightcove
- * version 5.0.0
+ * version 5.1.0
  * repository https://github.com/yama-dev/js-player-module-brightcove
  * copyright yama-dev
  * licensed MIT
