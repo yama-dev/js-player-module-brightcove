@@ -4,7 +4,7 @@
 
 ## Feature
 
-Brightcove custom player using the Brightcove Player API.  
+Brightcove custom player using the Brightcove Player API.
 The official document is here. -> https://docs.brightcove.com/brightcove-player/current-release/Player.html
 
 <br>
@@ -19,7 +19,7 @@ The official document is here. -> https://docs.brightcove.com/brightcove-player/
 
 - npm -> [https://www.npmjs.com/package/js-player-module-brightcove](https://www.npmjs.com/package/js-player-module-brightcove)
 
-- Standalone(CDN) -> [https://cdn.jsdelivr.net/gh/yama-dev/js-player-module-brightcove@v5.0.0/dist/js-player-module-brightcove.js](https://cdn.jsdelivr.net/gh/yama-dev/js-player-module-brightcove@v5.0.0/dist/js-player-module-brightcove.js)
+- Standalone(CDN) -> [https://cdn.jsdelivr.net/gh/yama-dev/js-player-module-brightcove@v5.1.0/dist/js-player-module-brightcove.js](https://cdn.jsdelivr.net/gh/yama-dev/js-player-module-brightcove@v5.1.0/dist/js-player-module-brightcove.js)
 
 - Zip -> [yama-dev/js-player-module-brightcove](https://github.com/yama-dev/js-player-module-brightcove/releases/latest)
 
@@ -120,41 +120,25 @@ import PLAYER_MODULE_BRIGHTCOVE from 'js-player-module-brightcove';
 
 ### Default
 
-| Parameter | Type   | Default      | Description                                | 
-| :---      | :---:  | :---:        | :---                                       | 
-| id        | string | - ※省略不可 | プレーヤーを出力する要素のidを設定します。 | 
-| videoid   | string | - ※省略不可 | 動画のvideoidを設定します。                | 
-| account   | string | - ※省略不可 | BrightcovePlayerのaccountを設定します。    | 
+| Parameter | Type   | Default      | Description                                |
+| :---      | :---:  | :---:        | :---                                       |
+| id        | string | - ※省略不可 | プレーヤーを出力する要素のidを設定します。 |
+| videoid   | string | - ※省略不可 | 動画のvideoidを設定します。                |
+| account   | string | - ※省略不可 | BrightcovePlayerのaccountを設定します。    |
 
 ### Options
 
-| Parameter      | Type    | Default | Description                                                                                                                                                                                        | 
-| :---           | :---:   | :---:   | :---                                                                                                                                                                                               | 
-| playsinline    | boolean | true    | iOS10+でインライン再生をするかを指定します。<br>デフォルトでは、`playsinline`属性が設定され、インライン再生されます。<br>※`false`を指定するとiOS10+では全画面にプレーヤーが立ち上がります。       | 
-| volume         | number  | 1       | 初期の音量を指定します。(0.0～1.0)<br>デフォルトでは、1(最大音量)がセットされます。<br>※機種、ブラウザに依存します。                                                                              | 
-| ui_controls    | boolean | false   | `control`を表示するかしないかを指定します。<br>デフォルトでは、表示されません。                                                                                                                    | 
-| ui_default     | boolean | true    | ライブラリであらかじめ用意したUIパーツを表示するかしないかを指定します。<br>デフォルトは、表示されます。<br>※`false`を指定すると出力されません。                                                  | 
-| ui_default_css | boolean | true    | ライブラリであらかじめ用意したCSSを出力するかしないかを指定します。<br>デフォルトは、CSSを出力します。<br>※`false`を指定すると出力されません。                                                    | 
-| ui_autoplay    | boolean | false   | 自動再生をするか指定します。<br>デフォルトでは、自動再生はされません。<br>※`true`を設定すると、動画のロードが完了すると自動再生を開始します。                                                     | 
-| stop_outfocus  | boolean | false   | フォーカスが外れた時に自動停止するか指定します。<br>デフォルトでは、自動停止しません。<br>※`true`を設定すると、フォーカスが外れた時にメディアが自動停止します。                                   | 
-| mode           | string  | 'movie' | `'movie'` -> 動画モード<br>`'audio` -> 音声モード<br><br>デフォルトでは、動画モードになります。<br>動画か音声のみかを簡単に切り替えが出来ます。<br>※`'audio'`を設定すると、動画が表示されません。 | 
-| poster         | string  | null    | 動画のポスター画像を設定できます。<br>画像のパスを設定することで、サムネイルとして読み込まれます。                                                                                                 | 
-
-<br>
-
-
-## Browser support
-
-| Browser           | OS、version | 
-| :---              | :---        | 
-| Internet Explorer | 11+         | 
-| Chrome            | 最新        | 
-| Firefox           | 最新        | 
-| Safari            | 最新        | 
-| Android           | 4.4+ Chrome | 
-| iOS               | 8.0+ safari | 
-
-[Useble Browser version LIST -> Check More](./docs/device-check.md)
+| Parameter      | Type    | Default | Description                                                                                                                                                                                        |
+| :---           | :---:   | :---:   | :---                                                                                                                                                                                               |
+| playsinline    | boolean | true    | iOS10+でインライン再生をするかを指定します。<br>デフォルトでは、`playsinline`属性が設定され、インライン再生されます。<br>※`false`を指定するとiOS10+では全画面にプレーヤーが立ち上がります。       |
+| volume         | number  | 1       | 初期の音量を指定します。(0.0～1.0)<br>デフォルトでは、1(最大音量)がセットされます。<br>※機種、ブラウザに依存します。                                                                              |
+| ui_controls    | boolean | false   | `control`を表示するかしないかを指定します。<br>デフォルトでは、表示されません。                                                                                                                    |
+| ui_default     | boolean | true    | ライブラリであらかじめ用意したUIパーツを表示するかしないかを指定します。<br>デフォルトは、表示されます。<br>※`false`を指定すると出力されません。                                                  |
+| ui_default_css | boolean | true    | ライブラリであらかじめ用意したCSSを出力するかしないかを指定します。<br>デフォルトは、CSSを出力します。<br>※`false`を指定すると出力されません。                                                    |
+| ui_autoplay    | boolean | false   | 自動再生をするか指定します。<br>デフォルトでは、自動再生はされません。<br>※`true`を設定すると、動画のロードが完了すると自動再生を開始します。                                                     |
+| stop_outfocus  | boolean | false   | フォーカスが外れた時に自動停止するか指定します。<br>デフォルトでは、自動停止しません。<br>※`true`を設定すると、フォーカスが外れた時にメディアが自動停止します。                                   |
+| mode           | string  | 'movie' | `'movie'` -> 動画モード<br>`'audio` -> 音声モード<br><br>デフォルトでは、動画モードになります。<br>動画か音声のみかを簡単に切り替えが出来ます。<br>※`'audio'`を設定すると、動画が表示されません。 |
+| poster         | string  | null    | 動画のポスター画像を設定できます。<br>画像のパスを設定することで、サムネイルとして読み込まれます。                                                                                                 |
 
 <br>
 
@@ -165,42 +149,6 @@ none
 <br><br><br>
 
 ___
-
-**For Developer**
-
-## Contribution
-
-1. Fork it ( https://github.com/yama-dev/js-player-module-brightcove/fork )
-2. Create your feature branch (git checkout -b my-new-feature)
-3. Commit your changes (git commit -am 'Add some feature')
-4. Push to the branch (git push origin my-new-feature)
-5. Create new Pull Request
-
-<br>
-
-## Develop
-
-### at Development
-
-Install node modules.
-
-``` bash
-$ npm install
-```
-
-Run npm script 'develop'
-
-``` bash
-$ npm run develop
-```
-
-Run npm script 'production'
-
-``` bash
-$ npm run production
-```
-
-<br>
 
 ## Licence
 
