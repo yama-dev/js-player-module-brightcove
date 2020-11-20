@@ -1,6 +1,6 @@
 {
   "name": "js-player-module-brightcove",
-  "version": "5.0.0",
+  "version": "5.1.0",
   "description": "Brightcove custom player using the Brightcove Player API.",
   "keywords": [
     "Brightcove",
@@ -41,6 +41,7 @@
     "eslint-loader": "^2.1.1",
     "mocha": "^5.2.0",
     "npm-run-all": "^4.1.2",
+    "terser-webpack-plugin": "^4.1.0",
     "webpack": "^4.28.4",
     "webpack-cli": "^3.2.1"
   },

@@ -68,6 +68,9 @@ export class PLAYER_MODULE_BRIGHTCOVE {
       PlayerPlay  : options.on.PlayerPlay||'',
       PlayerPause : options.on.PlayerPause||'',
 
+      TimeUpdate : options.on.TimeUpdate||'',
+      VolumeChange : options.on.VolumeChange||'',
+
       PlayPrep: options.on.PlayPrep||'',
       Play    : options.on.Play||'',
       Pause   : options.on.Pause||'',
@@ -221,7 +224,16 @@ export class PLAYER_MODULE_BRIGHTCOVE {
       // For Volume change.
       videojs(this.CONFIG.player_id).on('volumechange', ()=>{
         // 音量バーの更新(％)
-        DOM.setStyle( this.$.uiSeekbarVolCover, { width : (this.Player.volume() * 100) + '%' } );
+        let _volume = this.Player.volume();
+
+        DOM.setStyle( this.$.uiSeekbarVolCover, { width : (_volume * 100) + '%' } );
+
+        if(_that.on.VolumeChange && typeof(_that.on.VolumeChange) === 'function'){
+          _that.on.VolumeChange({
+            volume: PLAYER_MODULE_BRIGHTCOVE.toFixedNumber(_volume, 3),
+            par   : PLAYER_MODULE_BRIGHTCOVE.toFixedNumber(_volume * 100, 1)
+          });
+        }
       });
 
       // For Ended movie paly.
@@ -560,6 +572,16 @@ export class PLAYER_MODULE_BRIGHTCOVE {
 
       // update seek-bar. (%)
       if(this.$.uiSeekbarTimeCover) this.$.uiSeekbarTimeCover[0].style.width = this.GetTimePar();
+
+      if(this.on.TimeUpdate && typeof(this.on.TimeUpdate) === 'function'){
+        this.on.TimeUpdate({
+          current : this.GetTime(),
+          max     : this.GetTimeMax(),
+          down    : this.GetTimeDown(),
+          ratio   : this.GetTimeRatio(),
+          par     : this.GetTimePar()
+        });
+      }
     } else {
       // update player data. (ms)
       if(this.$.uiDisplayTime) DOM.setHtml( this.$.uiDisplayTime, '00:00' );
@@ -730,38 +752,23 @@ export class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   GetTime(){
-    function parseNumber(num) {
-      if(typeof(num) === 'number') num = String(num);
-      if (num < 10) return '0'+num;
-      if (num >= 10) return num;
-    }
-    let _m = parseNumber(Math.floor(this.Player.currentTime()/60));
-    let _s = parseNumber(Math.floor(this.Player.currentTime()%60));
+    let _m = PLAYER_MODULE_BRIGHTCOVE.parseNumber(Math.floor(this.Player.currentTime()/60));
+    let _s = PLAYER_MODULE_BRIGHTCOVE.parseNumber(Math.floor(this.Player.currentTime()%60));
     if(isFinite(_s) && isFinite(_m)) return _m+':'+_s;
     else return '00:00';
   }
 
   GetTimeDown(){
-    function parseNumber(num) {
-      if(typeof(num) === 'number') num = String(num);
-      if (num < 10) return '0'+num;
-      if (num >= 10) return num;
-    }
     let _countDownTime = this.Player.duration() - this.Player.currentTime();
-    let _m_down        = parseNumber(Math.floor(_countDownTime / 60));
-    let _s_down        = parseNumber(Math.floor(_countDownTime % 60));
+    let _m_down        = PLAYER_MODULE_BRIGHTCOVE.parseNumber(Math.floor(_countDownTime / 60));
+    let _s_down        = PLAYER_MODULE_BRIGHTCOVE.parseNumber(Math.floor(_countDownTime % 60));
     if(isFinite(_s_down) && isFinite(_m_down)) return _m_down+':'+_s_down;
     else return '00:00';
   }
 
   GetTimeMax(){
-    function parseNumber(num) {
-      if(typeof(num) === 'number') num = String(num);
-      if (num < 10) return '0'+num;
-      if (num >= 10) return num;
-    }
-    let _m_max = parseNumber(Math.floor(this.Player.duration()/60));
-    let _s_max = parseNumber(Math.floor(this.Player.duration()%60));
+    let _m_max = PLAYER_MODULE_BRIGHTCOVE.parseNumber(Math.floor(this.Player.duration()/60));
+    let _s_max = PLAYER_MODULE_BRIGHTCOVE.parseNumber(Math.floor(this.Player.duration()%60));
     return _m_max+':'+_s_max;
   }
 
@@ -814,6 +821,26 @@ export class PLAYER_MODULE_BRIGHTCOVE {
 
   Destroy(){
     this.Player.reset();
+  }
+
+  // 0 -> 00
+  // 1 -> 01
+  // 10 -> 10
+  static parseNumber(num) {
+    if(typeof(num) === 'number') num = String(num);
+    if (num < 10) return '0'+num;
+    if (num >= 10) return num;
+  }
+
+  static pad(n, width, z) {
+    z = z || '0';
+    n = n + '';
+    return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+  }
+
+  static toFixedNumber(num, digits, base){
+    var pow = Math.pow(base||10, digits);
+    return Math.round(num*pow) / pow;
   }
 
 }
