@@ -2,13 +2,7 @@ const webpack = require('webpack');
 const TerserPlugin = require('terser-webpack-plugin');
 const pkg = require('./package.json');
 
-const comment = `/*!
- * @${pkg.author}/${pkg.name}
- * version ${pkg.version}
- * repository ${pkg.repository.url}
- * copyright ${pkg.author}
- * licensed ${pkg.license}
- */`;
+const comment = `/*! @${pkg.author}/${pkg.name} version:${pkg.version} repository:${pkg.repository.url} copyright:${pkg.author} licensed:${pkg.license} */`;
 
 const env = process.env.NODE_ENV;
 
