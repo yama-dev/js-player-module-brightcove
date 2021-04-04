@@ -124,7 +124,7 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     }
 
     // SetPlayer
-    if(document.readyState == 'complete'){
+    if(document.readyState == 'complete' || document.readyState == 'interactive'){
       this.BuildPlayer();
     } else {
       document.addEventListener('DOMContentLoaded', ()=>{
