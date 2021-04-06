@@ -124,7 +124,7 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     }
 
     // SetPlayer
-    if(document.readyState == 'complete'){
+    if(document.readyState == 'complete' || document.readyState == 'interactive'){
       this.BuildPlayer();
     } else {
       document.addEventListener('DOMContentLoaded', ()=>{
@@ -207,12 +207,23 @@ export class PLAYER_MODULE_BRIGHTCOVE {
 
       this.AddGlobalObject();
 
+      let _loadeddata_flg = false;
       videojs(this.CONFIG.player_id).on('loadedmetadata', ()=>{
+        if(_loadeddata_flg) return false;
+        _loadeddata_flg = true;
         this.SetVolume();
         this.SetInfo();
         this.SetPoster();
         this.Update();
-
+        if(_that.on.PlayerInit && typeof(_that.on.PlayerInit) === 'function') _that.on.PlayerInit(_that, _that.Player);
+      });
+      videojs(this.CONFIG.player_id).on('loadeddata', ()=>{
+        if(_loadeddata_flg) return false;
+        _loadeddata_flg = true;
+        this.SetVolume();
+        this.SetInfo();
+        this.SetPoster();
+        this.Update();
         if(_that.on.PlayerInit && typeof(_that.on.PlayerInit) === 'function') _that.on.PlayerInit(_that, _that.Player);
       });
 
