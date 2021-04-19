@@ -689,7 +689,7 @@ export class PLAYER_MODULE_BRIGHTCOVE {
       }
 
       // Run playback start processing once in the click event propagation.
-      this.Player.muted(true);
+      // this.Player.muted(true);
       this.Player.play();
 
       this.Player.catalog.getVideo(id, (error, video) => {
@@ -705,7 +705,7 @@ export class PLAYER_MODULE_BRIGHTCOVE {
         // replay after data change.
         setTimeout( () => {
           this.Player.play();
-          this.Player.muted(false);
+          // this.Player.muted(false);
           this.ClassOff();
           this.ClassOn();
         }, 100);
