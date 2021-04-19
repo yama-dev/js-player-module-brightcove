@@ -135,6 +135,8 @@ export class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   BuildPlayer(){
+    let _that = this;
+
     // Player Ui.
     let playerUiHtmlDom       = document.createElement('div');
     playerUiHtmlDom.innerHTML = this.playerUiHtml;
@@ -174,10 +176,15 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     // Set ScriptTag
     let s = document.createElement('script');
     s.id  = `${this.CONFIG.id}_scripttag`;
+    s.onload = function(){
+      _that.PlayerInstance();
+    };
+    s.onerror = function(){
+      console.log('ERROR: not script loaded.');
+    };
     s.src = this.playerScriptCode+'?'+Date.now();
-    document.body.appendChild(s);
 
-    s.onload = this.PlayerInstance();
+    document.body.appendChild(s);
   }
 
   PlayerInstance(){
