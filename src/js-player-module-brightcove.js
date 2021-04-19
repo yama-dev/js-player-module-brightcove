@@ -174,7 +174,7 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     // Set ScriptTag
     let s = document.createElement('script');
     s.id  = `${this.CONFIG.id}_scripttag`;
-    s.src = this.playerScriptCode;
+    s.src = this.playerScriptCode+'?'+Date.now();
     document.body.appendChild(s);
 
     s.onload = this.PlayerInstance();
