@@ -135,6 +135,8 @@ export class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   BuildPlayer(){
+    let _that = this;
+
     // Player Ui.
     let playerUiHtmlDom       = document.createElement('div');
     playerUiHtmlDom.innerHTML = this.playerUiHtml;
@@ -174,128 +176,102 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     // Set ScriptTag
     let s = document.createElement('script');
     s.id  = `${this.CONFIG.id}_scripttag`;
-    s.src = this.playerScriptCode;
-    document.body.appendChild(s);
+    s.onload = function(){
+      _that.PlayerInstance();
+    };
+    s.onerror = function(){
+      console.log('ERROR: not script loaded.');
+    };
+    s.src = this.playerScriptCode+'?'+Date.now();
 
-    s.onload = this.PlayerInstance();
+    document.body.appendChild(s);
   }
 
   PlayerInstance(){
     let _that = this;
 
-    let checkPlayerTest = ()=>{
+    // Set Instance
+    this.Player = videojs(this.CONFIG.player_id);
 
-      // Set Instance
-      this.Player = videojs(this.CONFIG.player_id);
+    // Set PlayerJson
+    this.PlayerJson = this.Player.toJSON();
 
-      // Set PlayerJson
-      this.PlayerJson = this.Player.toJSON();
+    // Set MediaInfo
+    this.PlayerMediaInfo = this.Player.mediainfo;
 
-      // Set MediaInfo
-      this.PlayerMediaInfo = this.Player.mediainfo;
+    this.EventPlay();
+    this.EventPause();
+    this.EventStop();
+    this.EventMute();
+    this.EventVolon();
+    this.EventVoloff();
+    this.EventBtnFull();
+    this.EventSeekbarVol();
+    this.EventSeekbarTime();
+    this.EventChangeVideo();
 
-      this.EventPlay();
-      this.EventPause();
-      this.EventStop();
-      this.EventMute();
-      this.EventVolon();
-      this.EventVoloff();
-      this.EventBtnFull();
-      this.EventSeekbarVol();
-      this.EventSeekbarTime();
-      this.EventChangeVideo();
+    this.AddGlobalObject();
 
-      this.AddGlobalObject();
+    let _loadeddata_flg = false;
+    this.Player.on('loadedmetadata', ()=>{
+      if(_loadeddata_flg) return false;
+      _loadeddata_flg = true;
+      this.SetVolume();
+      this.SetInfo();
+      this.SetPoster();
+      this.Update();
+      if(_that.on.PlayerInit && typeof(_that.on.PlayerInit) === 'function') _that.on.PlayerInit(_that, _that.Player);
+    });
+    this.Player.on('loadeddata', ()=>{
+      if(_loadeddata_flg) return false;
+      _loadeddata_flg = true;
+      this.SetVolume();
+      this.SetInfo();
+      this.SetPoster();
+      this.Update();
+      if(_that.on.PlayerInit && typeof(_that.on.PlayerInit) === 'function') _that.on.PlayerInit(_that, _that.Player);
+    });
 
-      let _loadeddata_flg = false;
-      videojs(this.CONFIG.player_id).on('loadedmetadata', ()=>{
-        if(_loadeddata_flg) return false;
-        _loadeddata_flg = true;
-        this.SetVolume();
-        this.SetInfo();
-        this.SetPoster();
-        this.Update();
-        if(_that.on.PlayerInit && typeof(_that.on.PlayerInit) === 'function') _that.on.PlayerInit(_that, _that.Player);
-      });
-      videojs(this.CONFIG.player_id).on('loadeddata', ()=>{
-        if(_loadeddata_flg) return false;
-        _loadeddata_flg = true;
-        this.SetVolume();
-        this.SetInfo();
-        this.SetPoster();
-        this.Update();
-        if(_that.on.PlayerInit && typeof(_that.on.PlayerInit) === 'function') _that.on.PlayerInit(_that, _that.Player);
-      });
+    // For Timeupdate.
+    this.Player.on('timeupdate', ()=>{
+      this.Update();
+    });
 
-      // For Timeupdate.
-      videojs(this.CONFIG.player_id).on('timeupdate', ()=>{
-        this.Update();
-      });
+    // For Volume change.
+    this.Player.on('volumechange', ()=>{
+      // 音量バーの更新(％)
+      let _volume = this.Player.volume();
 
-      // For Volume change.
-      videojs(this.CONFIG.player_id).on('volumechange', ()=>{
-        // 音量バーの更新(％)
-        let _volume = this.Player.volume();
+      DOM.setStyle( this.$.uiSeekbarVolCover, { width : (_volume * 100) + '%' } );
 
-        DOM.setStyle( this.$.uiSeekbarVolCover, { width : (_volume * 100) + '%' } );
-
-        if(_that.on.VolumeChange && typeof(_that.on.VolumeChange) === 'function'){
-          _that.on.VolumeChange({
-            volume: PLAYER_MODULE_BRIGHTCOVE.toFixedNumber(_volume, 3),
-            par   : PLAYER_MODULE_BRIGHTCOVE.toFixedNumber(_volume * 100, 1)
-          });
-        }
-      });
-
-      // For Ended movie paly.
-      videojs(this.CONFIG.player_id).on('ended', ()=>{
-        this.Stop();
-        if(_that.on.PlayerEnded && typeof(_that.on.PlayerEnded) === 'function') _that.on.PlayerEnded(_that, _that.Player);
-      });
-
-      videojs(this.CONFIG.player_id).on('play', ()=>{
-        this.ClassOn();
-        if(_that.on.PlayerPlay && typeof(_that.on.PlayerPlay) === 'function') _that.on.PlayerPlay(_that, _that.Player);
-      });
-
-      videojs(this.CONFIG.player_id).on('pause', ()=>{
-        this.ClassOff();
-        if(_that.on.PlayerPause && typeof(_that.on.PlayerPause) === 'function') _that.on.PlayerPause(_that, _that.Player);
-      });
-
-      // For Error
-      videojs(this.CONFIG.player_id).on( 'error' , ()=>{
-        console.log(err);
-      });
-    };
-
-    // Check Player try loaded.
-    let checkPlayerFlg        = false;
-    let checkPlayerCount      = 0;
-    let checkPlayerLimitCount = 100;
-    let checkPlayer = setInterval(()=>{
-      try {
-        videojs(this.CONFIG.player_id).mediainfo.name;
-        if(videojs(this.CONFIG.player_id).mediainfo.name){
-          checkPlayerFlg = true;
-        }
-      } catch (e) {
-        checkPlayerFlg = false;
-        // console.log(e.name, e.message);
+      if(_that.on.VolumeChange && typeof(_that.on.VolumeChange) === 'function'){
+        _that.on.VolumeChange({
+          volume: PLAYER_MODULE_BRIGHTCOVE.toFixedNumber(_volume, 3),
+          par   : PLAYER_MODULE_BRIGHTCOVE.toFixedNumber(_volume * 100, 1)
+        });
       }
-      // Check upper limit of action to try.
-      if(checkPlayerCount >= checkPlayerLimitCount){
-        clearInterval(checkPlayer);
-        console.log('ERROR: not movie loaded.');
-      } else {
-        if(checkPlayerFlg){
-          clearInterval(checkPlayer);
-          checkPlayerTest();
-        }
-      }
-      checkPlayerCount++;
-    }, 100);
+    });
 
+    // For Ended movie paly.
+    this.Player.on('ended', ()=>{
+      this.Stop();
+      if(_that.on.PlayerEnded && typeof(_that.on.PlayerEnded) === 'function') _that.on.PlayerEnded(_that, _that.Player);
+    });
+
+    this.Player.on('play', ()=>{
+      this.ClassOn();
+      if(_that.on.PlayerPlay && typeof(_that.on.PlayerPlay) === 'function') _that.on.PlayerPlay(_that, _that.Player);
+    });
+
+    this.Player.on('pause', ()=>{
+      this.ClassOff();
+      if(_that.on.PlayerPause && typeof(_that.on.PlayerPause) === 'function') _that.on.PlayerPause(_that, _that.Player);
+    });
+
+    // For Error
+    this.Player.on( 'error' , ()=>{
+      console.log(err);
+    });
   }
 
   AddGlobalObject(){
@@ -689,7 +665,7 @@ export class PLAYER_MODULE_BRIGHTCOVE {
       }
 
       // Run playback start processing once in the click event propagation.
-      this.Player.muted(true);
+      // this.Player.muted(true);
       this.Player.play();
 
       this.Player.catalog.getVideo(id, (error, video) => {
@@ -705,7 +681,7 @@ export class PLAYER_MODULE_BRIGHTCOVE {
         // replay after data change.
         setTimeout( () => {
           this.Player.play();
-          this.Player.muted(false);
+          // this.Player.muted(false);
           this.ClassOff();
           this.ClassOn();
         }, 100);
