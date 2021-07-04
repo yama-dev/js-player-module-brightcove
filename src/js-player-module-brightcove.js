@@ -115,7 +115,7 @@ export class PLAYER_MODULE_BRIGHTCOVE {
 
     // Check Audio mode.
     if(this.CONFIG.mode == 'audio'){
-      this.playerCssOption += `#${this.CONFIG.player_id} { opacity: 0; }`;
+      this.playerCssOption += `#${this.CONFIG.player_id} { opacity: 0.001; }`;
     }
 
     // Check Add Style.
