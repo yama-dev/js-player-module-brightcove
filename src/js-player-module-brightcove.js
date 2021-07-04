@@ -196,9 +196,6 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     // Set PlayerJson
     this.PlayerJson = this.Player.toJSON();
 
-    // Set MediaInfo
-    this.PlayerMediaInfo = this.Player.mediainfo;
-
     this.EventPlay();
     this.EventPause();
     this.EventStop();
@@ -674,7 +671,6 @@ export class PLAYER_MODULE_BRIGHTCOVE {
         this.Player.catalog.load(video);
 
         // Set MediaInfo
-        this.PlayerMediaInfo = this.Player.mediainfo;
         this.SetInfo();
         this.SetPoster();
 
@@ -803,7 +799,7 @@ export class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   SetInfo(){
-    if(this.$.uiDisplayName) DOM.setHtml(this.$.uiDisplayName, this.PlayerMediaInfo.name);
+    if(this.$.uiDisplayName) DOM.setHtml(this.$.uiDisplayName, this.Player.mediainfo.name);
   }
 
   Destroy(){
