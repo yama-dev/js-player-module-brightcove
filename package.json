@@ -1,6 +1,6 @@
 {
   "name": "js-player-module-brightcove",
-  "version": "5.4.0",
+  "version": "5.4.2",
   "description": "Brightcove custom player using the Brightcove Player API.",
   "keywords": [
     "Brightcove",
