@@ -1,0 +1,19 @@
+{
+  "include": [
+    "src/**/*",
+    "@types/**/*"
+  ],
+  "compilerOptions": {
+    "lib": ["DOM","ES5"],
+    "target":"ES5",
+    "module":"CommonJS",
+    "moduleResolution": "Node",
+
+    "sourceMap": true,
+
+    "strict": true,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "strictPropertyInitialization": false
+  }
+}
