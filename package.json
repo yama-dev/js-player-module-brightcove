@@ -17,10 +17,10 @@
   "scripts": {
     "start": "npm install && npm run dev",
     "dev": "npm-run-all -p webpack:develop server",
-    "prod": "npm-run-all -p webpack:build server",
+    "prod": "npm-run-all -p webpack:build",
     "server": "browser-sync start --server ./ --directory ./examples --files **/*.css **/*.js **/*.html",
-    "webpack:develop": "webpack --progress --colors --watch",
-    "webpack:build": "webpack --mode=production --progress --colors"
+    "webpack:develop": "webpack --progress --color --watch",
+    "webpack:build": "webpack --mode=production --progress --color"
   },
   "repository": {
     "type": "git",
