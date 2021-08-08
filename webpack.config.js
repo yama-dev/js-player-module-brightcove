@@ -1,60 +1,45 @@
-const webpack = require('webpack');
-const TerserPlugin = require('terser-webpack-plugin');
 const pkg = require('./package.json');
 
 const comment = `/*! @${pkg.author}/${pkg.name} version:${pkg.version} repository:${pkg.repository.url} copyright:${pkg.author} licensed:${pkg.license} */`;
 
 const env = process.env.NODE_ENV;
 
+if(!env) process.exit(1);
+
+const webpack = require('webpack');
+const TerserPlugin = require('terser-webpack-plugin');
+
 const webpackPlugEnv = new webpack.EnvironmentPlugin({
-  NODE_ENV: 'development',
   VERSION: pkg.version,
   DEBUG: false
 });
 
-const babelPlugin = [
-  '@babel/plugin-transform-object-assign'
-];
-
 const config = {
-  mode: env || 'development',
+  mode: env,
   entry: {
-    'js-player-module-brightcove': './src/js-player-module-brightcove.js',
+    'js-player-module-brightcove': './src/js-player-module-brightcove.ts',
   },
   output: {
     path: `${__dirname}/dist`,
     filename: '[name].js',
-    libraryTarget: 'umd'
+    library: {
+      name: 'PLAYER_MODULE_BRIGHTCOVE',
+      type: 'umd',
+      export: 'PLAYER_MODULE_BRIGHTCOVE',
+    }
   },
   module: {
     rules: [
       {
-        enforce: 'pre',
-        test: /\.(js)$/,
-        exclude: /node_modules/,
-        loader: 'eslint-loader',
+        test: /\.ts$/,
+        use: 'ts-loader',
       },
-      {
-        test: /\.js$/,
-        exclude: /node_modules[//\/](?!(@yama\-dev)\/).*/,
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              presets: [
-                [
-                  '@babel/preset-env',
-                  {
-                    modules: false
-                  }
-                ]
-              ],
-              plugins: babelPlugin
-            }
-          }
-        ],
-      }
-    ]
+    ],
+  },
+  resolve: {
+    extensions: [
+      '.ts', '.js',
+    ],
   },
   plugins: [
     webpackPlugEnv
