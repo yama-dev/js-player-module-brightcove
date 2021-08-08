@@ -41,42 +41,5 @@
   "dependencies": {
     "@yama-dev/js-dom": "^0.1.1",
     "@yama-dev/js-parse-module": "^0.2.1"
-  },
-  "eslintConfig": {
-    "env": {
-      "browser": true,
-      "commonjs": true,
-      "es6": true,
-      "jquery": true,
-      "node": true
-    },
-    "extends": "eslint:recommended",
-    "parserOptions": {
-      "ecmaFeatures": {
-        "jsx": true
-      },
-      "ecmaVersion": 2018,
-      "sourceType": "module"
-    },
-    "plugins": [],
-    "rules": {
-      "indent": [
-        "error",
-        2,
-        {
-          "outerIIFEBody": 0
-        }
-      ],
-      "quotes": [
-        "error",
-        "single"
-      ],
-      "semi": [
-        "error",
-        "always"
-      ],
-      "no-console": "warn",
-      "no-unused-vars": "warn"
-    }
   }
 }
