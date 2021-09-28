@@ -69,8 +69,6 @@ interface PlayerModuleBrightcoveInterface {
     uiSeekbarTimeBg            : any
     uiSeekbarTimeCover         : any
     uiBtnChange                : any
-    uiBtnChangeDisplayTime     : any
-    uiBtnChangeDisplayTimeDown : any
     uiBtnDataId                : any
   }
   playerHtml: any

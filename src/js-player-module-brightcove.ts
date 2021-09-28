@@ -115,8 +115,6 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
     uiSeekbarTimeBg            : [],
     uiSeekbarTimeCover         : [],
     uiBtnChange                : [],
-    uiBtnChangeDisplayTime     : [],
-    uiBtnChangeDisplayTimeDown : [],
     uiBtnDataId                : [],
   };
 
@@ -134,7 +132,7 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
     poster: ''
   }
 
-  constructor(options: any = {}){
+  constructor(options: any){
 
     if(!options.id || !options.videoid){
       console.log('Inadequate parameters (id, videoid)');
@@ -222,7 +220,7 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
 
   }
 
-  BuildPlayer(){
+  private BuildPlayer(){
     let _that = this;
 
     // Player Ui.
@@ -270,7 +268,7 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
     s.onerror = function(){
       console.log('ERROR: not script loaded.');
     };
-    s.src = this.playerScriptCode+'?'+Date.now();
+    s.src = `${this.playerScriptCode}?${Date.now()}`;
 
     document.body.appendChild(s);
   }
@@ -387,32 +385,30 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
     this.$.playerElemMain             = DOM.selectDom(`#${this.CONFIG.id} #${this.CONFIG.player_id}`);
     this.$.playerElemMainWrap         = DOM.selectDom(`#${this.CONFIG.id} #${this.CONFIG.player_id_wrap}`);
 
-    this.$.uiBtnPlay                  = DOM.selectDom('#'+this.CONFIG.id+' .btn_play');
-    this.$.uiBtnStop                  = DOM.selectDom('#'+this.CONFIG.id+' .btn_stop');
-    this.$.uiBtnPause                 = DOM.selectDom('#'+this.CONFIG.id+' .btn_pause');
-    this.$.uiBtnMute                  = DOM.selectDom('#'+this.CONFIG.id+' .btn_mute');
-    this.$.uiBtnVolon                 = DOM.selectDom('#'+this.CONFIG.id+' .btn_volon');
-    this.$.uiBtnVoloff                = DOM.selectDom('#'+this.CONFIG.id+' .btn_voloff');
+    this.$.uiBtnPlay                  = DOM.selectDom('#'+this.CONFIG.id+' .ui-btn-play');
+    this.$.uiBtnStop                  = DOM.selectDom('#'+this.CONFIG.id+' .ui-btn-stop');
+    this.$.uiBtnPause                 = DOM.selectDom('#'+this.CONFIG.id+' .ui-btn-pause');
+    this.$.uiBtnMute                  = DOM.selectDom('#'+this.CONFIG.id+' .ui-btn-mute');
+    this.$.uiBtnVolon                 = DOM.selectDom('#'+this.CONFIG.id+' .ui-btn-volon');
+    this.$.uiBtnVoloff                = DOM.selectDom('#'+this.CONFIG.id+' .ui-btn-voloff');
 
-    this.$.uiDisplayTime              = DOM.selectDom('#'+this.CONFIG.id+' .display_time');
-    this.$.uiDisplayTimeNow           = DOM.selectDom('#'+this.CONFIG.id+' .display_time_now');
-    this.$.uiDisplayTimeTotal         = DOM.selectDom('#'+this.CONFIG.id+' .display_time_total');
-    this.$.uiDisplayTimeDown          = DOM.selectDom('#'+this.CONFIG.id+' .display_time_down');
-    this.$.uiDisplayTimePar           = DOM.selectDom('#'+this.CONFIG.id+' .display_time_par');
-    this.$.uiDisplayPoster            = DOM.selectDom('#'+this.CONFIG.id+' .display_poster');
-    this.$.uiDisplayPosterBg          = DOM.selectDom('#'+this.CONFIG.id+' .display_poster_background');
-    this.$.uiDisplayName              = DOM.selectDom('#'+this.CONFIG.id+' .display_name');
+    this.$.uiDisplayTime              = DOM.selectDom('#'+this.CONFIG.id+' .ui-time');
+    this.$.uiDisplayTimeNow           = DOM.selectDom('#'+this.CONFIG.id+' .ui-time-now');
+    this.$.uiDisplayTimeTotal         = DOM.selectDom('#'+this.CONFIG.id+' .ui-time-total');
+    this.$.uiDisplayTimeDown          = DOM.selectDom('#'+this.CONFIG.id+' .ui-time-down');
+    this.$.uiDisplayTimePar           = DOM.selectDom('#'+this.CONFIG.id+' .ui-time-par');
+    this.$.uiDisplayPoster            = DOM.selectDom('#'+this.CONFIG.id+' .ui-poster');
+    this.$.uiDisplayPosterBg          = DOM.selectDom('#'+this.CONFIG.id+' .ui-poster-background');
+    this.$.uiDisplayName              = DOM.selectDom('#'+this.CONFIG.id+' .ui-name');
 
-    this.$.uiSeekbarVol               = DOM.selectDom('#'+this.CONFIG.id+' .seekbar_vol');
-    this.$.uiSeekbarVolBg             = DOM.selectDom('#'+this.CONFIG.id+' .seekbar_vol .seekbar_vol_bg');
-    this.$.uiSeekbarVolCover          = DOM.selectDom('#'+this.CONFIG.id+' .seekbar_vol span');
-    this.$.uiSeekbarTime              = DOM.selectDom('#'+this.CONFIG.id+' .seekbar_time');
-    this.$.uiSeekbarTimeBg            = DOM.selectDom('#'+this.CONFIG.id+' .seekbar_time .seekbar_time_bg');
-    this.$.uiSeekbarTimeCover         = DOM.selectDom('#'+this.CONFIG.id+' .seekbar_time span');
+    this.$.uiSeekbarVol               = DOM.selectDom('#'+this.CONFIG.id+' .ui-seekbar-vol');
+    this.$.uiSeekbarVolBg             = DOM.selectDom('#'+this.CONFIG.id+' .ui-seekbar-vol .ui-seekbar-vol-bg');
+    this.$.uiSeekbarVolCover          = DOM.selectDom('#'+this.CONFIG.id+' .ui-seekbar-vol span');
+    this.$.uiSeekbarTime              = DOM.selectDom('#'+this.CONFIG.id+' .ui-seekbar-time');
+    this.$.uiSeekbarTimeBg            = DOM.selectDom('#'+this.CONFIG.id+' .ui-seekbar-time .ui-seekbar-time-bg');
+    this.$.uiSeekbarTimeCover         = DOM.selectDom('#'+this.CONFIG.id+' .ui-seekbar-time span');
 
-    this.$.uiBtnChange                = DOM.selectDom('#'+this.CONFIG.id+' .btn_change');
-    this.$.uiBtnChangeDisplayTime     = DOM.selectDom('#'+this.CONFIG.id+' .display_time');
-    this.$.uiBtnChangeDisplayTimeDown = DOM.selectDom('#'+this.CONFIG.id+' .display_time_down');
+    this.$.uiBtnChange                = DOM.selectDom('#'+this.CONFIG.id+' .ui-btn-change');
 
     this.$.uiBtnDataId                = DOM.selectDom('[data-PMB-id]');
   }
@@ -629,10 +625,8 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
       // update player data. (ms)
       if(this.$.uiDisplayTime) DOM.setHtml( this.$.uiDisplayTime, this.GetTime()+'/'+this.GetTimeMax() );
       if(this.$.uiDisplayTimeNow) DOM.setHtml( this.$.uiDisplayTimeNow, this.GetTime() );
-      if(this.$.uiDisplayTimeTotal) DOM.setHtml( this.$.uiDisplayTimeTotal, this.GetTimeMax() );
       if(this.$.uiDisplayTimeDown) DOM.setHtml( this.$.uiDisplayTimeDown, this.GetTimeDown() );
-      if(this.$.uiBtnChangeDisplayTime) DOM.setHtml( this.$.uiBtnChangeDisplayTime, this.GetTime()+'/'+this.GetTimeMax() );
-      if(this.$.uiBtnChangeDisplayTimeDown) DOM.setHtml( this.$.uiBtnChangeDisplayTimeDown, this.GetTimeDown() );
+      if(this.$.uiDisplayTimeTotal) DOM.setHtml( this.$.uiDisplayTimeTotal, this.GetTimeMax() );
 
       // update play time. (%)
       if(this.$.uiDisplayTimePar) DOM.setHtml( this.$.uiDisplayTimePar, this.GetTimePar() );
@@ -651,12 +645,10 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
       }
     } else {
       // update player data. (ms)
-      if(this.$.uiDisplayTime) DOM.setHtml( this.$.uiDisplayTime, '00:00' );
+      if(this.$.uiDisplayTime) DOM.setHtml( this.$.uiDisplayTime, '00:00/00:00' );
       if(this.$.uiDisplayTimeNow) DOM.setHtml( this.$.uiDisplayTimeNow, '00:00' );
-      if(this.$.uiDisplayTimeTotal) DOM.setHtml( this.$.uiDisplayTimeTotal, '00:00' );
       if(this.$.uiDisplayTimeDown) DOM.setHtml( this.$.uiDisplayTimeDown, '00:00' );
-      if(this.$.uiBtnChangeDisplayTime) DOM.setHtml( this.$.uiBtnChangeDisplayTime, '00:00' );
-      if(this.$.uiBtnChangeDisplayTimeDown) DOM.setHtml( this.$.uiBtnChangeDisplayTimeDown, '00:00' );
+      if(this.$.uiDisplayTimeTotal) DOM.setHtml( this.$.uiDisplayTimeTotal, '00:00' );
 
       // update play time. (%)
       if(this.$.uiDisplayTimePar) DOM.setHtml( this.$.uiDisplayTimePar, '0%' );
@@ -824,7 +816,7 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
   }
 
   GetTimeDown(){
-    let _countDownTime = this.Player.duration() - this.Player.currentTime();
+    let _countDownTime = this.Player.duration() - Math.floor(this.Player.currentTime());
     let _m_down        = PLAYER_MODULE_BRIGHTCOVE.parseNumber(Math.floor(_countDownTime / 60));
     let _s_down        = PLAYER_MODULE_BRIGHTCOVE.parseNumber(Math.floor(_countDownTime % 60));
     // @ts-ignore
@@ -876,7 +868,7 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
     if(path){
       this.Player.poster(path);
     } else {
-      if(this.CONFIG.poster != false) this.state.poster = this.Player.poster();
+      if(this.CONFIG.poster != false) this.state.poster = this.GetPoster();
 
       if(this.$.uiDisplayPoster){
         if(this.CONFIG.mode == 'audio'){

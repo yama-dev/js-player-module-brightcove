@@ -9,58 +9,58 @@ export let viewPlayerStyle = `
 #{{ id }} .off {
   display: block;
 }
-#{{ id }} .btn_play {
+#{{ id }} .ui-btn-play {
   width: 120px;
   display: block;
   cursor: pointer;
 }
-#{{ id }} .btn_play.active {
+#{{ id }} .ui-btn-play.active {
   display: none;
 }
-#{{ id }} .btn_play:hover .on {
+#{{ id }} .ui-btn-play:hover .on {
   display: block;
 }
-#{{ id }} .btn_play:hover .off {
+#{{ id }} .ui-btn-play:hover .off {
   display: none;
 }
-#{{ id }} .btn_pause {
+#{{ id }} .ui-btn-pause {
   width: 120px;
   display: none;
   cursor: pointer;
 }
-#{{ id }} .btn_pause.active {
+#{{ id }} .ui-btn-pause.active {
   display: block;
 }
-#{{ id }} .btn_pause:hover .on {
+#{{ id }} .ui-btn-pause:hover .on {
   display: block;
 }
-#{{ id }} .btn_pause:hover .off {
+#{{ id }} .ui-btn-pause:hover .off {
   display: none;
 }
-#{{ id }} .btn_stop {
+#{{ id }} .ui-btn-stop {
   width: 120px;
   cursor: pointer;
 }
-#{{ id }} .btn_stop.active {
+#{{ id }} .ui-btn-stop.active {
   display: block;
 }
-#{{ id }} .btn_stop:hover .on {
+#{{ id }} .ui-btn-stop:hover .on {
   display: block;
 }
-#{{ id }} .btn_stop:hover .off {
+#{{ id }} .ui-btn-stop:hover .off {
   display: none;
 }
-#{{ id }} .btn_mute {
+#{{ id }} .ui-btn-mute {
   width: 120px;
   cursor: pointer;
 }
-#{{ id }} .btn_mute.active .on {
+#{{ id }} .ui-btn-mute.active .on {
   display: block;
 }
-#{{ id }} .btn_mute.active .off {
+#{{ id }} .ui-btn-mute.active .off {
   display: none;
 }
-#{{ id }} .seekbar_vol {
+#{{ id }} .ui-seekbar-vol {
   width: 100%;
   height: 13px;
   padding: 4px 0;
@@ -70,7 +70,7 @@ export let viewPlayerStyle = `
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
-#{{ id }} .seekbar_vol .seekbar_vol_bg {
+#{{ id }} .ui-seekbar-vol .ui-seekbar-vol_bg {
   width: 100%;
   height: 5px;
   background: #ddd;
@@ -79,14 +79,14 @@ export let viewPlayerStyle = `
   left: 0;
   margin: 4px 0;
 }
-#{{ id }} .seekbar_vol span {
+#{{ id }} .ui-seekbar-vol span {
   display: block;
   width: 0%;
   height: 100%;
   background: #666;
   position: relative;
 }
-#{{ id }} .seekbar_time {
+#{{ id }} .ui-seekbar-time {
   width: 100%;
   height: 13px;
   padding: 4px 0;
@@ -96,7 +96,7 @@ export let viewPlayerStyle = `
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
-#{{ id }} .seekbar_time .seekbar_time_bg {
+#{{ id }} .ui-seekbar-time .ui-seekbar-time-bg {
   width: 100%;
   height: 5px;
   background: #ddd;
@@ -105,14 +105,14 @@ export let viewPlayerStyle = `
   left: 0;
   margin: 4px 0;
 }
-#{{ id }} .seekbar_time span {
+#{{ id }} .ui-seekbar-time span {
   display: block;
   width: 0%;
   height: 100%;
   background: #666;
   position: relative;
 }
-#{{ id }} .display_poster img {
+#{{ id }} .ui-display-poster img {
   max-width: 100%;
 }
 `;

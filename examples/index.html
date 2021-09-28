@@ -22,7 +22,7 @@
     gtag('config', 'UA-91619969-3');
   </script>
   <style>
-  .display_poster img {
+  .ui-poster img {
     max-width: 300px !important;
   }
   </style>
@@ -78,11 +78,11 @@
             ui_default: false
           });
         </script>
-        <div class="player__btn">
-          <div class="btn_play"><img class="on" src="//placehold.jp/14/333/ddd/120x30.png?text=PLAY" alt=""><img class="off" src="//placehold.jp/14/ddd/333/120x30.png?text=PLAY" alt=""></div>
-          <div class="btn_pause"><img class="on" src="//placehold.jp/14/333/ddd/120x30.png?text=PAUSE" alt=""><img class="off" src="//placehold.jp/14/ddd/333/120x30.png?text=PAUSE" alt=""></div>
-          <div class="btn_stop"><img class="on" src="//placehold.jp/14/333/ddd/120x30.png?text=STOP" alt=""><img class="off" src="//placehold.jp/14/ddd/333/120x30.png?text=STOP" alt=""></div>
-          <div class="btn_mute"><img class="on" src="//placehold.jp/14/333/ddd/120x30.png?text=MUTE" alt=""><img class="off" src="//placehold.jp/14/ddd/333/120x30.png?text=MUTE" alt=""></div>
+        <div>
+          <div class="ui-btn-play"><img class="on" src="//placehold.jp/14/333/ddd/120x30.png?text=PLAY" alt=""><img class="off" src="//placehold.jp/14/ddd/333/120x30.png?text=PLAY" alt=""></div>
+          <div class="ui-btn-pause"><img class="on" src="//placehold.jp/14/333/ddd/120x30.png?text=PAUSE" alt=""><img class="off" src="//placehold.jp/14/ddd/333/120x30.png?text=PAUSE" alt=""></div>
+          <div class="ui-btn-stop"><img class="on" src="//placehold.jp/14/333/ddd/120x30.png?text=STOP" alt=""><img class="off" src="//placehold.jp/14/ddd/333/120x30.png?text=STOP" alt=""></div>
+          <div class="ui-btn-mute"><img class="on" src="//placehold.jp/14/333/ddd/120x30.png?text=MUTE" alt=""><img class="off" src="//placehold.jp/14/ddd/333/120x30.png?text=MUTE" alt=""></div>
         </div>
         <pre class="prettyprint lang-html mt-2">
         <code>
@@ -97,20 +97,20 @@
                 ui_default: false
               });
             &lt;/script&gt;
-            &lt;div class="player__btn"&gt;
-              &lt;div class="btn_play"&gt;
+            &lt;div&gt;
+              &lt;div class="ui-btn-play"&gt;
                 &lt;img class="on" src="//placehold.jp/14/333/ddd/120x30.png?text=PLAY" alt=""&gt;
                 &lt;img class="off" src="//placehold.jp/14/ddd/333/120x30.png?text=PLAY" alt=""&gt;
               &lt;/div&gt;
-              &lt;div class="btn_pause"&gt;
+              &lt;div class="ui-btn-pause"&gt;
                 &lt;img class="on" src="//placehold.jp/14/333/ddd/120x30.png?text=PAUSE" alt=""&gt;
                 &lt;img class="off" src="//placehold.jp/14/ddd/333/120x30.png?text=PAUSE" alt=""&gt;
               &lt;/div&gt;
-              &lt;div class="btn_stop"&gt;
+              &lt;div class="ui-btn-stop"&gt;
                 &lt;img class="on" src="//placehold.jp/14/333/ddd/120x30.png?text=STOP" alt=""&gt;
                 &lt;img class="off" src="//placehold.jp/14/ddd/333/120x30.png?text=STOP" alt=""&gt;
               &lt;/div&gt;
-              &lt;div class="btn_mute"&gt;
+              &lt;div class="ui-btn-mute"&gt;
                 &lt;img class="on" src="//placehold.jp/14/333/ddd/120x30.png?text=MUTE" alt=""&gt;
                 &lt;img class="off" src="//placehold.jp/14/ddd/333/120x30.png?text=MUTE" alt=""&gt;
               &lt;/div&gt;
@@ -185,25 +185,24 @@
           });
         </script>
 
-        <button class="btn btn btn-secondary" onclick="PMB.Play()">Media再生(Play)</button>
-        <button class="btn btn btn-secondary" onclick="PMB.Stop()">Media停止(Stop)</button>
-        <button class="btn btn btn-secondary" onclick="PMB.PauseAll()">Media全一時停止(PauseAll)</button>
-        <button class="btn btn btn-secondary" onclick="PMB.StopAll()">Media全停止(StopAll)</button>
+        <button class="btn btn-secondary" onclick="PMB.Play()">Media再生(Play)</button>
+        <button class="btn btn-secondary" onclick="PMB.Stop()">Media停止(Stop)</button>
+        <button class="btn btn-secondary" onclick="PMB.PauseAll()">Media全一時停止(PauseAll)</button>
+        <button class="btn btn-secondary" onclick="PMB.StopAll()">Media全停止(StopAll)</button>
 
         <br>
 
-        <button class="btn btn btn-secondary" data-PMB-id="4230322585001" onclick="PMB.Change('4230322585001')">Media変更 id=4230322585001</button>
-        <button class="btn_change btn btn btn-secondary" data-PMB-id="4230322585001">Media変更 id=4230322585001</button>
+        <button class="btn btn-secondary" data-PMB-id="4230322585001" onclick="PMB.Change('4230322585001')">Media変更 id=4230322585001</button>
         <div class="btn btn-secondary" data-PMB-id="4231692338001" onclick="PMB.Change('4231692338001')">
           Media変更 id=4231692338001<br><br>
-          <p class="display_time">00:00</p>
-          <p class="display_time_down">00:00</p>
+          <p class="ui-time">00:00</p>
+          <p class="ui-time_down">00:00</p>
         </div>
 
         <br>
 
-        <button class="btn btn btn-secondary" onclick="PMB.SeekTo(30)">Media再生位置変更(SeekTo 30s)</button>
-        <button class="btn btn btn-secondary" onclick="PMB.SeekTo(60)">Media再生位置変更(SeekTo 60s)</button>
+        <button class="btn btn-secondary" onclick="PMB.SeekTo(30)">Media再生位置変更(SeekTo 30s)</button>
+        <button class="btn btn-secondary" onclick="PMB.SeekTo(60)">Media再生位置変更(SeekTo 60s)</button>
 
         <pre class="prettyprint lang-html mt-2">
           <code>
@@ -267,18 +266,18 @@
             });
           &lt;/script&gt;
 
-          &lt;button class=&quot;btn btn btn-secondary&quot; onclick=&quot;PMB.Stop()&quot;&gt;Media停止(Stop)&lt;/button&gt;
-          &lt;button class=&quot;btn btn btn-secondary&quot; onclick=&quot;PMB.StopAll()&quot;&gt;Media全停止(StopAll)&lt;/button&gt;
+          &lt;button class=&quot;btn btn-secondary&quot; onclick=&quot;PMB.Stop()&quot;&gt;Media停止(Stop)&lt;/button&gt;
+          &lt;button class=&quot;btn btn-secondary&quot; onclick=&quot;PMB.StopAll()&quot;&gt;Media全停止(StopAll)&lt;/button&gt;
 
-          &lt;button class=&quot;btn btn btn-secondary&quot; data-PMB-id=&quot;4230322585001&quot; onclick=&quot;PMB.Change(&#039;4230322585001&#039;)&quot;&gt;Media変更 id=4230322585001&lt;/button&gt;
-          &lt;button class=&quot;btn_change btn btn btn-secondary&quot; data-PMB-id=&quot;4230322585001&quot;&gt;Media変更 id=4230322585001&lt;/button&gt;
+          &lt;button class=&quot;btn btn-secondary&quot; data-PMB-id=&quot;4230322585001&quot; onclick=&quot;PMB.Change(&#039;4230322585001&#039;)&quot;&gt;Media変更 id=4230322585001&lt;/button&gt;
+          &lt;button class=&quot;btn_change btn btn-secondary&quot; data-PMB-id=&quot;4230322585001&quot;&gt;Media変更 id=4230322585001&lt;/button&gt;
           &lt;div class=&quot;btn btn-secondary&quot; data-PMB-id=&quot;4231692338001&quot; onclick=&quot;PMB.Change(&#039;4231692338001&#039;)&quot;&gt;
             Media変更 id=4231692338001&lt;br&gt;&lt;br&gt;
             &lt;p class=&quot;display_time&quot;&gt;00:00&lt;/p&gt;
             &lt;p class=&quot;display_time_down&quot;&gt;00:00&lt;/p&gt;
           &lt;/div&gt;
-          &lt;button class=&quot;btn btn btn-secondary&quot; onclick=&quot;PMB.SeekTo(30)&quot;&gt;Media再生位置変更(SeekTo 30s)&lt;/button&gt;</code>
-          &lt;button class=&quot;btn btn btn-secondary&quot; onclick=&quot;PMB.SeekTo(60)&quot;&gt;Media再生位置変更(SeekTo 60s)&lt;/button&gt;</code>
+          &lt;button class=&quot;btn btn-secondary&quot; onclick=&quot;PMB.SeekTo(30)&quot;&gt;Media再生位置変更(SeekTo 30s)&lt;/button&gt;</code>
+          &lt;button class=&quot;btn btn-secondary&quot; onclick=&quot;PMB.SeekTo(60)&quot;&gt;Media再生位置変更(SeekTo 60s)&lt;/button&gt;</code>
         </pre>
       </div>
 
