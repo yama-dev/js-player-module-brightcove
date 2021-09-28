@@ -115,8 +115,6 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
     uiSeekbarTimeBg            : [],
     uiSeekbarTimeCover         : [],
     uiBtnChange                : [],
-    uiBtnChangeDisplayTime     : [],
-    uiBtnChangeDisplayTimeDown : [],
     uiBtnDataId                : [],
   };
 
@@ -627,10 +625,8 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
       // update player data. (ms)
       if(this.$.uiDisplayTime) DOM.setHtml( this.$.uiDisplayTime, this.GetTime()+'/'+this.GetTimeMax() );
       if(this.$.uiDisplayTimeNow) DOM.setHtml( this.$.uiDisplayTimeNow, this.GetTime() );
-      if(this.$.uiDisplayTimeTotal) DOM.setHtml( this.$.uiDisplayTimeTotal, this.GetTimeMax() );
       if(this.$.uiDisplayTimeDown) DOM.setHtml( this.$.uiDisplayTimeDown, this.GetTimeDown() );
-      if(this.$.uiBtnChangeDisplayTime) DOM.setHtml( this.$.uiBtnChangeDisplayTime, this.GetTime()+'/'+this.GetTimeMax() );
-      if(this.$.uiBtnChangeDisplayTimeDown) DOM.setHtml( this.$.uiBtnChangeDisplayTimeDown, this.GetTimeDown() );
+      if(this.$.uiDisplayTimeTotal) DOM.setHtml( this.$.uiDisplayTimeTotal, this.GetTimeMax() );
 
       // update play time. (%)
       if(this.$.uiDisplayTimePar) DOM.setHtml( this.$.uiDisplayTimePar, this.GetTimePar() );
@@ -649,12 +645,10 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
       }
     } else {
       // update player data. (ms)
-      if(this.$.uiDisplayTime) DOM.setHtml( this.$.uiDisplayTime, '00:00' );
+      if(this.$.uiDisplayTime) DOM.setHtml( this.$.uiDisplayTime, '00:00/00:00' );
       if(this.$.uiDisplayTimeNow) DOM.setHtml( this.$.uiDisplayTimeNow, '00:00' );
-      if(this.$.uiDisplayTimeTotal) DOM.setHtml( this.$.uiDisplayTimeTotal, '00:00' );
       if(this.$.uiDisplayTimeDown) DOM.setHtml( this.$.uiDisplayTimeDown, '00:00' );
-      if(this.$.uiBtnChangeDisplayTime) DOM.setHtml( this.$.uiBtnChangeDisplayTime, '00:00' );
-      if(this.$.uiBtnChangeDisplayTimeDown) DOM.setHtml( this.$.uiBtnChangeDisplayTimeDown, '00:00' );
+      if(this.$.uiDisplayTimeTotal) DOM.setHtml( this.$.uiDisplayTimeTotal, '00:00' );
 
       // update play time. (%)
       if(this.$.uiDisplayTimePar) DOM.setHtml( this.$.uiDisplayTimePar, '0%' );
