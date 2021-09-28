@@ -868,7 +868,7 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
     if(path){
       this.Player.poster(path);
     } else {
-      if(this.CONFIG.poster != false) this.state.poster = this.Player.poster();
+      if(this.CONFIG.poster != false) this.state.poster = this.GetPoster();
 
       if(this.$.uiDisplayPoster){
         if(this.CONFIG.mode == 'audio'){
