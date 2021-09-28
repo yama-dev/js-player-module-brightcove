@@ -132,7 +132,7 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
     poster: ''
   }
 
-  constructor(options: any = {}){
+  constructor(options: any){
 
     if(!options.id || !options.videoid){
       console.log('Inadequate parameters (id, videoid)');
@@ -220,7 +220,7 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
 
   }
 
-  BuildPlayer(){
+  private BuildPlayer(){
     let _that = this;
 
     // Player Ui.
@@ -268,7 +268,7 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
     s.onerror = function(){
       console.log('ERROR: not script loaded.');
     };
-    s.src = this.playerScriptCode+'?'+Date.now();
+    s.src = `${this.playerScriptCode}?${Date.now()}`;
 
     document.body.appendChild(s);
   }
@@ -816,7 +816,7 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
   }
 
   GetTimeDown(){
-    let _countDownTime = this.Player.duration() - this.Player.currentTime();
+    let _countDownTime = this.Player.duration() - Math.floor(this.Player.currentTime());
     let _m_down        = PLAYER_MODULE_BRIGHTCOVE.parseNumber(Math.floor(_countDownTime / 60));
     let _s_down        = PLAYER_MODULE_BRIGHTCOVE.parseNumber(Math.floor(_countDownTime % 60));
     // @ts-ignore
