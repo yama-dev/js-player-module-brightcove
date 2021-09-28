@@ -387,32 +387,30 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
     this.$.playerElemMain             = DOM.selectDom(`#${this.CONFIG.id} #${this.CONFIG.player_id}`);
     this.$.playerElemMainWrap         = DOM.selectDom(`#${this.CONFIG.id} #${this.CONFIG.player_id_wrap}`);
 
-    this.$.uiBtnPlay                  = DOM.selectDom('#'+this.CONFIG.id+' .btn_play');
-    this.$.uiBtnStop                  = DOM.selectDom('#'+this.CONFIG.id+' .btn_stop');
-    this.$.uiBtnPause                 = DOM.selectDom('#'+this.CONFIG.id+' .btn_pause');
-    this.$.uiBtnMute                  = DOM.selectDom('#'+this.CONFIG.id+' .btn_mute');
-    this.$.uiBtnVolon                 = DOM.selectDom('#'+this.CONFIG.id+' .btn_volon');
-    this.$.uiBtnVoloff                = DOM.selectDom('#'+this.CONFIG.id+' .btn_voloff');
+    this.$.uiBtnPlay                  = DOM.selectDom('#'+this.CONFIG.id+' .ui-btn-play');
+    this.$.uiBtnStop                  = DOM.selectDom('#'+this.CONFIG.id+' .ui-btn-stop');
+    this.$.uiBtnPause                 = DOM.selectDom('#'+this.CONFIG.id+' .ui-btn-pause');
+    this.$.uiBtnMute                  = DOM.selectDom('#'+this.CONFIG.id+' .ui-btn-mute');
+    this.$.uiBtnVolon                 = DOM.selectDom('#'+this.CONFIG.id+' .ui-btn-volon');
+    this.$.uiBtnVoloff                = DOM.selectDom('#'+this.CONFIG.id+' .ui-btn-voloff');
 
-    this.$.uiDisplayTime              = DOM.selectDom('#'+this.CONFIG.id+' .display_time');
-    this.$.uiDisplayTimeNow           = DOM.selectDom('#'+this.CONFIG.id+' .display_time_now');
-    this.$.uiDisplayTimeTotal         = DOM.selectDom('#'+this.CONFIG.id+' .display_time_total');
-    this.$.uiDisplayTimeDown          = DOM.selectDom('#'+this.CONFIG.id+' .display_time_down');
-    this.$.uiDisplayTimePar           = DOM.selectDom('#'+this.CONFIG.id+' .display_time_par');
-    this.$.uiDisplayPoster            = DOM.selectDom('#'+this.CONFIG.id+' .display_poster');
-    this.$.uiDisplayPosterBg          = DOM.selectDom('#'+this.CONFIG.id+' .display_poster_background');
-    this.$.uiDisplayName              = DOM.selectDom('#'+this.CONFIG.id+' .display_name');
+    this.$.uiDisplayTime              = DOM.selectDom('#'+this.CONFIG.id+' .ui-time');
+    this.$.uiDisplayTimeNow           = DOM.selectDom('#'+this.CONFIG.id+' .ui-time-now');
+    this.$.uiDisplayTimeTotal         = DOM.selectDom('#'+this.CONFIG.id+' .ui-time-total');
+    this.$.uiDisplayTimeDown          = DOM.selectDom('#'+this.CONFIG.id+' .ui-time-down');
+    this.$.uiDisplayTimePar           = DOM.selectDom('#'+this.CONFIG.id+' .ui-time-par');
+    this.$.uiDisplayPoster            = DOM.selectDom('#'+this.CONFIG.id+' .ui-poster');
+    this.$.uiDisplayPosterBg          = DOM.selectDom('#'+this.CONFIG.id+' .ui-poster-background');
+    this.$.uiDisplayName              = DOM.selectDom('#'+this.CONFIG.id+' .ui-name');
 
-    this.$.uiSeekbarVol               = DOM.selectDom('#'+this.CONFIG.id+' .seekbar_vol');
-    this.$.uiSeekbarVolBg             = DOM.selectDom('#'+this.CONFIG.id+' .seekbar_vol .seekbar_vol_bg');
-    this.$.uiSeekbarVolCover          = DOM.selectDom('#'+this.CONFIG.id+' .seekbar_vol span');
-    this.$.uiSeekbarTime              = DOM.selectDom('#'+this.CONFIG.id+' .seekbar_time');
-    this.$.uiSeekbarTimeBg            = DOM.selectDom('#'+this.CONFIG.id+' .seekbar_time .seekbar_time_bg');
-    this.$.uiSeekbarTimeCover         = DOM.selectDom('#'+this.CONFIG.id+' .seekbar_time span');
+    this.$.uiSeekbarVol               = DOM.selectDom('#'+this.CONFIG.id+' .ui-seekbar-vol');
+    this.$.uiSeekbarVolBg             = DOM.selectDom('#'+this.CONFIG.id+' .ui-seekbar-vol .ui-seekbar-vol-bg');
+    this.$.uiSeekbarVolCover          = DOM.selectDom('#'+this.CONFIG.id+' .ui-seekbar-vol span');
+    this.$.uiSeekbarTime              = DOM.selectDom('#'+this.CONFIG.id+' .ui-seekbar-time');
+    this.$.uiSeekbarTimeBg            = DOM.selectDom('#'+this.CONFIG.id+' .ui-seekbar-time .ui-seekbar-time-bg');
+    this.$.uiSeekbarTimeCover         = DOM.selectDom('#'+this.CONFIG.id+' .ui-seekbar-time span');
 
-    this.$.uiBtnChange                = DOM.selectDom('#'+this.CONFIG.id+' .btn_change');
-    this.$.uiBtnChangeDisplayTime     = DOM.selectDom('#'+this.CONFIG.id+' .display_time');
-    this.$.uiBtnChangeDisplayTimeDown = DOM.selectDom('#'+this.CONFIG.id+' .display_time_down');
+    this.$.uiBtnChange                = DOM.selectDom('#'+this.CONFIG.id+' .ui-btn-change');
 
     this.$.uiBtnDataId                = DOM.selectDom('[data-PMB-id]');
   }
