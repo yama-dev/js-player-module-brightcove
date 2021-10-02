@@ -23,7 +23,7 @@ install:
 	$(PROGRAM) install
 
 bookmark: 
-	open '$(URL_DOC)/'
+	open '$(URL_DOC)'
 
 editor:
 	$(VIM) './'
