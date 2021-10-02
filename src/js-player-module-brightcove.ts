@@ -302,7 +302,7 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
       this._setInfo();
       this._setPoster();
       this.Update();
-      if(_that.on.PlayerInit && typeof(_that.on.PlayerInit) === 'function') _that.on.PlayerInit(_that, _that.Player);
+      if(this.on.PlayerInit && typeof(this.on.PlayerInit) === 'function') this.on.PlayerInit(_that, _that.Player);
     });
     this.Player.on('loadeddata', ()=>{
       if(_loadeddata_flg) return false;
@@ -311,7 +311,7 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
       this._setInfo();
       this._setPoster();
       this.Update();
-      if(_that.on.PlayerInit && typeof(_that.on.PlayerInit) === 'function') _that.on.PlayerInit(_that, _that.Player);
+      if(this.on.PlayerInit && typeof(this.on.PlayerInit) === 'function') this.on.PlayerInit(_that, _that.Player);
     });
 
     // For Timeupdate.
@@ -326,8 +326,8 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
 
       DOM.setStyle( this.$.uiSeekbarVolCover, { width : (_volume * 100) + '%' } );
 
-      if(_that.on.VolumeChange && typeof(_that.on.VolumeChange) === 'function'){
-        _that.on.VolumeChange({
+      if(this.on.VolumeChange && typeof(this.on.VolumeChange) === 'function'){
+        this.on.VolumeChange({
           volume: PLAYER_MODULE_BRIGHTCOVE.toFixedNumber(_volume, 3),
           par   : PLAYER_MODULE_BRIGHTCOVE.toFixedNumber(_volume * 100, 1)
         });
@@ -337,17 +337,17 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
     // For Ended movie paly.
     this.Player.on('ended', ()=>{
       this.Stop();
-      if(_that.on.PlayerEnded && typeof(_that.on.PlayerEnded) === 'function') _that.on.PlayerEnded(_that, _that.Player);
+      if(this.on.PlayerEnded && typeof(this.on.PlayerEnded) === 'function') this.on.PlayerEnded(_that, _that.Player);
     });
 
     this.Player.on('play', ()=>{
       this.ClassOn();
-      if(_that.on.PlayerPlay && typeof(_that.on.PlayerPlay) === 'function') _that.on.PlayerPlay(_that, _that.Player);
+      if(this.on.PlayerPlay && typeof(this.on.PlayerPlay) === 'function') this.on.PlayerPlay(_that, _that.Player);
     });
 
     this.Player.on('pause', ()=>{
       this.ClassOff();
-      if(_that.on.PlayerPause && typeof(_that.on.PlayerPause) === 'function') _that.on.PlayerPause(_that, _that.Player);
+      if(this.on.PlayerPause && typeof(this.on.PlayerPause) === 'function') this.on.PlayerPause(_that, _that.Player);
     });
 
     // For Error
