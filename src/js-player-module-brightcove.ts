@@ -321,7 +321,7 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
 
     // For Volume change.
     this.Player.on('volumechange', ()=>{
-      // 音量バーの更新(％)
+      // update(%)
       let _volume = this.Player.volume();
 
       DOM.setStyle( this.$.uiSeekbarVolCover, { width : (_volume * 100) + '%' } );
@@ -737,7 +737,7 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
 
       // Run playback start processing once in the click event propagation.
       if(isplay){
-      this.Player.play();
+        this.Player.play();
         this.Player.muted(true);
       }
 
@@ -752,12 +752,12 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
 
         // replay after data change.
         if(isplay){
-        setTimeout( () => {
+          setTimeout( () => {
             this.Player.muted(false);
-          this.Player.play();
-          this.ClassOff();
-          this.ClassOn();
-        }, 100);
+            this.Player.play();
+            this.ClassOff();
+            this.ClassOn();
+          }, 100);
         }
 
         setTimeout( () => {
@@ -778,7 +778,7 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
 
     } else {
       if(isplay){
-      this.Play();
+        this.Play();
       }
 
       if(!this.on.Change && callback) this.on.Change = callback;
