@@ -736,9 +736,9 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
       }
 
       // Run playback start processing once in the click event propagation.
-      // this.Player.muted(true);
       if(isplay){
       this.Player.play();
+        this.Player.muted(true);
       }
 
       this.Player.catalog.getVideo(id, (error: any, video: any) => {
@@ -753,8 +753,8 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
         // replay after data change.
         if(isplay){
         setTimeout( () => {
+            this.Player.muted(false);
           this.Player.play();
-          // this.Player.muted(false);
           this.ClassOff();
           this.ClassOn();
         }, 100);
