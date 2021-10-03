@@ -712,9 +712,10 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
    * When Media change.
    *
    * id       | str      | media-id.
-   * callback | function | callback function after changed.
+   * isplay   | boolean  | auto start after changed media.
+   * callback | function | callback function after changed media.
    */
-  Change(id: any, callback?: ()=>{}){
+  Change(id: any, isplay : boolean = true, callback?: ()=>{}){
 
     // 動画IDが取得出来ない場合は処理を中止
     if(id == '' || id == null || id == undefined) return;
@@ -736,7 +737,9 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
 
       // Run playback start processing once in the click event propagation.
       // this.Player.muted(true);
+      if(isplay){
       this.Player.play();
+      }
 
       this.Player.catalog.getVideo(id, (error: any, video: any) => {
 
@@ -748,12 +751,14 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
         this._setPoster();
 
         // replay after data change.
+        if(isplay){
         setTimeout( () => {
           this.Player.play();
           // this.Player.muted(false);
           this.ClassOff();
           this.ClassOn();
         }, 100);
+        }
 
         setTimeout( () => {
           this.PlayerChangeLoadFlg = true;
@@ -772,7 +777,9 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
 
 
     } else {
+      if(isplay){
       this.Play();
+      }
 
       if(!this.on.Change && callback) this.on.Change = callback;
       if(this.on.Change && typeof(this.on.Change) === 'function') this.on.Change(this, this.Player);
