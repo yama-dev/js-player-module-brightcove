@@ -302,7 +302,7 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
       this._setInfo();
       this._setPoster();
       this.Update();
-      if(_that.on.PlayerInit && typeof(_that.on.PlayerInit) === 'function') _that.on.PlayerInit(_that, _that.Player);
+      if(this.on.PlayerInit && typeof(this.on.PlayerInit) === 'function') this.on.PlayerInit(_that, _that.Player);
     });
     this.Player.on('loadeddata', ()=>{
       if(_loadeddata_flg) return false;
@@ -311,7 +311,7 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
       this._setInfo();
       this._setPoster();
       this.Update();
-      if(_that.on.PlayerInit && typeof(_that.on.PlayerInit) === 'function') _that.on.PlayerInit(_that, _that.Player);
+      if(this.on.PlayerInit && typeof(this.on.PlayerInit) === 'function') this.on.PlayerInit(_that, _that.Player);
     });
 
     // For Timeupdate.
@@ -321,13 +321,13 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
 
     // For Volume change.
     this.Player.on('volumechange', ()=>{
-      // 音量バーの更新(％)
+      // update(%)
       let _volume = this.Player.volume();
 
       DOM.setStyle( this.$.uiSeekbarVolCover, { width : (_volume * 100) + '%' } );
 
-      if(_that.on.VolumeChange && typeof(_that.on.VolumeChange) === 'function'){
-        _that.on.VolumeChange({
+      if(this.on.VolumeChange && typeof(this.on.VolumeChange) === 'function'){
+        this.on.VolumeChange({
           volume: PLAYER_MODULE_BRIGHTCOVE.toFixedNumber(_volume, 3),
           par   : PLAYER_MODULE_BRIGHTCOVE.toFixedNumber(_volume * 100, 1)
         });
@@ -337,17 +337,17 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
     // For Ended movie paly.
     this.Player.on('ended', ()=>{
       this.Stop();
-      if(_that.on.PlayerEnded && typeof(_that.on.PlayerEnded) === 'function') _that.on.PlayerEnded(_that, _that.Player);
+      if(this.on.PlayerEnded && typeof(this.on.PlayerEnded) === 'function') this.on.PlayerEnded(_that, _that.Player);
     });
 
     this.Player.on('play', ()=>{
       this.ClassOn();
-      if(_that.on.PlayerPlay && typeof(_that.on.PlayerPlay) === 'function') _that.on.PlayerPlay(_that, _that.Player);
+      if(this.on.PlayerPlay && typeof(this.on.PlayerPlay) === 'function') this.on.PlayerPlay(_that, _that.Player);
     });
 
     this.Player.on('pause', ()=>{
       this.ClassOff();
-      if(_that.on.PlayerPause && typeof(_that.on.PlayerPause) === 'function') _that.on.PlayerPause(_that, _that.Player);
+      if(this.on.PlayerPause && typeof(this.on.PlayerPause) === 'function') this.on.PlayerPause(_that, _that.Player);
     });
 
     // For Error
@@ -712,9 +712,10 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
    * When Media change.
    *
    * id       | str      | media-id.
-   * callback | function | callback function after changed.
+   * isplay   | boolean  | auto start after changed media.
+   * callback | function | callback function after changed media.
    */
-  Change(id: any, callback?: ()=>{}){
+  Change(id: any, isplay : boolean = true, callback?: ()=>{}){
 
     // 動画IDが取得出来ない場合は処理を中止
     if(id == '' || id == null || id == undefined) return;
@@ -735,8 +736,10 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
       }
 
       // Run playback start processing once in the click event propagation.
-      // this.Player.muted(true);
-      this.Player.play();
+      if(isplay){
+        this.Player.play();
+        this.Player.muted(true);
+      }
 
       this.Player.catalog.getVideo(id, (error: any, video: any) => {
 
@@ -748,12 +751,14 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
         this._setPoster();
 
         // replay after data change.
-        setTimeout( () => {
-          this.Player.play();
-          // this.Player.muted(false);
-          this.ClassOff();
-          this.ClassOn();
-        }, 100);
+        if(isplay){
+          setTimeout( () => {
+            this.Player.muted(false);
+            this.Player.play();
+            this.ClassOff();
+            this.ClassOn();
+          }, 100);
+        }
 
         setTimeout( () => {
           this.PlayerChangeLoadFlg = true;
@@ -772,7 +777,9 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
 
 
     } else {
-      this.Play();
+      if(isplay){
+        this.Play();
+      }
 
       if(!this.on.Change && callback) this.on.Change = callback;
       if(this.on.Change && typeof(this.on.Change) === 'function') this.on.Change(this, this.Player);

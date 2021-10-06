@@ -54,7 +54,7 @@ const config = {
             comments: false,
           },
           compress: {
-            drop_console: true
+            drop_console: false
           }
         },
       }),

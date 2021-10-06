@@ -20,4 +20,5 @@ _*/
 
 examples/
 webpack.config.js
-
+.env
+Makefile
