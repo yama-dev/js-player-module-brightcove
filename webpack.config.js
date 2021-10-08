@@ -16,6 +16,7 @@ const webpackPlugEnv = new webpack.EnvironmentPlugin({
 
 const config = {
   mode: env,
+  target: ['web', 'es5'],
   entry: {
     'js-player-module-brightcove': './src/js-player-module-brightcove.ts',
   },
@@ -31,7 +32,8 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.ts$/,
+        test: /\.(js|ts)$/,
+        exclude: /node_modules/,
         use: 'ts-loader',
       },
     ],
@@ -39,7 +41,7 @@ const config = {
   resolve: {
     extensions: [
       '.ts', '.js',
-    ],
+    ]
   },
   plugins: [
     webpackPlugEnv
