@@ -49,7 +49,6 @@ interface PlayerModuleBrightcoveInterface {
   Player: any
   $: {
     playerElem                 : any
-    playerElemMain             : any
     playerElemMainWrap         : any
     uiBtnPlay                  : any
     uiBtnStop                  : any

@@ -92,7 +92,6 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
   // BrightcovePlayer dom.
   $ = {
     playerElem                 : [],
-    playerElemMain             : [],
     playerElemMainWrap         : [],
     uiBtnPlay                  : [],
     uiBtnStop                  : [],
@@ -382,7 +381,6 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
 
   CacheElement(){
     this.$.playerElem                 = DOM.selectDom(`#${this.CONFIG.id}`);
-    this.$.playerElemMain             = DOM.selectDom(`#${this.CONFIG.id} #${this.CONFIG.player_id}`);
     this.$.playerElemMainWrap         = DOM.selectDom(`#${this.CONFIG.id} #${this.CONFIG.player_id_wrap}`);
 
     this.$.uiBtnPlay                  = DOM.selectDom('#'+this.CONFIG.id+' .ui-btn-play');
