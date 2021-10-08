@@ -1,6 +1,9 @@
 
 declare function test(): string;
 
+declare module '@yama-dev/js-dom/core';
+declare module '@yama-dev/js-parse-module/libs';
+
 interface MyInterface{
   name: string
   init(): any 

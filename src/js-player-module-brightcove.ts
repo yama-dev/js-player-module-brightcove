@@ -2,13 +2,13 @@
 /*eslint no-console: 0*/
 /*eslint no-useless-escape: 0*/
 
-// @ts-ignore
-import * as DOM from '@yama-dev/js-dom/core';
+import * as JS_DOM from '@yama-dev/js-dom';
+const DOM = new JS_DOM();
 
-// @ts-ignore
 import {
-  Str2Mustache
-} from '@yama-dev/js-parse-module/libs';
+  PARSE_MODULE
+} from '@yama-dev/js-parse-module/dist/js-parse-module';
+const Str2Mustache = PARSE_MODULE.Str2Mustache;
 
 import {
   viewPlayerScriptcode,
