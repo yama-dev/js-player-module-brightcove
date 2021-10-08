@@ -19,7 +19,7 @@
     "dev": "npm-run-all -p webpack:develop server",
     "prod": "npm-run-all -p webpack:build",
     "server": "browser-sync start --server ./ --directory ./examples --files **/*.css **/*.js **/*.html",
-    "webpack:develop": "webpack --progress --color --watch",
+    "webpack:develop": "webpack --progress --color --watch --stats-error-details",
     "webpack:build": "webpack --mode=production --progress --color"
   },
   "repository": {
@@ -35,8 +35,8 @@
     "npm-run-all": "^4.1.5",
     "ts-loader": "^9.2.3",
     "typescript": "^4.3.5",
-    "webpack": "^5.44.0",
-    "webpack-cli": "^4.7.2"
+    "webpack": "^5.58.0",
+    "webpack-cli": "^4.9.0"
   },
   "dependencies": {
     "@yama-dev/js-dom": "^0.1.1",
