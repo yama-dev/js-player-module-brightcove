@@ -230,12 +230,9 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
     }
 
     // Player Main.
-    let playerHtmlDom         = document.createElement('div');
     let playerHtmlDomWrap = document.createElement('div');
-    playerHtmlDom.id  = this.CONFIG.player_id;
     playerHtmlDomWrap.id  = this.CONFIG.player_id_wrap;
-    playerHtmlDom.innerHTML   = this.playerHtml;
-    playerHtmlDomWrap.appendChild(playerHtmlDom);
+    playerHtmlDomWrap.innerHTML = this.playerHtml;
     this.$.playerElem[0].insertBefore(playerHtmlDomWrap, this.$.playerElem[0].firstElementChild);
 
     // Player Style.
