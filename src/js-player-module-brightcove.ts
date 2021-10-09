@@ -23,7 +23,7 @@ import {
   viewPlayerStyle
 } from './view-style';
 
-export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface {
+export class PLAYER_MODULE_BRIGHTCOVE {
   // Set Version.
   VERSION = process.env.VERSION;
 
@@ -87,7 +87,7 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
   PlayerMediaInfo = {};
 
   // BrightcovePlayer Instance.
-  Player;
+  Player = null;
 
   // BrightcovePlayer dom.
   $ = {
