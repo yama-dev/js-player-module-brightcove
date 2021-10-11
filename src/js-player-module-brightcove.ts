@@ -2,13 +2,13 @@
 /*eslint no-console: 0*/
 /*eslint no-useless-escape: 0*/
 
-// @ts-ignore
-import * as DOM from '@yama-dev/js-dom/core';
+import * as JS_DOM from '@yama-dev/js-dom';
+const DOM = new JS_DOM();
 
-// @ts-ignore
 import {
-  Str2Mustache
-} from '@yama-dev/js-parse-module/libs';
+  PARSE_MODULE
+} from '@yama-dev/js-parse-module/dist/js-parse-module';
+const Str2Mustache = PARSE_MODULE.Str2Mustache;
 
 import {
   viewPlayerScriptcode,
@@ -23,7 +23,7 @@ import {
   viewPlayerStyle
 } from './view-style';
 
-export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface {
+export class PLAYER_MODULE_BRIGHTCOVE {
   // Set Version.
   VERSION = process.env.VERSION;
 
@@ -87,12 +87,11 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
   PlayerMediaInfo = {};
 
   // BrightcovePlayer Instance.
-  Player;
+  Player = null;
 
   // BrightcovePlayer dom.
   $ = {
     playerElem                 : [],
-    playerElemMain             : [],
     playerElemMainWrap         : [],
     uiBtnPlay                  : [],
     uiBtnStop                  : [],
@@ -231,12 +230,9 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
     }
 
     // Player Main.
-    let playerHtmlDom         = document.createElement('div');
     let playerHtmlDomWrap = document.createElement('div');
-    playerHtmlDom.id  = this.CONFIG.player_id;
     playerHtmlDomWrap.id  = this.CONFIG.player_id_wrap;
-    playerHtmlDom.innerHTML   = this.playerHtml;
-    playerHtmlDomWrap.appendChild(playerHtmlDom);
+    playerHtmlDomWrap.innerHTML = this.playerHtml;
     this.$.playerElem[0].insertBefore(playerHtmlDomWrap, this.$.playerElem[0].firstElementChild);
 
     // Player Style.
@@ -382,7 +378,6 @@ export class PLAYER_MODULE_BRIGHTCOVE implements PlayerModuleBrightcoveInterface
 
   CacheElement(){
     this.$.playerElem                 = DOM.selectDom(`#${this.CONFIG.id}`);
-    this.$.playerElemMain             = DOM.selectDom(`#${this.CONFIG.id} #${this.CONFIG.player_id}`);
     this.$.playerElemMainWrap         = DOM.selectDom(`#${this.CONFIG.id} #${this.CONFIG.player_id_wrap}`);
 
     this.$.uiBtnPlay                  = DOM.selectDom('#'+this.CONFIG.id+' .ui-btn-play');
