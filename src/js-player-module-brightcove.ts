@@ -58,7 +58,7 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     ui_default_css : true,
 
     stop_outfocus  : false,
-    poster         : true,
+    poster         : '',
 
     add_style        : '',
     classname_active_wrap : 'is-pmb-wrap',
@@ -165,7 +165,7 @@ export class PLAYER_MODULE_BRIGHTCOVE {
       ui_default_css : options.ui_default_css === false ? false : true,
 
       stop_outfocus  : options.stop_outfocus === true ? true : false,
-      poster         : options.poster||true,
+      poster         : options.poster||'',
 
       add_style        : options.add_style||'',
       classname_active_wrap : options.classname_active_wrap||'is-pmb-wrap',
@@ -188,6 +188,11 @@ export class PLAYER_MODULE_BRIGHTCOVE {
       this.CONFIG.width  = '1';
       this.CONFIG.height = '1';
     }
+
+    let _config_formated = {
+      ...this.CONFIG,
+      poster: this.CONFIG.poster ? `poster="${this.CONFIG.poster}"` : ''
+    };
 
     // Set Options
     // -> playerHtml
@@ -296,7 +301,7 @@ export class PLAYER_MODULE_BRIGHTCOVE {
       _loadeddata_flg = true;
       this.SetVolume(this.CONFIG.volume);
       this._setInfo();
-      this._setPoster();
+      this.SetPoster();
       this.Update();
       if(this.on.PlayerInit && typeof(this.on.PlayerInit) === 'function') this.on.PlayerInit(_that, _that.Player);
     });
@@ -305,7 +310,7 @@ export class PLAYER_MODULE_BRIGHTCOVE {
       _loadeddata_flg = true;
       this.SetVolume(this.CONFIG.volume);
       this._setInfo();
-      this._setPoster();
+      this.SetPoster();
       this.Update();
       if(this.on.PlayerInit && typeof(this.on.PlayerInit) === 'function') this.on.PlayerInit(_that, _that.Player);
     });
@@ -743,7 +748,7 @@ export class PLAYER_MODULE_BRIGHTCOVE {
 
         // Set MediaInfo
         this._setInfo();
-        this._setPoster();
+        this.SetPoster();
 
         // replay after data change.
         if(isplay){
@@ -866,12 +871,14 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     this.Player.reset();
   }
 
-  private _setPoster(path?: string){
-    if(path){
+  SetPoster(path?: string){
+    if(path !== undefined && path !== null){
       this.Player.poster(path);
-    } else {
-      if(this.CONFIG.poster != false) this.state.poster = this.GetPoster();
+    }
 
+    this.state.poster = this.GetPoster();
+
+    if(this.state.poster){
       if(this.$.uiDisplayPoster){
         if(this.CONFIG.mode == 'audio'){
           DOM.setHtml(this.$.uiDisplayPoster, '');
