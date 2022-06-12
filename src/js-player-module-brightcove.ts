@@ -660,22 +660,22 @@ export class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   Play(callback?: ()=>{}){
-      if(this.Player.paused()){
-        if(!this.on.PlayPrep && callback) this.on.PlayPrep = callback;
-        if(this.on.PlayPrep && typeof(this.on.PlayPrep) === 'function') this.on.PlayPrep(this, this.Player);
+    if(this.Player.paused()){
+      if(!this.on.PlayPrep && callback) this.on.PlayPrep = callback;
+      if(this.on.PlayPrep && typeof(this.on.PlayPrep) === 'function') this.on.PlayPrep(this, this.Player);
 
-        // When the player is stopped.
-        this.Player.play();
-        this.ClassOn();
+      // When the player is stopped.
+      this.Player.play();
+      this.ClassOn();
 
-        if(!this.on.Play && callback) this.on.Play = callback;
-        if(this.on.Play && typeof(this.on.Play) === 'function') this.on.Play(this, this.Player);
-      } else {
-        // When the player is playing.
-        this.Pause();
-        this.ClassOff();
-      }
+      if(!this.on.Play && callback) this.on.Play = callback;
+      if(this.on.Play && typeof(this.on.Play) === 'function') this.on.Play(this, this.Player);
+    } else {
+      // When the player is playing.
+      this.Pause();
+      this.ClassOff();
     }
+  }
 
   Stop(callback?: ()=>{}){
     this.Player.pause();
@@ -713,10 +713,13 @@ export class PLAYER_MODULE_BRIGHTCOVE {
    * isplay   | boolean  | auto start after changed media.
    * callback | function | callback function after changed media.
    */
-  Change(id: any, isplay : boolean = true, callback?: ()=>{}){
-
+  Change(id: any, isplay : boolean | null = null, callback?: ()=>{}){
     // 動画IDが取得出来ない場合は処理を中止
     if(id == '' || id == null || id == undefined) return;
+
+    let _change_prev_paused = this.Player.paused();
+    let _change_prev_muted = this.Player.muted();
+    // if(isplay === true || isplay === false) _change_prev_paused = !isplay;
 
     // Check if it is the same media.
     if(this.CONFIG.videoid !== id){
@@ -730,13 +733,15 @@ export class PLAYER_MODULE_BRIGHTCOVE {
       // exclud IE, Edge, for there is a bugs
       let _ua = window.navigator.userAgent.toLowerCase();
       if(_ua.indexOf('msie') == -1 && _ua.indexOf('trident') == -1 && _ua.indexOf('edge') == -1) {
-        this.Player.currentTime(0);
+        // this.Player.currentTime(0);
       }
 
       // Run playback start processing once in the click event propagation.
-      if(isplay){
-        this.Player.play();
-        this.Player.muted(true);
+      if(_change_prev_paused){
+        // this.Player.play();
+      }
+      if(_change_prev_muted){
+        // this.Player.muted(true);
       }
 
       this.Player.catalog.getVideo(id, (error: any, video: any) => {
@@ -749,14 +754,20 @@ export class PLAYER_MODULE_BRIGHTCOVE {
         this.SetPoster();
 
         // replay after data change.
-        if(isplay){
-          setTimeout( () => {
-            this.Player.muted(false);
+        setTimeout( () => {
+          if(_change_prev_paused === false){
             this.Player.play();
-            this.ClassOff();
-            this.ClassOn();
-          }, 100);
-        }
+          } else {
+            if(isplay === true){
+              this.Player.play();
+            }
+          }
+          if(_change_prev_muted === false){
+            this.Player.muted(false);
+          }
+          this.ClassOff();
+          this.ClassOn();
+        }, 1);
 
         setTimeout( () => {
           this.PlayerChangeLoadFlg = true;
