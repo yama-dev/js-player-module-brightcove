@@ -198,10 +198,10 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     // -> playerHtml
     // -> playerCss
     // -> playerScriptCode
-    this.playerHtml        = Str2Mustache(viewPlayerMain, this.CONFIG);
-    this.playerUiHtml      = Str2Mustache(viewPlayerUi, this.CONFIG);
-    this.playerCss         = Str2Mustache(viewPlayerStyle, this.CONFIG);
-    this.playerScriptCode  = Str2Mustache(viewPlayerScriptcode, this.CONFIG);
+    this.playerHtml        = Str2Mustache(viewPlayerMain, _config_formated);
+    this.playerUiHtml      = Str2Mustache(viewPlayerUi, _config_formated);
+    this.playerCss         = Str2Mustache(viewPlayerStyle, _config_formated);
+    this.playerScriptCode  = Str2Mustache(viewPlayerScriptcode, _config_formated);
 
     // Check Audio mode.
     if(this.CONFIG.mode == 'audio'){
