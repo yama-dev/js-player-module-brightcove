@@ -660,7 +660,6 @@ export class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   Play(callback?: ()=>{}){
-    if(this.$.uiBtnPlay || this.$.uiBtnDataId){
       if(this.Player.paused()){
         if(!this.on.PlayPrep && callback) this.on.PlayPrep = callback;
         if(this.on.PlayPrep && typeof(this.on.PlayPrep) === 'function') this.on.PlayPrep(this, this.Player);
@@ -677,7 +676,6 @@ export class PLAYER_MODULE_BRIGHTCOVE {
         this.ClassOff();
       }
     }
-  }
 
   Stop(callback?: ()=>{}){
     this.Player.pause();
