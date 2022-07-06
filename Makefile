@@ -1,6 +1,6 @@
 include .env
 
-VIM := mvim
+VIM := nvim
 
 PROGRAM := npm
 RM := rm -rf
@@ -13,9 +13,9 @@ ZIP_FOLDER := _v$(VERSION)
 ENV_DEV := NODE_ENV=development
 ENV_PROD := NODE_ENV=production
 
-URL_DOC := https://ja.apis.support.brightcove.com/
+URL_DOC := https://ja.player.support.brightcove.com/getting-started/index.html
 
-all: bookmark editor serve
+all: bookmark serve
 
 build: clean prod
 

@@ -14,6 +14,7 @@ export let viewPlayerMain = `
   {{playsinline}}
   {{loop}}
   {{muted}}
+  {{poster}}
 ></video>
 `;
 

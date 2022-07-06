@@ -58,7 +58,7 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     ui_default_css : true,
 
     stop_outfocus  : false,
-    poster         : true,
+    poster         : '',
 
     add_style        : '',
     classname_active_wrap : 'is-pmb-wrap',
@@ -165,7 +165,7 @@ export class PLAYER_MODULE_BRIGHTCOVE {
       ui_default_css : options.ui_default_css === false ? false : true,
 
       stop_outfocus  : options.stop_outfocus === true ? true : false,
-      poster         : options.poster||true,
+      poster         : options.poster||'',
 
       add_style        : options.add_style||'',
       classname_active_wrap : options.classname_active_wrap||'is-pmb-wrap',
@@ -189,14 +189,19 @@ export class PLAYER_MODULE_BRIGHTCOVE {
       this.CONFIG.height = '1';
     }
 
+    let _config_formated = {
+      ...this.CONFIG,
+      poster: this.CONFIG.poster ? `poster="${this.CONFIG.poster}"` : ''
+    };
+
     // Set Options
     // -> playerHtml
     // -> playerCss
     // -> playerScriptCode
-    this.playerHtml        = Str2Mustache(viewPlayerMain, this.CONFIG);
-    this.playerUiHtml      = Str2Mustache(viewPlayerUi, this.CONFIG);
-    this.playerCss         = Str2Mustache(viewPlayerStyle, this.CONFIG);
-    this.playerScriptCode  = Str2Mustache(viewPlayerScriptcode, this.CONFIG);
+    this.playerHtml        = Str2Mustache(viewPlayerMain, _config_formated);
+    this.playerUiHtml      = Str2Mustache(viewPlayerUi, _config_formated);
+    this.playerCss         = Str2Mustache(viewPlayerStyle, _config_formated);
+    this.playerScriptCode  = Str2Mustache(viewPlayerScriptcode, _config_formated);
 
     // Check Audio mode.
     if(this.CONFIG.mode == 'audio'){
@@ -296,7 +301,7 @@ export class PLAYER_MODULE_BRIGHTCOVE {
       _loadeddata_flg = true;
       this.SetVolume(this.CONFIG.volume);
       this._setInfo();
-      this._setPoster();
+      this.SetPoster();
       this.Update();
       if(this.on.PlayerInit && typeof(this.on.PlayerInit) === 'function') this.on.PlayerInit(_that, _that.Player);
     });
@@ -305,7 +310,7 @@ export class PLAYER_MODULE_BRIGHTCOVE {
       _loadeddata_flg = true;
       this.SetVolume(this.CONFIG.volume);
       this._setInfo();
-      this._setPoster();
+      this.SetPoster();
       this.Update();
       if(this.on.PlayerInit && typeof(this.on.PlayerInit) === 'function') this.on.PlayerInit(_that, _that.Player);
     });
@@ -655,22 +660,20 @@ export class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   Play(callback?: ()=>{}){
-    if(this.$.uiBtnPlay || this.$.uiBtnDataId){
-      if(this.Player.paused()){
-        if(!this.on.PlayPrep && callback) this.on.PlayPrep = callback;
-        if(this.on.PlayPrep && typeof(this.on.PlayPrep) === 'function') this.on.PlayPrep(this, this.Player);
+    if(this.Player.paused()){
+      if(!this.on.PlayPrep && callback) this.on.PlayPrep = callback;
+      if(this.on.PlayPrep && typeof(this.on.PlayPrep) === 'function') this.on.PlayPrep(this, this.Player);
 
-        // When the player is stopped.
-        this.Player.play();
-        this.ClassOn();
+      // When the player is stopped.
+      this.Player.play();
+      this.ClassOn();
 
-        if(!this.on.Play && callback) this.on.Play = callback;
-        if(this.on.Play && typeof(this.on.Play) === 'function') this.on.Play(this, this.Player);
-      } else {
-        // When the player is playing.
-        this.Pause();
-        this.ClassOff();
-      }
+      if(!this.on.Play && callback) this.on.Play = callback;
+      if(this.on.Play && typeof(this.on.Play) === 'function') this.on.Play(this, this.Player);
+    } else {
+      // When the player is playing.
+      this.Pause();
+      this.ClassOff();
     }
   }
 
@@ -710,10 +713,13 @@ export class PLAYER_MODULE_BRIGHTCOVE {
    * isplay   | boolean  | auto start after changed media.
    * callback | function | callback function after changed media.
    */
-  Change(id: any, isplay : boolean = true, callback?: ()=>{}){
-
+  Change(id: any, isplay : boolean | null = null, callback?: ()=>{}){
     // 動画IDが取得出来ない場合は処理を中止
     if(id == '' || id == null || id == undefined) return;
+
+    let _change_prev_paused = this.Player.paused();
+    let _change_prev_muted = this.Player.muted();
+    // if(isplay === true || isplay === false) _change_prev_paused = !isplay;
 
     // Check if it is the same media.
     if(this.CONFIG.videoid !== id){
@@ -727,13 +733,15 @@ export class PLAYER_MODULE_BRIGHTCOVE {
       // exclud IE, Edge, for there is a bugs
       let _ua = window.navigator.userAgent.toLowerCase();
       if(_ua.indexOf('msie') == -1 && _ua.indexOf('trident') == -1 && _ua.indexOf('edge') == -1) {
-        this.Player.currentTime(0);
+        // this.Player.currentTime(0);
       }
 
       // Run playback start processing once in the click event propagation.
-      if(isplay){
-        this.Player.play();
-        this.Player.muted(true);
+      if(_change_prev_paused){
+        // this.Player.play();
+      }
+      if(_change_prev_muted){
+        // this.Player.muted(true);
       }
 
       this.Player.catalog.getVideo(id, (error: any, video: any) => {
@@ -743,17 +751,23 @@ export class PLAYER_MODULE_BRIGHTCOVE {
 
         // Set MediaInfo
         this._setInfo();
-        this._setPoster();
+        this.SetPoster();
 
         // replay after data change.
-        if(isplay){
-          setTimeout( () => {
-            this.Player.muted(false);
+        setTimeout( () => {
+          if(_change_prev_paused === false){
             this.Player.play();
-            this.ClassOff();
-            this.ClassOn();
-          }, 100);
-        }
+          } else {
+            if(isplay === true){
+              this.Player.play();
+            }
+          }
+          if(_change_prev_muted === false){
+            this.Player.muted(false);
+          }
+          this.ClassOff();
+          this.ClassOn();
+        }, 1);
 
         setTimeout( () => {
           this.PlayerChangeLoadFlg = true;
@@ -866,12 +880,14 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     this.Player.reset();
   }
 
-  private _setPoster(path?: string){
-    if(path){
+  SetPoster(path?: string){
+    if(path !== undefined && path !== null){
       this.Player.poster(path);
-    } else {
-      if(this.CONFIG.poster != false) this.state.poster = this.GetPoster();
+    }
 
+    this.state.poster = this.GetPoster();
+
+    if(this.state.poster){
       if(this.$.uiDisplayPoster){
         if(this.CONFIG.mode == 'audio'){
           DOM.setHtml(this.$.uiDisplayPoster, '');

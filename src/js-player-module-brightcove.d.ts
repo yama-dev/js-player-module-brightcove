@@ -22,7 +22,7 @@ export declare class PLAYER_MODULE_BRIGHTCOVE {
         ui_default: boolean;
         ui_default_css: boolean;
         stop_outfocus: boolean;
-        poster: boolean;
+        poster: string;
         add_style: string;
         classname_active_wrap: string;
         classname_active: string;
@@ -114,7 +114,7 @@ export declare class PLAYER_MODULE_BRIGHTCOVE {
      * isplay   | boolean  | auto start after changed media.
      * callback | function | callback function after changed media.
      */
-    Change(id: any, isplay?: boolean, callback?: () => {}): void;
+    Change(id: any, isplay?: boolean | null, callback?: () => {}): void;
     PauseAll(callback?: () => {}): void;
     StopAll(callback?: () => {}): void;
     SeekTo(sec: any): boolean;
@@ -127,7 +127,7 @@ export declare class PLAYER_MODULE_BRIGHTCOVE {
     GetMediaInfo(): any;
     SetVolume(vol?: number | 'off'): boolean;
     Destroy(): void;
-    private _setPoster;
+    SetPoster(path?: string): void;
     private _setInfo;
     static parseNumber(num: number | string): string;
     static pad(n: number | string, width: number, z: string): string;
