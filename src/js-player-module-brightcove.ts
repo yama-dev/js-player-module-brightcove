@@ -15,6 +15,10 @@ import {
 } from './common';
 
 import {
+  isTouchDevice
+} from './util';
+
+import {
   viewPlayerMain,
   viewPlayerUi,
 } from './view-dom';
@@ -522,49 +526,104 @@ export class PLAYER_MODULE_BRIGHTCOVE {
 
       let _targetTime = 0;
 
-      DOM.addEvent(this.$.uiSeekbarTime, 'mousedown', (event: MouseEvent) => {
-        this.PlayerChangeSeekingFlg = true;
-        let _target        = event.currentTarget as HTMLElement;
-        let _currentWidth  = _target.clientWidth;
-        let _clickPosition = _target.getBoundingClientRect().left;
-        let _targetWidth   = (event.pageX - _clickPosition) / _currentWidth;
-        _targetTime = this.Player.duration() * _targetWidth;
-        DOM.setStyle( this.$.uiSeekbarTimeCover, { width : (_targetWidth * 100) + '%' } );
-        this.Player.currentTime(_targetTime);
-      });
-
-      DOM.addEvent(this.$.uiSeekbarTime, 'mouseleave', () => {
-        if(this.PlayerChangeSeekingFlg){
-          this.Play();
-          setTimeout(()=>{
-            this.Play();
-            this.PlayerChangeSeekingFlg = false;
-          }, 100);
-        }
-      });
-
-      DOM.addEvent(this.$.uiSeekbarTime, 'mouseup', () => {
-        if(this.PlayerChangeSeekingFlg){
-          this.Play();
-          setTimeout(()=>{
-            this.Play();
-            this.PlayerChangeSeekingFlg = false;
-          }, 100);
-        }
-      });
-
-      DOM.addEvent(this.$.uiSeekbarTime, 'mousemove', (event: MouseEvent) => {
-        if(this.PlayerChangeSeekingFlg){
+      if(!isTouchDevice()){
+        DOM.addEvent(this.$.uiSeekbarTime, 'mousedown', (event: MouseEvent) => {
+          this.PlayerChangeSeekingFlg = true;
           let _target        = event.currentTarget as HTMLElement;
           let _currentWidth  = _target.clientWidth;
           let _clickPosition = _target.getBoundingClientRect().left;
           let _targetWidth   = (event.pageX - _clickPosition) / _currentWidth;
-          _targetTime    = this.Player.duration() * _targetWidth;
-
+          _targetTime = this.Player.duration() * _targetWidth;
           DOM.setStyle( this.$.uiSeekbarTimeCover, { width : (_targetWidth * 100) + '%' } );
           this.Player.currentTime(_targetTime);
-        }
-      });
+        });
+
+        DOM.addEvent(this.$.uiSeekbarTime, 'mouseleave', () => {
+          if(this.PlayerChangeSeekingFlg){
+            this.Play();
+            setTimeout(()=>{
+              this.Play();
+              this.PlayerChangeSeekingFlg = false;
+            }, 100);
+          }
+        });
+
+        DOM.addEvent(this.$.uiSeekbarTime, 'mouseup', () => {
+          if(this.PlayerChangeSeekingFlg){
+            this.Play();
+            setTimeout(()=>{
+              this.Play();
+              this.PlayerChangeSeekingFlg = false;
+            }, 100);
+          }
+        });
+
+        DOM.addEvent(this.$.uiSeekbarTime, 'mousemove', (event: MouseEvent) => {
+          if(this.PlayerChangeSeekingFlg){
+            let _target        = event.currentTarget as HTMLElement;
+            let _currentWidth  = _target.clientWidth;
+            let _clickPosition = _target.getBoundingClientRect().left;
+            let _targetWidth   = (event.pageX - _clickPosition) / _currentWidth;
+            _targetTime    = this.Player.duration() * _targetWidth;
+
+            if(_targetWidth >= 1) _targetWidth = 1;
+            if(_targetWidth <= 0) _targetWidth = 0;
+
+            DOM.setStyle( this.$.uiSeekbarTimeCover, { width : (_targetWidth * 100) + '%' } );
+            this.Player.currentTime(_targetTime);
+          }
+        });
+
+      } else {
+
+        DOM.addEvent(this.$.uiSeekbarTime, 'touchstart', (event: TouchEvent) => {
+          this.PlayerChangeSeekingFlg = true;
+          let _target        = event.touches[0].target as HTMLElement;
+          let _currentWidth  = _target.clientWidth;
+          let _clickPosition = _target.getBoundingClientRect().left;
+          let _targetWidth   = (event.touches[0].pageX - _clickPosition) / _currentWidth;
+          _targetTime = this.Player.duration() * _targetWidth;
+          DOM.setStyle( this.$.uiSeekbarTimeCover, { width : (_targetWidth * 100) + '%' } );
+          this.Player.currentTime(_targetTime);
+        });
+
+        DOM.addEvent(this.$.uiSeekbarTime, 'touchcancel', () => {
+          if(this.PlayerChangeSeekingFlg){
+            this.Play();
+            setTimeout(()=>{
+              this.Play();
+              this.PlayerChangeSeekingFlg = false;
+            }, 100);
+          }
+        });
+
+        DOM.addEvent(this.$.uiSeekbarTime, 'touchend', () => {
+          if(this.PlayerChangeSeekingFlg){
+            this.Play();
+            setTimeout(()=>{
+              this.Play();
+              this.PlayerChangeSeekingFlg = false;
+            }, 100);
+          }
+        });
+
+        DOM.addEvent(this.$.uiSeekbarTime, 'touchmove', (event: TouchEvent) => {
+          if(this.PlayerChangeSeekingFlg){
+            let _target        = event.touches[0].target as HTMLElement;
+            let _currentWidth  = _target.clientWidth;
+            let _clickPosition = _target.getBoundingClientRect().left;
+            let _targetWidth   = (event.touches[0].pageX - _clickPosition) / _currentWidth;
+            _targetTime    = this.Player.duration() * _targetWidth;
+
+            if(_targetWidth >= 1) _targetWidth = 1;
+            if(_targetWidth <= 0) _targetWidth = 0;
+
+            DOM.setStyle( this.$.uiSeekbarTimeCover, { width : (_targetWidth * 100) + '%' } );
+            this.Player.currentTime(_targetTime);
+          }
+        });
+
+      }
 
     }
   }

@@ -69,6 +69,7 @@ export let viewPlayerStyle = `
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+  touch-action: manipulation;
 }
 #{{ id }} .ui-seekbar-vol .ui-seekbar-vol_bg {
   width: 100%;
@@ -95,6 +96,7 @@ export let viewPlayerStyle = `
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+  touch-action: manipulation;
 }
 #{{ id }} .ui-seekbar-time .ui-seekbar-time-bg {
   width: 100%;
