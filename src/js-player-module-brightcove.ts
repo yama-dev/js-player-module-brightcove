@@ -684,7 +684,6 @@ export class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   Update(){
-
     // Not change value at seeking.
     if(this.PlayerChangeSeekingFlg) return;
 
@@ -825,18 +824,17 @@ export class PLAYER_MODULE_BRIGHTCOVE {
 
         // replay after data change.
         setTimeout( () => {
+          this.ClassOff();
           if(_change_prev_paused === false){
-            this.Player.play();
+            this.Play(true);
           } else {
             if(isplay === true){
-              this.Player.play();
+              this.Play(true);
             }
           }
           if(_change_prev_muted === false){
             this.Player.muted(false);
           }
-          this.ClassOff();
-          this.ClassOn();
         }, 1);
 
         setTimeout( () => {

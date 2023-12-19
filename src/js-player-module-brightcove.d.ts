@@ -25,6 +25,7 @@ export declare class PLAYER_MODULE_BRIGHTCOVE {
         stop_outfocus: boolean;
         poster: string;
         add_style: string;
+        classname_loaded_wrap: string;
         classname_active_wrap: string;
         classname_active: string;
     };
@@ -103,7 +104,7 @@ export declare class PLAYER_MODULE_BRIGHTCOVE {
     ClassOn(): void;
     ClassOff(): void;
     Update(): void;
-    Play(callback?: () => {}): void;
+    Play(forceplay?: boolean, callback?: () => {}): void;
     Stop(callback?: () => {}): void;
     Pause(callback?: () => {}): void;
     Mute(): void;
