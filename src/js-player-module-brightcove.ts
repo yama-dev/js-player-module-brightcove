@@ -67,8 +67,8 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     poster         : '',
 
     add_style        : '',
-    classname_active_wrap : 'is-pmb-wrap',
-    classname_active : 'active'
+    classname_active_wrap : 'is-pmb-active-wrap',
+    classname_active : 'is-pmb-active'
   };
 
   on = {
@@ -173,8 +173,8 @@ export class PLAYER_MODULE_BRIGHTCOVE {
       poster         : options.poster||'',
 
       add_style        : options.add_style||'',
-      classname_active_wrap : options.classname_active_wrap||'is-pmb-wrap',
-      classname_active : options.classname_active||'active'
+      classname_active_wrap : options.classname_active_wrap||'is-pmb-active-wrap',
+      classname_active : options.classname_active||'is-pmb-active'
     };
 
     // Set config, callback functions.
@@ -415,7 +415,7 @@ export class PLAYER_MODULE_BRIGHTCOVE {
 
     this.$.uiBtnChange                = DOM.selectDom('#'+this.CONFIG.id+' .ui-btn-change');
 
-    this.$.uiBtnDataId                = DOM.selectDom('[data-PMB-id]');
+    this.$.uiBtnDataId                = DOM.selectDom('[data-pmb-id]');
   }
 
   EventPlay(){
@@ -633,7 +633,7 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     if(this.$.uiBtnChange){
       DOM.addEvent(this.$.uiBtnChange, 'click' , (event: MouseEvent) => {
         // Get video-id.
-        // -> <data-PMB-id="">
+        // -> <data-pmb-id="">
         let _target = event.currentTarget as HTMLElement;
         let id = _target.dataset.pmbId;
         this.Change(id);
@@ -654,7 +654,7 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     // Add className MediaChange-Button.
     if(this.$.uiBtnDataId){
       this.$.uiBtnDataId.map((item)=>{
-        if(this.CONFIG.videoid == item.getAttribute('data-PMB-id')){
+        if(this.CONFIG.videoid == item.getAttribute('data-pmb-id')){
           DOM.addClass(item, this.CONFIG.classname_active);
         }
       });
