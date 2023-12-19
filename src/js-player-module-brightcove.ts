@@ -49,6 +49,8 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     width          : '',
     height         : '',
 
+    video_title    : '',
+
     player         : 'default',
     volume         : 1,
 
@@ -86,9 +88,6 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     StopAll : null,
     Change  : null,
   };
-
-  // BrightcovePlayer MediaInfo
-  PlayerMediaInfo = {};
 
   // BrightcovePlayer Instance.
   Player = null;
@@ -151,10 +150,12 @@ export class PLAYER_MODULE_BRIGHTCOVE {
       player_ui_id     : `${options.id}_ui`||'pmb_ui',
       player_style_id  : `${options.id}_style`||'pmb_style',
 
-      videoid        : options.videoid||'',
+      videoid        : options.videoid||'4929511769001',
       account        : options.account||'',
       width          : options.width||'',
       height         : options.height||'',
+
+      video_title    : options.video_title||'',
 
       player         : options.player||'default',
       volume         : options.volume||1,
@@ -933,6 +934,15 @@ export class PLAYER_MODULE_BRIGHTCOVE {
       this.CONFIG.volume = Number(vol);
       this.Player.volume(this.CONFIG.volume);
     }
+  }
+
+  /**
+   * video-tag set attribute 'title'.
+   *
+   * @param {string} title
+   */
+  SetVideoTitle(title: string){
+    this.Player.el().querySelector('video').setAttribute('title', title);
   }
 
   Destroy(){

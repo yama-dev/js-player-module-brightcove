@@ -12,6 +12,7 @@ export declare class PLAYER_MODULE_BRIGHTCOVE {
         account: string;
         width: string;
         height: string;
+        video_title: string;
         player: string;
         volume: number;
         playsinline: string;
@@ -42,7 +43,6 @@ export declare class PLAYER_MODULE_BRIGHTCOVE {
         StopAll: any;
         Change: any;
     };
-    PlayerMediaInfo: {};
     Player: any;
     $: {
         playerElem: any[];
@@ -126,6 +126,12 @@ export declare class PLAYER_MODULE_BRIGHTCOVE {
     GetPoster(): any;
     GetMediaInfo(): any;
     SetVolume(vol?: number | 'off'): boolean;
+    /**
+     * video-tag set attribute 'title'.
+     *
+     * @param {string} title
+     */
+    SetVideoTitle(title: string): void;
     Destroy(): void;
     SetPoster(path?: string): void;
     private _setInfo;
