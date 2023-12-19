@@ -125,15 +125,31 @@
       <div id="brightcovePlayerCustom">
         <script>
           var PMB = new PLAYER_MODULE_BRIGHTCOVE({
-            id:'brightcovePlayerCustom',
-            ui_controls:true,
-            ui_default:true,
+            mode: 'movie',
+
+            id: 'brightcovePlayerCustom',
+            ui_controls: true,
             ui_autoplay: false,
-            videoid:'4230322585001',
-            account:'20318290001',
+            ui_default: true,
+            ui_default_css : true,
+
+            videoid: '4230322585001',
+            account: '20318290001',
+            player: 'default',
+
+            loop: false,
+            muted: false,
+            volume: 0.5,
+            stop_outfocus : true,
+
             width: '480px',
             height: '300px',
-            volume: 0.5,
+
+            poster: 'https://placehold.jp/750x500.png',
+
+            add_style : '',
+            classname_loaded_wrap : 'is-pmb-loaded-wrap',
+            classname_active_wrap : 'is-pmb-active-wrap',
             classname_active: 'is-pmb-active',
             on: {
               PlayerInit: function(player){
