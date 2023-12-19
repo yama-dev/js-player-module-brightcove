@@ -37,11 +37,14 @@ serve:
 prod:
 	$(ENV_PROD) $(PROGRAM) run prod
 
+test:
+	@echo $(TYPE)
+
 zip:
-	$(RM) $(ZIP_FOLDER)
-	$(MK) $(ZIP_FOLDER)
-	$(CP) dist/js-player-module-brightcove.js examples/index.html $(ZIP_FOLDER)/
-	sed -i "" "s/..\/dist\//.\//g" "$(ZIP_FOLDER)/index.html"
-	$(ZIP) $(ZIP_FOLDER)/$(VERSION).zip -r $(ZIP_FOLDER)/*
+	$(RM) $(ZIP_FOLDER)$(TYPE)
+	$(MK) $(ZIP_FOLDER)$(TYPE)
+	$(CP) dist/js-player-module-brightcove.js examples/index.html $(ZIP_FOLDER)$(TYPE)/
+	sed -i "" "s/..\/dist\//.\//g" "$(ZIP_FOLDER)$(TYPE)/index.html"
+	$(ZIP) $(ZIP_FOLDER)$(TYPE)/$(VERSION).zip -r $(ZIP_FOLDER)$(TYPE)/*
 
 .PHONY: all build bookmark editor serve clean prod zip install

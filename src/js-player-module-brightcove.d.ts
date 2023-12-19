@@ -12,6 +12,7 @@ export declare class PLAYER_MODULE_BRIGHTCOVE {
         account: string;
         width: string;
         height: string;
+        video_title: string;
         player: string;
         volume: number;
         playsinline: string;
@@ -24,6 +25,7 @@ export declare class PLAYER_MODULE_BRIGHTCOVE {
         stop_outfocus: boolean;
         poster: string;
         add_style: string;
+        classname_loaded_wrap: string;
         classname_active_wrap: string;
         classname_active: string;
     };
@@ -42,7 +44,6 @@ export declare class PLAYER_MODULE_BRIGHTCOVE {
         StopAll: any;
         Change: any;
     };
-    PlayerMediaInfo: {};
     Player: any;
     $: {
         playerElem: any[];
@@ -103,7 +104,7 @@ export declare class PLAYER_MODULE_BRIGHTCOVE {
     ClassOn(): void;
     ClassOff(): void;
     Update(): void;
-    Play(callback?: () => {}): void;
+    Play(forceplay?: boolean, callback?: () => {}): void;
     Stop(callback?: () => {}): void;
     Pause(callback?: () => {}): void;
     Mute(): void;
@@ -126,6 +127,12 @@ export declare class PLAYER_MODULE_BRIGHTCOVE {
     GetPoster(): any;
     GetMediaInfo(): any;
     SetVolume(vol?: number | 'off'): boolean;
+    /**
+     * video-tag set attribute 'title'.
+     *
+     * @param {string} title
+     */
+    SetVideoTitle(title: string): void;
     Destroy(): void;
     SetPoster(path?: string): void;
     private _setInfo;
