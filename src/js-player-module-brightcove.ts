@@ -67,6 +67,7 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     poster         : '',
 
     add_style        : '',
+    classname_loaded_wrap : 'is-pmb-loaded-wrap',
     classname_active_wrap : 'is-pmb-active-wrap',
     classname_active : 'is-pmb-active'
   };
@@ -173,6 +174,7 @@ export class PLAYER_MODULE_BRIGHTCOVE {
       poster         : options.poster||'',
 
       add_style        : options.add_style||'',
+      classname_loaded_wrap : options.classname_loaded_wrap||'is-pmb-loaded-wrap',
       classname_active_wrap : options.classname_active_wrap||'is-pmb-active-wrap',
       classname_active : options.classname_active||'is-pmb-active'
     };
@@ -308,6 +310,7 @@ export class PLAYER_MODULE_BRIGHTCOVE {
       this._setInfo();
       this.SetPoster();
       this.Update();
+      if(this.$.playerElem) DOM.addClass(this.$.playerElem, this.CONFIG.classname_loaded_wrap);
       if(this.on.PlayerInit && typeof(this.on.PlayerInit) === 'function') this.on.PlayerInit(_that, _that.Player);
     });
     this.Player.on('loadeddata', ()=>{
@@ -317,6 +320,7 @@ export class PLAYER_MODULE_BRIGHTCOVE {
       this._setInfo();
       this.SetPoster();
       this.Update();
+      if(this.$.playerElem) DOM.addClass(this.$.playerElem, this.CONFIG.classname_loaded_wrap);
       if(this.on.PlayerInit && typeof(this.on.PlayerInit) === 'function') this.on.PlayerInit(_that, _that.Player);
     });
 
@@ -719,8 +723,8 @@ export class PLAYER_MODULE_BRIGHTCOVE {
 
   }
 
-  Play(callback?: ()=>{}){
-    if(this.Player.paused()){
+  Play(forceplay?: boolean, callback?: ()=>{}){
+    if(this.Player.paused() || forceplay == true){
       if(!this.on.PlayPrep && callback) this.on.PlayPrep = callback;
       if(this.on.PlayPrep && typeof(this.on.PlayPrep) === 'function') this.on.PlayPrep(this, this.Player);
 
@@ -803,6 +807,8 @@ export class PLAYER_MODULE_BRIGHTCOVE {
       if(_change_prev_muted){
         // this.Player.muted(true);
       }
+
+      if(this.$.playerElem) DOM.removeClass(this.$.playerElem, this.CONFIG.classname_loaded_wrap);
 
       this.Player.catalog.getVideo(id, (error: any, video: any) => {
 
