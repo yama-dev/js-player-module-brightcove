@@ -19,7 +19,7 @@ The official document is here. -> https://docs.brightcove.com/brightcove-player/
 
 - npm -> [https://www.npmjs.com/package/js-player-module-brightcove](https://www.npmjs.com/package/js-player-module-brightcove)
 
-- Standalone(CDN) -> [https://cdn.jsdelivr.net/gh/yama-dev/js-player-module-brightcove@v6.1.2/dist/js-player-module-brightcove.js](https://cdn.jsdelivr.net/gh/yama-dev/js-player-module-brightcove@v6.1.2/dist/js-player-module-brightcove.js)
+- Standalone(CDN) -> [https://cdn.jsdelivr.net/gh/yama-dev/js-player-module-brightcove@v6.4.0/dist/js-player-module-brightcove.js](https://cdn.jsdelivr.net/gh/yama-dev/js-player-module-brightcove@v6.4.0/dist/js-player-module-brightcove.js)
 
 - Zip -> [yama-dev/js-player-module-brightcove](https://github.com/yama-dev/js-player-module-brightcove/releases/latest)
 
@@ -111,6 +111,106 @@ import PLAYER_MODULE_BRIGHTCOVE from 'js-player-module-brightcove';
       account: '20318290001'
     });
   </script>
+</div>
+```
+
+### ④ Full Custom Player
+
+``` html
+<div id="brightcovePlayerCustom">
+  <script>
+    var PMB = new PLAYER_MODULE_BRIGHTCOVE({
+      mode: 'movie',
+
+      id: 'brightcovePlayerCustom',
+      ui_controls: true,
+      ui_autoplay: false,
+      ui_default: true,
+      ui_default_css : true,
+
+      videoid: '4230322585001',
+      account: '20318290001',
+      player: 'default',
+
+      loop: false,
+      muted: false,
+      volume: 0.5,
+      stop_outfocus : true,
+
+      width: '480px',
+      height: '300px',
+
+      poster: 'https://placehold.jp/750x500.png',
+
+      add_style : '',
+      classname_loaded_wrap : 'is-pmb-loaded-wrap',
+      classname_active_wrap : 'is-pmb-active-wrap',
+      classname_active: 'is-pmb-active',
+      on: {
+        PlayerInit: function(player){
+          console.log('PlayerInit', player);
+          console.log(player.GetMediaInfo());
+          console.log(player.GetPoster());
+        },
+        PlayerEnded: function(player){
+          console.log('PlayerEnded', player);
+        },
+        PlayerPlay: function(player){
+          console.log('PlayerPlay', player);
+        },
+        PlayerPause: function(player){
+          console.log('PlayerPause', player);
+          console.log(player.GetTime());
+          console.log(player.GetTimeMax());
+          console.log(player.GetTimeRatio());
+          console.log(player.GetTimeDown());
+        },
+
+        TimeUpdate : function(obj){
+          console.log('TimeUpdate', obj);
+        },
+        VolumeChange : function(obj){
+          console.log('VolumeChange', obj);
+        },
+
+        Play: function(player){
+          console.log('Play', player);
+        },
+        PlayPrep: function(player){
+          console.log('PlayPrep', player);
+        },
+        Pause: function(player){
+          console.log('Pause', player);
+        },
+        Stop: function(player){
+          console.log('Stop', player);
+        },
+        StopAll: function(player){
+          console.log('StopAll', player);
+        },
+        Change: function(player){
+          console.log('Change', player);
+          console.log(player.GetMediaInfo());
+          console.log(player.GetPoster());
+        }
+      }
+    });
+  </script>
+
+  <button class="btn btn-secondary" onclick="PMB.Play()">Media再生(Play)</button>
+  <button class="btn btn-secondary" onclick="PMB.Stop()">Media停止(Stop)</button>
+  <button class="btn btn-secondary" onclick="PMB.PauseAll()">Media全一時停止(PauseAll)</button>
+  <button class="btn btn-secondary" onclick="PMB.StopAll()">Media全停止(StopAll)</button>
+
+  <button class="btn btn-secondary" data-PMB-id="4230322585001" onclick="PMB.Change('4230322585001')">Media変更 id=4230322585001</button>
+  <div class="btn btn-secondary" data-PMB-id="4231692338001" onclick="PMB.Change('4231692338001')">
+    Media変更 id=4231692338001<br><br>
+    <p class="ui-time">00:00</p>
+    <p class="ui-time_down">00:00</p>
+  </div>
+
+  <button class="btn btn-secondary" onclick="PMB.SeekTo(30)">Media再生位置変更(SeekTo 30s)</button>
+  <button class="btn btn-secondary" onclick="PMB.SeekTo(60)">Media再生位置変更(SeekTo 60s)</button>
 </div>
 ```
 
