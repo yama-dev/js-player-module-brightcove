@@ -646,6 +646,8 @@ export class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   ClassOn(){
+    this.CacheElement();
+
     // Add className Player wrapper.
     if(this.$.playerElem) DOM.addClass(this.$.playerElem, this.CONFIG.classname_active_wrap);
 
@@ -666,6 +668,8 @@ export class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   ClassOff(){
+    this.CacheElement();
+
     // Remove className Player wrapper.
     if(this.$.playerElem) DOM.removeClass(this.$.playerElem, this.CONFIG.classname_active_wrap);
 
