@@ -9,7 +9,7 @@ export let viewPlayerMain = `
   class="video-js"
   width="{{ width }}"
   height="{{ height }}"
-  title="{{video_title}}"
+  {{title}}
   {{ui_controls}}
   {{ui_autoplay}}
   {{playsinline}}
