@@ -198,7 +198,8 @@ export class PLAYER_MODULE_BRIGHTCOVE {
 
     let _config_formated = {
       ...this.CONFIG,
-      poster: this.CONFIG.poster ? `poster="${this.CONFIG.poster}"` : ''
+      poster: this.CONFIG.poster ? `poster="${this.CONFIG.poster}"` : '',
+      title: this.CONFIG.video_title ? `title="${this.CONFIG.video_title}"` : '',
     };
 
     // Set Options
