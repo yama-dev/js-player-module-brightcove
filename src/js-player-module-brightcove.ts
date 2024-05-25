@@ -785,6 +785,8 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     // 動画IDが取得出来ない場合は処理を中止
     if(id == '' || id == null || id == undefined) return;
 
+    if(!this.PlayerChangeLoadFlg) return false;
+
     let _change_prev_paused = this.Player.paused();
     let _change_prev_muted = this.Player.muted();
     // if(isplay === true || isplay === false) _change_prev_paused = !isplay;
@@ -809,7 +811,7 @@ export class PLAYER_MODULE_BRIGHTCOVE {
         // this.Player.play();
       }
       if(_change_prev_muted){
-        // this.Player.muted(true);
+        this.Player.muted(true);
       }
 
       if(this.$.playerElem) DOM.removeClass(this.$.playerElem, this.CONFIG.classname_loaded_wrap);
@@ -836,15 +838,16 @@ export class PLAYER_MODULE_BRIGHTCOVE {
           if(_change_prev_muted === false){
             this.Player.muted(false);
           }
-        }, 1);
+        }, 100);
 
         setTimeout( () => {
-          this.PlayerChangeLoadFlg = true;
-
           if(!this.on.Change && callback) this.on.Change = callback;
           if(this.on.Change && typeof(this.on.Change) === 'function') this.on.Change(this, this.Player);
         }, 300);
 
+        setTimeout( () => {
+          this.PlayerChangeLoadFlg = true;
+        }, 500);
       });
 
       // Determine if the next media information could be obtained.
@@ -852,7 +855,6 @@ export class PLAYER_MODULE_BRIGHTCOVE {
         this.PlayerChangeLoadFlg = true;
         this.Player.off('loadeddata');
       });
-
 
     } else {
       if(isplay){

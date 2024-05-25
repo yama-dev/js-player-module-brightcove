@@ -115,7 +115,7 @@ export declare class PLAYER_MODULE_BRIGHTCOVE {
      * isplay   | boolean  | auto start after changed media.
      * callback | function | callback function after changed media.
      */
-    Change(id: any, isplay?: boolean | null, callback?: () => {}): void;
+    Change(id: any, isplay?: boolean | null, callback?: () => {}): boolean;
     PauseAll(callback?: () => {}): void;
     StopAll(callback?: () => {}): void;
     SeekTo(sec: any): boolean;
