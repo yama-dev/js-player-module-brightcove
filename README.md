@@ -244,7 +244,29 @@ import PLAYER_MODULE_BRIGHTCOVE from 'js-player-module-brightcove';
 
 ## Dependencies
 
-none
+- [@yama-dev/js-dom](https://www.npmjs.com/package/@yama-dev/js-dom)
+- [@yama-dev/js-parse-module](https://www.npmjs.com/package/@yama-dev/js-parse-module)
+
+<br>
+
+## Development
+
+``` bash
+npm install
+npm run typecheck
+npm test
+npm run prod
+```
+
+### Release notes
+
+Record user-facing changes before release.
+
+``` bash
+npm run changeset
+npm run version-packages
+npm run release
+```
 
 <br><br><br>
 
@@ -259,4 +281,3 @@ ___
 ## Author
 
 [yama-dev](https://github.com/yama-dev)
-
