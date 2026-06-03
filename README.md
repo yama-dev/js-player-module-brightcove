@@ -19,7 +19,7 @@ The official document is here. -> https://docs.brightcove.com/brightcove-player/
 
 - npm -> [https://www.npmjs.com/package/js-player-module-brightcove](https://www.npmjs.com/package/js-player-module-brightcove)
 
-- Standalone(CDN) -> [https://cdn.jsdelivr.net/gh/yama-dev/js-player-module-brightcove@v6.4.3/dist/js-player-module-brightcove.js](https://cdn.jsdelivr.net/gh/yama-dev/js-player-module-brightcove@v6.4.3/dist/js-player-module-brightcove.js)
+- Standalone(CDN) -> [https://cdn.jsdelivr.net/npm/js-player-module-brightcove@latest/dist/js-player-module-brightcove.js](https://cdn.jsdelivr.net/npm/js-player-module-brightcove@latest/dist/js-player-module-brightcove.js)
 
 - Zip -> [yama-dev/js-player-module-brightcove](https://github.com/yama-dev/js-player-module-brightcove/releases/latest)
 
@@ -257,6 +257,8 @@ npm run typecheck
 npm test
 npm run prod
 ```
+
+The v7 build uses Vite library mode and targets ES2015. IE11 is no longer supported. The generated `dist/` files are not tracked in Git, but are included in the npm package.
 
 ### Release notes
 
