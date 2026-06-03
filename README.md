@@ -84,7 +84,7 @@ import PLAYER_MODULE_BRIGHTCOVE from 'js-player-module-brightcove';
     new PLAYER_MODULE_BRIGHTCOVE({
       id: 'brightcovePlayerOriginalimage',
       videoid: '4230322585001',
-      account: '20318290001'
+      account: '20318290001',
       ui_default: false
     });
   </script>
