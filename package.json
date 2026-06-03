@@ -23,17 +23,20 @@
     "LICENSE"
   ],
   "scripts": {
-    "start": "npm install && npm run dev",
+    "start": "npm run dev",
     "dev": "npm-run-all -p vite:develop server",
+    "build": "npm run prod",
+    "clean": "rm -rf dist .tmp-test",
     "prod": "npm-run-all declarations vite:build",
     "declarations": "tsc --emitDeclarationOnly",
     "typecheck": "tsc --noEmit",
-    "test": "npm run typecheck && npm run test:unit && npm run test:bundle",
+    "test": "npm run typecheck && npm run test:unit",
     "test:unit": "tsc --ignoreConfig src/number.ts src/config.ts src/types.ts src/player-time.ts --target ES2020 --module commonjs --outDir .tmp-test && node test/number.test.js && node test/config.test.js && node test/player-time.test.js",
     "test:bundle": "node test/bundle.test.js",
+    "test:release": "npm run clean && npm run test && npm run prod && npm run test:bundle",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "release": "npm run test && npm run prod && npm run test:bundle && changeset publish",
+    "release": "npm run test:release && changeset publish",
     "server": "browser-sync start --server ./ --directory ./examples --files **/*.css **/*.js **/*.html",
     "vite:develop": "vite build --watch --mode development",
     "vite:build": "vite build"

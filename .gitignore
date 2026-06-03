@@ -18,6 +18,7 @@ package-lock.json
 dist/
 
 # Development environment.
+DEVELOP.md
 _*/
 _*.html
 _*.js
