@@ -1,5 +1,11 @@
 # js-player-module-brightcove
 
+## 7.0.0
+
+### Major Changes
+
+- 2baaaf9: Migrate the library build from webpack to Vite library mode and target ES2015, dropping IE11 support. Generated dist files are no longer tracked in Git and should be produced during release.
+
 ## 6.4.4
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "js-player-module-brightcove",
-  "version": "6.4.4",
+  "version": "7.0.0",
   "description": "Brightcove custom player using the Brightcove Player API.",
   "keywords": [
     "Brightcove",
@@ -35,9 +35,10 @@
     "test:bundle": "node test/bundle.test.js",
     "test:release": "npm run clean && npm run test && npm run prod && npm run test:bundle",
     "pack:check": "npm pack --dry-run --cache .tmp-npm-cache",
+    "release:check-versioned": "node -e \"const fs=require('fs'); const dir='.changeset'; const pending=fs.existsSync(dir)?fs.readdirSync(dir).filter((file)=>file.endsWith('.md')):[]; if(pending.length){ console.error('Pending changesets: '+pending.join(', ')); console.error('Run npm run version-packages and commit the result before npm run release.'); process.exit(1); }\"",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "release": "npm run test:release && npm run pack:check && changeset publish",
+    "release": "npm run release:check-versioned && npm run test:release && npm run pack:check && changeset publish",
     "server": "browser-sync start --server ./ --directory ./examples --files **/*.css **/*.js **/*.html",
     "vite:develop": "vite build --watch --mode development",
     "vite:build": "vite build"
