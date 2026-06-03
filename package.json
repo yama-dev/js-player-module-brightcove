@@ -29,7 +29,7 @@
     "declarations": "tsc --emitDeclarationOnly",
     "typecheck": "tsc --noEmit",
     "test": "npm run typecheck && npm run test:unit && npm run test:bundle",
-    "test:unit": "tsc --ignoreConfig src/number.ts src/config.ts src/types.ts --target ES2020 --module commonjs --outDir .tmp-test && node test/number.test.js && node test/config.test.js",
+    "test:unit": "tsc --ignoreConfig src/number.ts src/config.ts src/types.ts src/player-time.ts --target ES2020 --module commonjs --outDir .tmp-test && node test/number.test.js && node test/config.test.js && node test/player-time.test.js",
     "test:bundle": "node test/bundle.test.js",
     "changeset": "changeset",
     "version-packages": "changeset version",

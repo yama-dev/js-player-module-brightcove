@@ -1,3 +1,4 @@
+import { PlayerDomCache } from './dom-cache';
 import { PlayerCallbacks, PlayerConfig, PlayerOptions } from './types';
 export declare class PLAYER_MODULE_BRIGHTCOVE {
     VERSION: string;
@@ -5,32 +6,7 @@ export declare class PLAYER_MODULE_BRIGHTCOVE {
     CONFIG: PlayerConfig;
     on: PlayerCallbacks;
     Player: any;
-    $: {
-        playerElem: any[];
-        playerElemMainWrap: any[];
-        uiBtnPlay: any[];
-        uiBtnStop: any[];
-        uiBtnPause: any[];
-        uiBtnMute: any[];
-        uiBtnVolon: any[];
-        uiBtnVoloff: any[];
-        uiDisplayTime: any[];
-        uiDisplayTimeNow: any[];
-        uiDisplayTimeTotal: any[];
-        uiDisplayTimeDown: any[];
-        uiDisplayTimePar: any[];
-        uiDisplayPoster: any[];
-        uiDisplayPosterBg: any[];
-        uiDisplayName: any[];
-        uiSeekbarVol: any[];
-        uiSeekbarVolBg: any[];
-        uiSeekbarVolCover: any[];
-        uiSeekbarTime: any[];
-        uiSeekbarTimeBg: any[];
-        uiSeekbarTimeCover: any[];
-        uiBtnChange: any[];
-        uiBtnDataId: any[];
-    };
+    $: PlayerDomCache;
     playerHtml: string;
     playerUiHtml: string;
     playerCss: string;
@@ -64,6 +40,8 @@ export declare class PLAYER_MODULE_BRIGHTCOVE {
     ClassOn(): void;
     ClassOff(): void;
     Update(): void;
+    private _getControlContext;
+    private _getChangeContext;
     Play(forceplay?: boolean, callback?: () => {}): void;
     Stop(callback?: () => {}): void;
     Pause(callback?: () => {}): void;
@@ -75,10 +53,10 @@ export declare class PLAYER_MODULE_BRIGHTCOVE {
      * isplay   | boolean  | auto start after changed media.
      * callback | function | callback function after changed media.
      */
-    Change(id: any, isplay?: boolean | null, callback?: () => {}): boolean;
+    Change(id: any, isplay?: boolean | null, callback?: () => {}): boolean | void;
     PauseAll(callback?: () => {}): void;
     StopAll(callback?: () => {}): void;
-    SeekTo(sec: any): boolean;
+    SeekTo(sec: any): boolean | void;
     GetTime(): string;
     GetTimeDown(): string;
     GetTimeMax(): string;
@@ -86,7 +64,7 @@ export declare class PLAYER_MODULE_BRIGHTCOVE {
     GetTimePar(): string;
     GetPoster(): any;
     GetMediaInfo(): any;
-    SetVolume(vol?: number | 'off'): boolean;
+    SetVolume(vol?: number | 'off'): boolean | void;
     /**
      * video-tag set attribute 'title'.
      *
