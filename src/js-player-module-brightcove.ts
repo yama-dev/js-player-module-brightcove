@@ -305,24 +305,28 @@ export class PLAYER_MODULE_BRIGHTCOVE {
 
     let _loadeddata_flg = false;
     this.Player.on('loadedmetadata', ()=>{
-      if(_loadeddata_flg) return false;
+      if (_loadeddata_flg) return;
       _loadeddata_flg = true;
       this.SetVolume(this.CONFIG.volume);
       this._setInfo();
       this.SetPoster();
       this.Update();
       if(this.$.playerElem) DOM.addClass(this.$.playerElem, this.CONFIG.classname_loaded_wrap);
-      if(this.on.PlayerInit && typeof(this.on.PlayerInit) === 'function') this.on.PlayerInit(_that, _that.Player);
+      if (this.on.PlayerInit && typeof this.on.PlayerInit === 'function') {
+        this.on.PlayerInit(_that, _that.Player);
+      }
     });
     this.Player.on('loadeddata', ()=>{
-      if(_loadeddata_flg) return false;
+      if (_loadeddata_flg) return;
       _loadeddata_flg = true;
       this.SetVolume(this.CONFIG.volume);
       this._setInfo();
       this.SetPoster();
       this.Update();
       if(this.$.playerElem) DOM.addClass(this.$.playerElem, this.CONFIG.classname_loaded_wrap);
-      if(this.on.PlayerInit && typeof(this.on.PlayerInit) === 'function') this.on.PlayerInit(_that, _that.Player);
+      if (this.on.PlayerInit && typeof this.on.PlayerInit === 'function') {
+        this.on.PlayerInit(_that, _that.Player);
+      }
     });
 
     // For Timeupdate.
@@ -333,14 +337,15 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     // For Volume change.
     this.Player.on('volumechange', ()=>{
       // update(%)
-      let _volume = this.Player.volume();
+      let volume = this.Player.volume(); // volumeは0~1の範囲
 
-      DOM.setStyle( this.$.uiSeekbarVolCover, { width : (_volume * 100) + '%' } );
+      DOM.setStyle( this.$.uiSeekbarVolCover, { width : (volume * 100) + '%' } );
 
-      if(this.on.VolumeChange && typeof(this.on.VolumeChange) === 'function'){
+      if (this.on.VolumeChange && typeof this.on.VolumeChange === 'function') {
         this.on.VolumeChange({
-          volume: PLAYER_MODULE_BRIGHTCOVE.toFixedNumber(_volume, 3),
-          par   : PLAYER_MODULE_BRIGHTCOVE.toFixedNumber(_volume * 100, 1)
+          // volume: 0~1, par: 0~100
+          volume: PLAYER_MODULE_BRIGHTCOVE.toFixedNumber(volume, 3),
+          par   : PLAYER_MODULE_BRIGHTCOVE.toFixedNumber(volume * 100, 1)
         });
       }
     });
