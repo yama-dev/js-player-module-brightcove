@@ -2,7 +2,7 @@
 /*eslint no-console: 0*/
 /*eslint no-useless-escape: 0*/
 
-import * as JS_DOM from '@yama-dev/js-dom';
+import JS_DOM from '@yama-dev/js-dom';
 const DOM = new JS_DOM();
 
 import {
