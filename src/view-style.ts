@@ -71,7 +71,7 @@ export let viewPlayerStyle = `
   box-sizing: border-box;
   touch-action: manipulation;
 }
-#{{ id }} .ui-seekbar-vol .ui-seekbar-vol_bg {
+#{{ id }} .ui-seekbar-vol .ui-seekbar-vol-bg {
   width: 100%;
   height: 5px;
   background: #ddd;

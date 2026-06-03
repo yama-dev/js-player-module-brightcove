@@ -27,6 +27,24 @@ import {
   viewPlayerStyle
 } from './view-style';
 
+import {
+  pad,
+  parseNumber,
+  toFixedNumber
+} from './number';
+
+import {
+  DEFAULT_CALLBACKS,
+  DEFAULT_CONFIG,
+  createPlayerConfig
+} from './config';
+
+import {
+  PlayerCallbacks,
+  PlayerConfig,
+  PlayerOptions
+} from './types';
+
 export class PLAYER_MODULE_BRIGHTCOVE {
   // Set Version.
   VERSION = process.env.VERSION;
@@ -35,60 +53,9 @@ export class PLAYER_MODULE_BRIGHTCOVE {
   PlayerChangeLoadFlg = true;
 
   // Set config, options.
-  CONFIG = {
-    mode           : 'movie',
-    id             : 'pmb',
+  CONFIG: PlayerConfig = { ...DEFAULT_CONFIG };
 
-    player_id        : 'pmb_player',
-    player_id_wrap   : 'pmb_player_wrap',
-    player_ui_id     : 'pmb_ui',
-    player_style_id  : 'pmb_style',
-
-    videoid        : '',
-    account        : '',
-    width          : '',
-    height         : '',
-
-    video_title    : '',
-
-    player         : 'default',
-    volume         : 1,
-
-    playsinline    : 'webkit-playsinline playsinline',
-    loop           : '',
-    muted          : '',
-
-    ui_controls    : '',
-    ui_autoplay    : '',
-    ui_default     : false,
-    ui_default_css : true,
-
-    stop_outfocus  : false,
-    poster         : '',
-
-    add_style        : '',
-    classname_loaded_wrap : 'is-pmb-loaded-wrap',
-    classname_active_wrap : 'is-pmb-active-wrap',
-    classname_active : 'is-pmb-active'
-  };
-
-  on = {
-    PlayerInit  : null,
-    PlayerEnded : null,
-    PlayerPlay  : null,
-    PlayerPause : null,
-
-    TimeUpdate : null,
-    VolumeChange : null,
-
-    PlayPrep: null,
-    Play    : null,
-    Pause   : null,
-    Stop    : null,
-    PauseAll: null,
-    StopAll : null,
-    Change  : null,
-  };
+  on: PlayerCallbacks = { ...DEFAULT_CALLBACKS };
 
   // BrightcovePlayer Instance.
   Player = null;
@@ -135,49 +102,14 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     poster: ''
   }
 
-  constructor(options: any){
+  constructor(options: PlayerOptions){
 
     if(!options.id || !options.videoid){
       console.log('Inadequate parameters (id, videoid)');
       // return false;
     }
 
-    this.CONFIG = {
-      mode           : options.mode||'movie',
-      id             : options.id||'pmb',
-
-      player_id        : `${options.id}_player`||'pmb_player',
-      player_id_wrap   : `${options.id}_player_wrap`||'pmb_player_wrap',
-      player_ui_id     : `${options.id}_ui`||'pmb_ui',
-      player_style_id  : `${options.id}_style`||'pmb_style',
-
-      videoid        : options.videoid||'4929511769001',
-      account        : options.account||'',
-      width          : options.width||'',
-      height         : options.height||'',
-
-      video_title    : options.video_title||'',
-
-      player         : options.player||'default',
-      volume         : options.volume||1,
-
-      playsinline    : options.playsinline !== false ? 'webkit-playsinline playsinline' : '',
-      loop           : options.loop === true ? 'loop' : '',
-      muted          : options.muted === true ? 'muted' : '',
-
-      ui_controls    : options.ui_controls === true ? 'controls' : '',
-      ui_autoplay    : options.ui_autoplay === true ? 'autoplay' : '',
-      ui_default     : options.ui_default === false ? false : true,
-      ui_default_css : options.ui_default_css === false ? false : true,
-
-      stop_outfocus  : options.stop_outfocus === true ? true : false,
-      poster         : options.poster||'',
-
-      add_style        : options.add_style||'',
-      classname_loaded_wrap : options.classname_loaded_wrap||'is-pmb-loaded-wrap',
-      classname_active_wrap : options.classname_active_wrap||'is-pmb-active-wrap',
-      classname_active : options.classname_active||'is-pmb-active'
-    };
+    this.CONFIG = createPlayerConfig(options);
 
     // Set config, callback functions.
     if(options.on){
@@ -946,7 +878,7 @@ export class PLAYER_MODULE_BRIGHTCOVE {
       this.Player.volume(0);
     }
     if(typeof vol === 'number'){
-      if(Number(vol) < 0 && 1 < Number(vol)) return false;
+      if(Number(vol) < 0 || 1 < Number(vol)) return false;
       this.CONFIG.volume = Number(vol);
       this.Player.volume(this.CONFIG.volume);
     }
@@ -995,20 +927,15 @@ export class PLAYER_MODULE_BRIGHTCOVE {
   // 1 -> 01
   // 10 -> 10
   static parseNumber(num: number|string): string {
-    if(typeof(num) === 'number') num = String(num);
-    if (Number(num) < 10) return '0'+num;
-    if (Number(num) >= 10) return num;
+    return parseNumber(num);
   }
 
   static pad(n: number|string, width: number, z: string): string {
-    z = z || '0';
-    n = n + '';
-    return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+    return pad(n, width, z);
   }
 
   static toFixedNumber(num: number|string, digits: number, base?: number) {
-    var pow = Math.pow(base||10, digits);
-    return Math.round(Number(num) * pow) / pow;
+    return toFixedNumber(num, digits, base);
   }
 
 }

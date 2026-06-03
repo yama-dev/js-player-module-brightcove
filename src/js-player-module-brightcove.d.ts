@@ -1,49 +1,9 @@
+import { PlayerCallbacks, PlayerConfig, PlayerOptions } from './types';
 export declare class PLAYER_MODULE_BRIGHTCOVE {
     VERSION: string;
     PlayerChangeLoadFlg: boolean;
-    CONFIG: {
-        mode: string;
-        id: string;
-        player_id: string;
-        player_id_wrap: string;
-        player_ui_id: string;
-        player_style_id: string;
-        videoid: string;
-        account: string;
-        width: string;
-        height: string;
-        video_title: string;
-        player: string;
-        volume: number;
-        playsinline: string;
-        loop: string;
-        muted: string;
-        ui_controls: string;
-        ui_autoplay: string;
-        ui_default: boolean;
-        ui_default_css: boolean;
-        stop_outfocus: boolean;
-        poster: string;
-        add_style: string;
-        classname_loaded_wrap: string;
-        classname_active_wrap: string;
-        classname_active: string;
-    };
-    on: {
-        PlayerInit: any;
-        PlayerEnded: any;
-        PlayerPlay: any;
-        PlayerPause: any;
-        TimeUpdate: any;
-        VolumeChange: any;
-        PlayPrep: any;
-        Play: any;
-        Pause: any;
-        Stop: any;
-        PauseAll: any;
-        StopAll: any;
-        Change: any;
-    };
+    CONFIG: PlayerConfig;
+    on: PlayerCallbacks;
     Player: any;
     $: {
         playerElem: any[];
@@ -81,7 +41,7 @@ export declare class PLAYER_MODULE_BRIGHTCOVE {
     state: {
         poster: string;
     };
-    constructor(options: any);
+    constructor(options: PlayerOptions);
     private BuildPlayer;
     PlayerInstance(): void;
     AddGlobalObject(): void;
