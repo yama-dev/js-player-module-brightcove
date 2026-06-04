@@ -3,7 +3,7 @@ const {
   parseNumber,
   pad,
   toFixedNumber,
-} = require('../.tmp-test/number');
+} = require('../.tmp-test/utils/number');
 
 assert.equal(parseNumber(0), '00');
 assert.equal(parseNumber(1), '01');

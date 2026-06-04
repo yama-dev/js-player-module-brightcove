@@ -1,5 +1,5 @@
-import { PlayerDomCache } from './dom-cache';
-import { PlayerCallbacks, PlayerConfig } from './types';
+import { PlayerDomCache } from '../dom/dom-cache';
+import { PlayerCallbacks, PlayerConfig } from '../types';
 
 export interface PlayerControlContext {
   instance: any;

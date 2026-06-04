@@ -9,13 +9,13 @@ import {
   pad,
   parseNumber,
   toFixedNumber
-} from './number';
+} from './utils/number';
 
 import {
   PlayerDomCache,
   createEmptyDomCache,
   selectPlayerDomCache
-} from './dom-cache';
+} from './dom/dom-cache';
 
 import {
   getPlayerTime,
@@ -24,29 +24,29 @@ import {
   getPlayerTimeMax,
   getPlayerTimePar,
   getPlayerTimeRatio
-} from './player-time';
+} from './player/player-time';
 
 import {
   createPlayerMarkup,
   mountPlayerElements
-} from './player-renderer';
+} from './player/player-renderer';
 
 import {
   registerPlayerLifecycle
-} from './player-lifecycle';
+} from './player/player-lifecycle';
 
 import {
   addGlobalPlayer,
   pauseAllPlayers,
   stopAllPlayers
-} from './player-registry';
+} from './player/player-registry';
 
 import {
   activatePlayerUi,
   deactivatePlayerUi,
   renderEmptyTime,
   renderPlayingTime
-} from './player-ui-state';
+} from './player/player-ui-state';
 
 import {
   mutePlayer,
@@ -55,11 +55,11 @@ import {
   seekPlayerTo,
   setPlayerVolume,
   stopPlayer
-} from './player-controls';
+} from './player/player-controls';
 
 import {
   changePlayerMedia
-} from './player-change';
+} from './player/player-change';
 
 import {
   bindEventChangeVideo,
@@ -71,7 +71,7 @@ import {
   bindEventStop,
   bindEventVoloff,
   bindEventVolon
-} from './player-events';
+} from './player/player-events';
 
 import {
   DEFAULT_CALLBACKS,

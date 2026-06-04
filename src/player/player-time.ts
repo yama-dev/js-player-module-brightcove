@@ -1,4 +1,4 @@
-import { parseNumber } from './number';
+import { parseNumber } from '../utils/number';
 
 export interface PlayerTimeSource {
   currentTime(): number;

@@ -1,6 +1,6 @@
-import { PlayerDomCache } from './dom-cache';
-import { PlayerConfig } from './types';
-import { isTouchDevice } from './util';
+import { PlayerDomCache } from '../dom/dom-cache';
+import { PlayerConfig } from '../types';
+import { isTouchDevice } from '../utils/util';
 
 export interface PlayerEventContext {
   CONFIG: PlayerConfig;

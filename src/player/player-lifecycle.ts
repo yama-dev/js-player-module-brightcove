@@ -1,6 +1,6 @@
-import { PlayerDomCache } from './dom-cache';
-import { toFixedNumber } from './number';
-import { PlayerCallbacks, PlayerConfig } from './types';
+import { PlayerDomCache } from '../dom/dom-cache';
+import { toFixedNumber } from '../utils/number';
+import { PlayerCallbacks, PlayerConfig } from '../types';
 
 export interface PlayerLifecycleContext {
   instance: any;

@@ -1,6 +1,6 @@
-import { PlayerDomCache } from './dom-cache';
+import { PlayerDomCache } from '../dom/dom-cache';
 import { PlayerTimeInfo } from './player-time';
-import { PlayerCallbacks, PlayerConfig } from './types';
+import { PlayerCallbacks, PlayerConfig } from '../types';
 
 export function activatePlayerUi(cache: PlayerDomCache, config: PlayerConfig, DOM: any): void {
   // Add className Player wrapper.

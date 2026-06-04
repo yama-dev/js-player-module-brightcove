@@ -6,7 +6,7 @@ const {
   getPlayerTimeRatio,
   getPlayerTimePar,
   getPlayerTimeInfo
-} = require('../.tmp-test/player-time');
+} = require('../.tmp-test/player/player-time');
 
 function createPlayer(current, duration) {
   return {

@@ -30,7 +30,7 @@
     "declarations": "rm -rf dist/types && tsc --emitDeclarationOnly",
     "typecheck": "tsc --noEmit",
     "test": "npm run typecheck && npm run test:unit",
-    "test:unit": "tsc --ignoreConfig src/number.ts src/config.ts src/types.ts src/player-time.ts --target ES2020 --module commonjs --outDir .tmp-test && node test/number.test.js && node test/config.test.js && node test/player-time.test.js",
+    "test:unit": "tsc --ignoreConfig src/utils/number.ts src/config.ts src/types.ts src/player/player-time.ts --target ES2020 --module commonjs --outDir .tmp-test && node test/number.test.js && node test/config.test.js && node test/player-time.test.js",
     "test:bundle": "node test/bundle.test.js",
     "test:release": "npm run clean && npm run test && npm run prod && npm run test:bundle",
     "pack:check": "npm pack --dry-run --cache .tmp-npm-cache",

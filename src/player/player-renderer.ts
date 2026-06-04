@@ -4,24 +4,24 @@ import {
 
 import {
   viewPlayerScriptcode,
-} from './common';
+} from '../utils/common';
 
 import {
   PlayerDomCache
-} from './dom-cache';
+} from '../dom/dom-cache';
 
 import {
   PlayerConfig
-} from './types';
+} from '../types';
 
 import {
   viewPlayerMain,
   viewPlayerUi,
-} from './view-dom';
+} from '../dom/view-dom';
 
 import {
   viewPlayerStyle
-} from './view-style';
+} from '../dom/view-style';
 
 const Str2Mustache = PARSE_MODULE.Str2Mustache;
 
