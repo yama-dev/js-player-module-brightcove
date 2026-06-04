@@ -14,10 +14,9 @@
   "author": "yama-dev",
   "license": "MIT",
   "main": "./dist/js-player-module-brightcove.js",
-  "types": "./src/js-player-module-brightcove.d.ts",
+  "types": "./dist/types/index.d.ts",
   "files": [
     "dist",
-    "src/**/*.d.ts",
     "@types",
     "README.md",
     "LICENSE"
@@ -28,7 +27,7 @@
     "build": "npm run prod",
     "clean": "rm -rf dist .tmp-test .tmp-npm-cache",
     "prod": "npm-run-all declarations vite:build",
-    "declarations": "tsc --emitDeclarationOnly",
+    "declarations": "rm -rf dist/types && tsc --emitDeclarationOnly",
     "typecheck": "tsc --noEmit",
     "test": "npm run typecheck && npm run test:unit",
     "test:unit": "tsc --ignoreConfig src/number.ts src/config.ts src/types.ts src/player-time.ts --target ES2020 --module commonjs --outDir .tmp-test && node test/number.test.js && node test/config.test.js && node test/player-time.test.js",
