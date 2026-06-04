@@ -68,6 +68,7 @@ export function mountPlayerElements(
 ): void {
   // Player Ui.
   let playerUiHtmlDom       = document.createElement('div');
+  playerUiHtmlDom.id        = config.player_ui_id;
   playerUiHtmlDom.innerHTML = markup.playerUiHtml;
   if(config.ui_default){
     cache.playerElem[0].insertBefore(playerUiHtmlDom, cache.playerElem[0].firstElementChild);

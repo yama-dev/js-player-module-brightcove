@@ -8,12 +8,18 @@ export interface PlayerRegistryItem {
   player_id: string;
 }
 
+type PlayerRegistryWindow = Window & {
+  PLAYER_MODULE_ALL_PLATLIST?: PlayerRegistryItem[];
+};
+
 export function addGlobalPlayer(instance: any, player: any, config: PlayerConfig): void {
-  if(window.PLAYER_MODULE_ALL_PLATLIST === undefined){
-    window.PLAYER_MODULE_ALL_PLATLIST = [];
+  const registryWindow = window as PlayerRegistryWindow;
+
+  if(registryWindow.PLAYER_MODULE_ALL_PLATLIST === undefined){
+    registryWindow.PLAYER_MODULE_ALL_PLATLIST = [];
   }
 
-  window.PLAYER_MODULE_ALL_PLATLIST.push({
+  registryWindow.PLAYER_MODULE_ALL_PLATLIST.push({
     instance: instance,
     Player: player,
     videoid: config.videoid,
@@ -23,13 +29,17 @@ export function addGlobalPlayer(instance: any, player: any, config: PlayerConfig
 }
 
 export function pauseAllPlayers(): void {
-  window.PLAYER_MODULE_ALL_PLATLIST.map((item: PlayerRegistryItem)=>{
+  const registryWindow = window as PlayerRegistryWindow;
+
+  registryWindow.PLAYER_MODULE_ALL_PLATLIST!.map((item: PlayerRegistryItem)=>{
     item.instance.Pause();
   });
 }
 
 export function stopAllPlayers(): void {
-  window.PLAYER_MODULE_ALL_PLATLIST.map((item: PlayerRegistryItem)=>{
+  const registryWindow = window as PlayerRegistryWindow;
+
+  registryWindow.PLAYER_MODULE_ALL_PLATLIST!.map((item: PlayerRegistryItem)=>{
     item.instance.Stop();
   });
 }

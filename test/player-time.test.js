@@ -35,5 +35,12 @@ assert.deepStrictEqual(getPlayerTimeInfo(player), {
 });
 
 assert.strictEqual(getPlayerTimePar(createPlayer(0, 0)), '0%');
+assert.strictEqual(getPlayerTime(createPlayer(NaN, 100)), '00:00');
+assert.strictEqual(getPlayerTimeDown(createPlayer(NaN, 100)), '00:00');
+assert.strictEqual(getPlayerTimeMax(createPlayer(0, 0)), '00:00');
+assert.strictEqual(getPlayerTimeRatio(createPlayer(0, 0)), NaN);
+assert.strictEqual(getPlayerTimePar(createPlayer(1, 3)), '33.3%');
+assert.strictEqual(getPlayerTime(createPlayer(3599.9, 3600)), '59:59');
+assert.strictEqual(getPlayerTimeDown(createPlayer(3599.9, 3600)), '00:01');
 
 console.log('player time helpers: ok');

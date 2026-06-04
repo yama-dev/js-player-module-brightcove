@@ -28,5 +28,41 @@ assert.equal(config.account, 'account1');
 assert.equal(config.volume, 0);
 assert.equal(config.playsinline, '');
 assert.equal(config.ui_default, false);
+assert.equal(config.ui_default_css, true);
+
+const defaultedConfig = createPlayerConfig({});
+assert.equal(defaultedConfig.id, 'pmb');
+assert.equal(defaultedConfig.videoid, '4929511769001');
+assert.equal(defaultedConfig.ui_default, true);
+assert.equal(defaultedConfig.ui_default_css, true);
+assert.equal(defaultedConfig.playsinline, 'webkit-playsinline playsinline');
+assert.equal(defaultedConfig.loop, '');
+assert.equal(defaultedConfig.muted, '');
+assert.equal(defaultedConfig.ui_controls, '');
+assert.equal(defaultedConfig.ui_autoplay, '');
+assert.equal(defaultedConfig.stop_outfocus, false);
+
+const enabledFlagsConfig = createPlayerConfig({
+  id: 'player2',
+  loop: true,
+  muted: true,
+  ui_controls: true,
+  ui_autoplay: true,
+  ui_default_css: false,
+  stop_outfocus: true,
+  classname_loaded_wrap: 'loaded',
+  classname_active_wrap: 'active-wrap',
+  classname_active: 'active',
+});
+
+assert.equal(enabledFlagsConfig.loop, 'loop');
+assert.equal(enabledFlagsConfig.muted, 'muted');
+assert.equal(enabledFlagsConfig.ui_controls, 'controls');
+assert.equal(enabledFlagsConfig.ui_autoplay, 'autoplay');
+assert.equal(enabledFlagsConfig.ui_default_css, false);
+assert.equal(enabledFlagsConfig.stop_outfocus, true);
+assert.equal(enabledFlagsConfig.classname_loaded_wrap, 'loaded');
+assert.equal(enabledFlagsConfig.classname_active_wrap, 'active-wrap');
+assert.equal(enabledFlagsConfig.classname_active, 'active');
 
 console.log('player config: ok');
