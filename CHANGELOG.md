@@ -1,5 +1,11 @@
 # js-player-module-brightcove
 
+## 7.0.1
+
+### Patch Changes
+
+- 978e3fa: Apply `player_ui_id` to the generated player UI wrapper.
+
 ## 7.0.0
 
 ### Major Changes
