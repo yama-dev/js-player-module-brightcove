@@ -15,8 +15,11 @@ tmp/
 node_modules/
 package-lock.json
 .tmp-test/
+.tmp-npm-cache/
+dist/
 
 # Development environment.
+DEVELOP.md
 _*/
 _*.html
 _*.js

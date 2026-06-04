@@ -1,6 +1,6 @@
 {
   "name": "js-player-module-brightcove",
-  "version": "6.4.4",
+  "version": "7.0.1",
   "description": "Brightcove custom player using the Brightcove Player API.",
   "keywords": [
     "Brightcove",
@@ -14,19 +14,33 @@
   "author": "yama-dev",
   "license": "MIT",
   "main": "./dist/js-player-module-brightcove.js",
+  "types": "./dist/types/index.d.ts",
+  "files": [
+    "dist",
+    "@types",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
-    "start": "npm install && npm run dev",
-    "dev": "npm-run-all -p webpack:develop server",
-    "prod": "npm-run-all -p webpack:build",
+    "start": "npm run dev",
+    "dev": "npm-run-all -p vite:develop server",
+    "build": "npm run prod",
+    "clean": "rm -rf dist .tmp-test .tmp-npm-cache",
+    "prod": "npm-run-all declarations vite:build",
+    "declarations": "rm -rf dist/types && tsc --emitDeclarationOnly",
     "typecheck": "tsc --noEmit",
     "test": "npm run typecheck && npm run test:unit",
-    "test:unit": "tsc src/number.ts src/config.ts src/types.ts --target ES2020 --module commonjs --skipLibCheck --outDir .tmp-test && node test/number.test.js && node test/config.test.js",
+    "test:unit": "tsc --ignoreConfig src/utils/number.ts src/config.ts src/types.ts src/player/player-time.ts src/player/player-registry.ts src/player/player-controls.ts src/player/player-renderer.ts --target ES2020 --module commonjs --noImplicitAny false --outDir .tmp-test && node test/number.test.js && node test/config.test.js && node test/player-time.test.js && node test/player-registry.test.js && node test/player-controls.test.js && node test/player-renderer.test.js",
+    "test:bundle": "node test/bundle.test.js",
+    "test:release": "npm run clean && npm run test && npm run prod && npm run test:bundle",
+    "pack:check": "npm pack --dry-run --cache .tmp-npm-cache",
+    "release:check-versioned": "node -e \"const fs=require('fs'); const dir='.changeset'; const pending=fs.existsSync(dir)?fs.readdirSync(dir).filter((file)=>file.endsWith('.md')):[]; if(pending.length){ console.error('Pending changesets: '+pending.join(', ')); console.error('Run npm run version-packages and commit the result before npm run release.'); process.exit(1); }\"",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "release": "npm run test && npm run prod && changeset publish",
+    "release": "npm run release:check-versioned && npm run test:release && npm run pack:check && changeset publish",
     "server": "browser-sync start --server ./ --directory ./examples --files **/*.css **/*.js **/*.html",
-    "webpack:develop": "webpack --progress --color --watch --stats-error-details",
-    "webpack:build": "webpack --mode=production --progress --color"
+    "vite:develop": "vite build --watch --mode development",
+    "vite:build": "vite build"
   },
   "repository": {
     "type": "git",
@@ -40,10 +54,8 @@
     "@changesets/cli": "^2.31.0",
     "browser-sync": "^2.27.4",
     "npm-run-all": "^4.1.5",
-    "ts-loader": "^9.2.3",
-    "typescript": "^4.3.5",
-    "webpack": "^5.58.0",
-    "webpack-cli": "^4.9.0"
+    "typescript": "^6.0.3",
+    "vite": "^8.0.16"
   },
   "dependencies": {
     "@yama-dev/js-dom": "^0.1.1",

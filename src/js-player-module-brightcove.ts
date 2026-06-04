@@ -2,36 +2,76 @@
 /*eslint no-console: 0*/
 /*eslint no-useless-escape: 0*/
 
-import * as JS_DOM from '@yama-dev/js-dom';
+import JS_DOM from '@yama-dev/js-dom';
 const DOM = new JS_DOM();
-
-import {
-  PARSE_MODULE
-} from '@yama-dev/js-parse-module/dist/js-parse-module';
-const Str2Mustache = PARSE_MODULE.Str2Mustache;
-
-import {
-  viewPlayerScriptcode,
-} from './common';
-
-import {
-  isTouchDevice
-} from './util';
-
-import {
-  viewPlayerMain,
-  viewPlayerUi,
-} from './view-dom';
-
-import {
-  viewPlayerStyle
-} from './view-style';
 
 import {
   pad,
   parseNumber,
   toFixedNumber
-} from './number';
+} from './utils/number';
+
+import {
+  PlayerDomCache,
+  createEmptyDomCache,
+  selectPlayerDomCache
+} from './dom/dom-cache';
+
+import {
+  getPlayerTime,
+  getPlayerTimeDown,
+  getPlayerTimeInfo,
+  getPlayerTimeMax,
+  getPlayerTimePar,
+  getPlayerTimeRatio
+} from './player/player-time';
+
+import {
+  createPlayerMarkup,
+  mountPlayerElements
+} from './player/player-renderer';
+
+import {
+  registerPlayerLifecycle
+} from './player/player-lifecycle';
+
+import {
+  addGlobalPlayer,
+  pauseAllPlayers,
+  stopAllPlayers
+} from './player/player-registry';
+
+import {
+  activatePlayerUi,
+  deactivatePlayerUi,
+  renderEmptyTime,
+  renderPlayingTime
+} from './player/player-ui-state';
+
+import {
+  mutePlayer,
+  pausePlayer,
+  playPlayer,
+  seekPlayerTo,
+  setPlayerVolume,
+  stopPlayer
+} from './player/player-controls';
+
+import {
+  changePlayerMedia
+} from './player/player-change';
+
+import {
+  bindEventChangeVideo,
+  bindEventMute,
+  bindEventPause,
+  bindEventPlay,
+  bindEventSeekbarTime,
+  bindEventSeekbarVol,
+  bindEventStop,
+  bindEventVoloff,
+  bindEventVolon
+} from './player/player-events';
 
 import {
   DEFAULT_CALLBACKS,
@@ -61,32 +101,7 @@ export class PLAYER_MODULE_BRIGHTCOVE {
   Player = null;
 
   // BrightcovePlayer dom.
-  $ = {
-    playerElem                 : [],
-    playerElemMainWrap         : [],
-    uiBtnPlay                  : [],
-    uiBtnStop                  : [],
-    uiBtnPause                 : [],
-    uiBtnMute                  : [],
-    uiBtnVolon                 : [],
-    uiBtnVoloff                : [],
-    uiDisplayTime              : [],
-    uiDisplayTimeNow           : [],
-    uiDisplayTimeTotal         : [],
-    uiDisplayTimeDown          : [],
-    uiDisplayTimePar           : [],
-    uiDisplayPoster            : [],
-    uiDisplayPosterBg          : [],
-    uiDisplayName              : [],
-    uiSeekbarVol               : [],
-    uiSeekbarVolBg             : [],
-    uiSeekbarVolCover          : [],
-    uiSeekbarTime              : [],
-    uiSeekbarTimeBg            : [],
-    uiSeekbarTimeCover         : [],
-    uiBtnChange                : [],
-    uiBtnDataId                : [],
-  };
+  $: PlayerDomCache = createEmptyDomCache();
 
   playerHtml       = '';
   playerUiHtml     = '';
@@ -122,36 +137,17 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     // Player wrapper.
     this.$.playerElem = DOM.selectDom(`#${this.CONFIG.id}`);
 
-    // Check Audio mode.
     if(this.CONFIG.mode == 'audio'){
       this.CONFIG.width  = '1';
       this.CONFIG.height = '1';
     }
 
-    let _config_formated = {
-      ...this.CONFIG,
-      poster: this.CONFIG.poster ? `poster="${this.CONFIG.poster}"` : '',
-      title: this.CONFIG.video_title ? `title="${this.CONFIG.video_title}"` : '',
-    };
-
-    // Set Options
-    // -> playerHtml
-    // -> playerCss
-    // -> playerScriptCode
-    this.playerHtml        = Str2Mustache(viewPlayerMain, _config_formated);
-    this.playerUiHtml      = Str2Mustache(viewPlayerUi, _config_formated);
-    this.playerCss         = Str2Mustache(viewPlayerStyle, _config_formated);
-    this.playerScriptCode  = Str2Mustache(viewPlayerScriptcode, _config_formated);
-
-    // Check Audio mode.
-    if(this.CONFIG.mode == 'audio'){
-      this.playerCssOption += `#${this.CONFIG.player_id} { opacity: 0.001; }`;
-    }
-
-    // Check Add Style.
-    if(this.CONFIG.add_style){
-      this.playerCssOption += this.CONFIG.add_style;
-    }
+    let playerMarkup = createPlayerMarkup(this.CONFIG);
+    this.playerHtml        = playerMarkup.playerHtml;
+    this.playerUiHtml      = playerMarkup.playerUiHtml;
+    this.playerCss         = playerMarkup.playerCss;
+    this.playerCssOption   = playerMarkup.playerCssOption;
+    this.playerScriptCode  = playerMarkup.playerScriptCode;
 
     // SetPlayer
     if(document.readyState == 'complete' || document.readyState == 'interactive'){
@@ -165,58 +161,27 @@ export class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   private BuildPlayer(){
-    let _that = this;
-
-    // Player Ui.
-    let playerUiHtmlDom       = document.createElement('div');
-    playerUiHtmlDom.innerHTML = this.playerUiHtml;
-    if(this.CONFIG.ui_default){
-      this.$.playerElem[0].insertBefore(playerUiHtmlDom, this.$.playerElem[0].firstElementChild);
-    }
-
-    // Player Main.
-    let playerHtmlDomWrap = document.createElement('div');
-    playerHtmlDomWrap.id  = this.CONFIG.player_id_wrap;
-    playerHtmlDomWrap.innerHTML = this.playerHtml;
-    this.$.playerElem[0].insertBefore(playerHtmlDomWrap, this.$.playerElem[0].firstElementChild);
-
-    // Player Style.
-    let playerCssDom          = document.createElement('style');
-    playerCssDom.innerHTML    = this.playerCss;
-    playerCssDom.id           = this.CONFIG.id+'_scripttag';
-    if(this.CONFIG.ui_default_css){
-      playerCssDom.innerHTML = this.playerCss;
-      playerCssDom.innerHTML += this.playerCssOption;
-      if(!DOM.selectDom(`#${this.CONFIG.id} #${this.CONFIG.player_style_id}`)){
-        this.$.playerElem[0].appendChild(playerCssDom);
+    mountPlayerElements(
+      this.CONFIG,
+      this.$,
+      {
+        playerHtml: this.playerHtml,
+        playerUiHtml: this.playerUiHtml,
+        playerCss: this.playerCss,
+        playerCssOption: this.playerCssOption,
+        playerScriptCode: this.playerScriptCode,
+      },
+      DOM,
+      () => {
+        this.PlayerInstance();
       }
-    } else {
-      playerCssDom.innerHTML = this.playerCssOption;
-      if(!DOM.selectDom(`#${this.CONFIG.id} #${this.CONFIG.player_style_id}`)){
-        this.$.playerElem[0].appendChild(playerCssDom);
-      }
-    }
+    );
 
     // CacheElement
     this.CacheElement();
-
-    // Set ScriptTag
-    let s = document.createElement('script');
-    s.id  = `${this.CONFIG.id}_scripttag`;
-    s.onload = function(){
-      _that.PlayerInstance();
-    };
-    s.onerror = function(){
-      console.log('ERROR: not script loaded.');
-    };
-    s.src = `${this.playerScriptCode}?${Date.now()}`;
-
-    document.body.appendChild(s);
   }
 
   PlayerInstance(){
-    let _that = this;
-
     // Set Instance
     this.Player = videojs(this.CONFIG.player_id);
 
@@ -235,390 +200,94 @@ export class PLAYER_MODULE_BRIGHTCOVE {
 
     this.AddGlobalObject();
 
-    let _loadeddata_flg = false;
-    this.Player.on('loadedmetadata', ()=>{
-      if (_loadeddata_flg) return;
-      _loadeddata_flg = true;
-      this.SetVolume(this.CONFIG.volume);
-      this._setInfo();
-      this.SetPoster();
-      this.Update();
-      if(this.$.playerElem) DOM.addClass(this.$.playerElem, this.CONFIG.classname_loaded_wrap);
-      if (this.on.PlayerInit && typeof this.on.PlayerInit === 'function') {
-        this.on.PlayerInit(_that, _that.Player);
-      }
-    });
-    this.Player.on('loadeddata', ()=>{
-      if (_loadeddata_flg) return;
-      _loadeddata_flg = true;
-      this.SetVolume(this.CONFIG.volume);
-      this._setInfo();
-      this.SetPoster();
-      this.Update();
-      if(this.$.playerElem) DOM.addClass(this.$.playerElem, this.CONFIG.classname_loaded_wrap);
-      if (this.on.PlayerInit && typeof this.on.PlayerInit === 'function') {
-        this.on.PlayerInit(_that, _that.Player);
-      }
-    });
-
-    // For Timeupdate.
-    this.Player.on('timeupdate', ()=>{
-      this.Update();
-    });
-
-    // For Volume change.
-    this.Player.on('volumechange', ()=>{
-      // update(%)
-      let volume = this.Player.volume(); // volumeは0~1の範囲
-
-      DOM.setStyle( this.$.uiSeekbarVolCover, { width : (volume * 100) + '%' } );
-
-      if (this.on.VolumeChange && typeof this.on.VolumeChange === 'function') {
-        this.on.VolumeChange({
-          // volume: 0~1, par: 0~100
-          volume: PLAYER_MODULE_BRIGHTCOVE.toFixedNumber(volume, 3),
-          par   : PLAYER_MODULE_BRIGHTCOVE.toFixedNumber(volume * 100, 1)
-        });
-      }
-    });
-
-    // For Ended movie paly.
-    this.Player.on('ended', ()=>{
-      this.Stop();
-      if(this.on.PlayerEnded && typeof(this.on.PlayerEnded) === 'function') this.on.PlayerEnded(_that, _that.Player);
-    });
-
-    this.Player.on('play', ()=>{
-      this.ClassOn();
-      if(this.on.PlayerPlay && typeof(this.on.PlayerPlay) === 'function') this.on.PlayerPlay(_that, _that.Player);
-    });
-
-    this.Player.on('pause', ()=>{
-      this.ClassOff();
-      if(this.on.PlayerPause && typeof(this.on.PlayerPause) === 'function') this.on.PlayerPause(_that, _that.Player);
-    });
-
-    // For Error
-    this.Player.on( 'error' , (err: any)=>{
-      console.log(err);
-    });
+    registerPlayerLifecycle({
+      instance: this,
+      player: this.Player,
+      config: this.CONFIG,
+      callbacks: this.on,
+      getCache: () => this.$,
+      setVolume: (volume: number) => {
+        this.SetVolume(volume);
+      },
+      setInfo: () => {
+        this._setInfo();
+      },
+      setPoster: () => {
+        this.SetPoster();
+      },
+      update: () => {
+        this.Update();
+      },
+      stop: () => {
+        this.Stop();
+      },
+      classOn: () => {
+        this.ClassOn();
+      },
+      classOff: () => {
+        this.ClassOff();
+      },
+    }, DOM);
   }
 
   AddGlobalObject(){
-    // Add player instance at global object.
-    // -> window.PLAYER_MODULE_ALL_PLATLIST
-
-    if(window.PLAYER_MODULE_ALL_PLATLIST === undefined){
-      window.PLAYER_MODULE_ALL_PLATLIST = [];
-      window.PLAYER_MODULE_ALL_PLATLIST.push({
-        instance: this,
-        Player: this.Player,
-        videoid: this.CONFIG.videoid,
-        id: this.CONFIG.id,
-        player_id: this.CONFIG.player_id
-      });
-    }else{
-      window.PLAYER_MODULE_ALL_PLATLIST.push({
-        instance: this,
-        Player: this.Player,
-        videoid: this.CONFIG.videoid,
-        id: this.CONFIG.id,
-        player_id: this.CONFIG.player_id
-      });
-    }
+    addGlobalPlayer(this, this.Player, this.CONFIG);
   }
 
   CacheElement(){
-    this.$.playerElem                 = DOM.selectDom(`#${this.CONFIG.id}`);
-    this.$.playerElemMainWrap         = DOM.selectDom(`#${this.CONFIG.id} #${this.CONFIG.player_id_wrap}`);
-
-    this.$.uiBtnPlay                  = DOM.selectDom('#'+this.CONFIG.id+' .ui-btn-play');
-    this.$.uiBtnStop                  = DOM.selectDom('#'+this.CONFIG.id+' .ui-btn-stop');
-    this.$.uiBtnPause                 = DOM.selectDom('#'+this.CONFIG.id+' .ui-btn-pause');
-    this.$.uiBtnMute                  = DOM.selectDom('#'+this.CONFIG.id+' .ui-btn-mute');
-    this.$.uiBtnVolon                 = DOM.selectDom('#'+this.CONFIG.id+' .ui-btn-volon');
-    this.$.uiBtnVoloff                = DOM.selectDom('#'+this.CONFIG.id+' .ui-btn-voloff');
-
-    this.$.uiDisplayTime              = DOM.selectDom('#'+this.CONFIG.id+' .ui-time');
-    this.$.uiDisplayTimeNow           = DOM.selectDom('#'+this.CONFIG.id+' .ui-time-now');
-    this.$.uiDisplayTimeTotal         = DOM.selectDom('#'+this.CONFIG.id+' .ui-time-total');
-    this.$.uiDisplayTimeDown          = DOM.selectDom('#'+this.CONFIG.id+' .ui-time-down');
-    this.$.uiDisplayTimePar           = DOM.selectDom('#'+this.CONFIG.id+' .ui-time-par');
-    this.$.uiDisplayPoster            = DOM.selectDom('#'+this.CONFIG.id+' .ui-poster');
-    this.$.uiDisplayPosterBg          = DOM.selectDom('#'+this.CONFIG.id+' .ui-poster-background');
-    this.$.uiDisplayName              = DOM.selectDom('#'+this.CONFIG.id+' .ui-name');
-
-    this.$.uiSeekbarVol               = DOM.selectDom('#'+this.CONFIG.id+' .ui-seekbar-vol');
-    this.$.uiSeekbarVolBg             = DOM.selectDom('#'+this.CONFIG.id+' .ui-seekbar-vol .ui-seekbar-vol-bg');
-    this.$.uiSeekbarVolCover          = DOM.selectDom('#'+this.CONFIG.id+' .ui-seekbar-vol span');
-    this.$.uiSeekbarTime              = DOM.selectDom('#'+this.CONFIG.id+' .ui-seekbar-time');
-    this.$.uiSeekbarTimeBg            = DOM.selectDom('#'+this.CONFIG.id+' .ui-seekbar-time .ui-seekbar-time-bg');
-    this.$.uiSeekbarTimeCover         = DOM.selectDom('#'+this.CONFIG.id+' .ui-seekbar-time span');
-
-    this.$.uiBtnChange                = DOM.selectDom('#'+this.CONFIG.id+' .ui-btn-change');
-
-    this.$.uiBtnDataId                = DOM.selectDom('[data-pmb-id]');
+    this.$ = selectPlayerDomCache(DOM, this.CONFIG);
   }
 
   EventPlay(){
-    if(this.$.uiBtnPlay){
-      DOM.addEvent(this.$.uiBtnPlay, 'click' , () => {
-        if(this.Player.paused()){
-          this.Play();
-        } else {
-          this.Pause();
-        }
-      });
-    }
+    bindEventPlay(this, DOM);
   }
 
   EventPause(){
-    if(this.$.uiBtnPause){
-      DOM.addEvent(this.$.uiBtnPause, 'click' , () => {
-        this.Pause();
-      });
-    }
+    bindEventPause(this, DOM);
   }
 
   EventStop(){
-    if(this.$.uiBtnStop){
-      DOM.addEvent(this.$.uiBtnStop, 'click' , () => {
-        this.Stop();
-      });
-    }
-
-    DOM.addEvent(window, 'blur' , () => {
-      if(this.CONFIG.stop_outfocus) this.Stop();
-    });
+    bindEventStop(this, DOM);
   }
 
   EventMute(){
-    if(this.$.uiBtnMute){
-      DOM.addEvent(this.$.uiBtnMute, 'click' , () => {
-        this.Mute();
-      });
-    }
+    bindEventMute(this, DOM);
   }
 
   EventVolon(){
-    if(this.$.uiBtnVolon){
-      DOM.addEvent(this.$.uiBtnVolon, 'click' , () => {
-        this.SetVolume(this.CONFIG.volume);
-        DOM.removeClass(this.$.uiBtnVolon, this.CONFIG.classname_active);
-      });
-    }
+    bindEventVolon(this, DOM);
   }
 
   EventVoloff(){
-    if(this.$.uiBtnVoloff){
-      DOM.addEvent(this.$.uiBtnVoloff, 'click' , () => {
-        this.SetVolume('off');
-        DOM.addClass(this.$.uiBtnVoloff, this.CONFIG.classname_active);
-      });
-    }
+    bindEventVoloff(this, DOM);
   }
 
   /**
    * When dragging a seek bar(volume).
    */
   EventSeekbarVol(){
-    if(this.$.uiSeekbarVol){
-
-      let _flag = false;
-      let _targetWidth = 0;
-
-      DOM.setStyle( this.$.uiSeekbarVolCover, { width : 100 + '%' } );
-
-      DOM.addEvent(this.$.uiSeekbarVol, 'mousedown' , (event: MouseEvent) => {
-        _flag = true;
-        let _target  = event.currentTarget as HTMLElement;
-        let _currentWidth  = _target.clientWidth;
-        let _clickPosition = _target.getBoundingClientRect().left;
-        _targetWidth       = (event.pageX - _clickPosition) / _currentWidth;
-        this.SetVolume(_targetWidth);
-      });
-
-      DOM.addEvent(this.$.uiSeekbarVol, 'mouseleave' , () => {
-        _flag = false;
-      });
-      DOM.addEvent(this.$.uiSeekbarVol, 'mouseup' , () => {
-        _flag = false;
-      });
-
-      DOM.addEvent(this.$.uiSeekbarVol, 'mousemove' , (event: MouseEvent) => {
-        if(_flag === true){
-          let _target  = event.currentTarget as HTMLElement;
-          let _currentWidth  = _target.clientWidth;
-          let _clickPosition = _target.getBoundingClientRect().left;
-          _targetWidth       = (event.pageX - _clickPosition) / _currentWidth;
-          if(this.Player.muted()){
-            this.Player.muted(false);
-          }
-          this.SetVolume(_targetWidth);
-        }
-      });
-    }
+    bindEventSeekbarVol(this, DOM);
   }
 
   /**
    * When dragging a seek bar(time).
    */
   EventSeekbarTime(){
-
-    if(this.$.uiSeekbarTime){
-
-      let _targetTime = 0;
-
-      if(!isTouchDevice()){
-        DOM.addEvent(this.$.uiSeekbarTime, 'mousedown', (event: MouseEvent) => {
-          this.PlayerChangeSeekingFlg = true;
-          let _target        = event.currentTarget as HTMLElement;
-          let _currentWidth  = _target.clientWidth;
-          let _clickPosition = _target.getBoundingClientRect().left;
-          let _targetWidth   = (event.pageX - _clickPosition) / _currentWidth;
-          _targetTime = this.Player.duration() * _targetWidth;
-          DOM.setStyle( this.$.uiSeekbarTimeCover, { width : (_targetWidth * 100) + '%' } );
-          this.Player.currentTime(_targetTime);
-        });
-
-        DOM.addEvent(this.$.uiSeekbarTime, 'mouseleave', () => {
-          if(this.PlayerChangeSeekingFlg){
-            this.Play();
-            setTimeout(()=>{
-              this.Play();
-              this.PlayerChangeSeekingFlg = false;
-            }, 100);
-          }
-        });
-
-        DOM.addEvent(this.$.uiSeekbarTime, 'mouseup', () => {
-          if(this.PlayerChangeSeekingFlg){
-            this.Play();
-            setTimeout(()=>{
-              this.Play();
-              this.PlayerChangeSeekingFlg = false;
-            }, 100);
-          }
-        });
-
-        DOM.addEvent(this.$.uiSeekbarTime, 'mousemove', (event: MouseEvent) => {
-          if(this.PlayerChangeSeekingFlg){
-            let _target        = event.currentTarget as HTMLElement;
-            let _currentWidth  = _target.clientWidth;
-            let _clickPosition = _target.getBoundingClientRect().left;
-            let _targetWidth   = (event.pageX - _clickPosition) / _currentWidth;
-            _targetTime    = this.Player.duration() * _targetWidth;
-
-            if(_targetWidth >= 1) _targetWidth = 1;
-            if(_targetWidth <= 0) _targetWidth = 0;
-
-            DOM.setStyle( this.$.uiSeekbarTimeCover, { width : (_targetWidth * 100) + '%' } );
-            this.Player.currentTime(_targetTime);
-          }
-        });
-
-      } else {
-
-        DOM.addEvent(this.$.uiSeekbarTime, 'touchstart', (event: TouchEvent) => {
-          this.PlayerChangeSeekingFlg = true;
-          let _target        = event.touches[0].target as HTMLElement;
-          let _currentWidth  = _target.clientWidth;
-          let _clickPosition = _target.getBoundingClientRect().left;
-          let _targetWidth   = (event.touches[0].pageX - _clickPosition) / _currentWidth;
-          _targetTime = this.Player.duration() * _targetWidth;
-          DOM.setStyle( this.$.uiSeekbarTimeCover, { width : (_targetWidth * 100) + '%' } );
-          this.Player.currentTime(_targetTime);
-        });
-
-        DOM.addEvent(this.$.uiSeekbarTime, 'touchcancel', () => {
-          if(this.PlayerChangeSeekingFlg){
-            this.Play();
-            setTimeout(()=>{
-              this.Play();
-              this.PlayerChangeSeekingFlg = false;
-            }, 100);
-          }
-        });
-
-        DOM.addEvent(this.$.uiSeekbarTime, 'touchend', () => {
-          if(this.PlayerChangeSeekingFlg){
-            this.Play();
-            setTimeout(()=>{
-              this.Play();
-              this.PlayerChangeSeekingFlg = false;
-            }, 100);
-          }
-        });
-
-        DOM.addEvent(this.$.uiSeekbarTime, 'touchmove', (event: TouchEvent) => {
-          if(this.PlayerChangeSeekingFlg){
-            let _target        = event.touches[0].target as HTMLElement;
-            let _currentWidth  = _target.clientWidth;
-            let _clickPosition = _target.getBoundingClientRect().left;
-            let _targetWidth   = (event.touches[0].pageX - _clickPosition) / _currentWidth;
-            _targetTime    = this.Player.duration() * _targetWidth;
-
-            if(_targetWidth >= 1) _targetWidth = 1;
-            if(_targetWidth <= 0) _targetWidth = 0;
-
-            DOM.setStyle( this.$.uiSeekbarTimeCover, { width : (_targetWidth * 100) + '%' } );
-            this.Player.currentTime(_targetTime);
-          }
-        });
-
-      }
-
-    }
+    bindEventSeekbarTime(this, DOM);
   }
 
   EventChangeVideo(){
-    if(this.$.uiBtnChange){
-      DOM.addEvent(this.$.uiBtnChange, 'click' , (event: MouseEvent) => {
-        // Get video-id.
-        // -> <data-pmb-id="">
-        let _target = event.currentTarget as HTMLElement;
-        let id = _target.dataset.pmbId;
-        this.Change(id);
-      });
-    }
+    bindEventChangeVideo(this, DOM);
   }
 
   ClassOn(){
     this.CacheElement();
-
-    // Add className Player wrapper.
-    if(this.$.playerElem) DOM.addClass(this.$.playerElem, this.CONFIG.classname_active_wrap);
-
-    // Add className Play-Button.
-    if(this.$.uiBtnPlay) DOM.addClass(this.$.uiBtnPlay, this.CONFIG.classname_active);
-
-    // Add className Pause-Button.
-    if(this.$.uiBtnPause) DOM.addClass(this.$.uiBtnPause, this.CONFIG.classname_active);
-
-    // Add className MediaChange-Button.
-    if(this.$.uiBtnDataId){
-      this.$.uiBtnDataId.map((item)=>{
-        if(this.CONFIG.videoid == item.getAttribute('data-pmb-id')){
-          DOM.addClass(item, this.CONFIG.classname_active);
-        }
-      });
-    }
+    activatePlayerUi(this.$, this.CONFIG, DOM);
   }
 
   ClassOff(){
     this.CacheElement();
-
-    // Remove className Player wrapper.
-    if(this.$.playerElem) DOM.removeClass(this.$.playerElem, this.CONFIG.classname_active_wrap);
-
-    // Remove className Play-Button.
-    if(this.$.uiBtnPlay) DOM.removeClass(this.$.uiBtnPlay, this.CONFIG.classname_active);
-
-    // Remove className Pause-Button.
-    if(this.$.uiBtnPause) DOM.removeClass(this.$.uiBtnPause, this.CONFIG.classname_active);
-
-    // Remove className MediaChange-Button.
-    if(this.$.uiBtnDataId) DOM.removeClass(this.$.uiBtnDataId, this.CONFIG.classname_active);
+    deactivatePlayerUi(this.$, this.CONFIG, DOM);
   }
 
   Update(){
@@ -627,88 +296,78 @@ export class PLAYER_MODULE_BRIGHTCOVE {
 
     // Determine while changing media.
     if(this.PlayerChangeLoadFlg){
-      // update player data. (ms)
-      if(this.$.uiDisplayTime) DOM.setHtml( this.$.uiDisplayTime, this.GetTime()+'/'+this.GetTimeMax() );
-      if(this.$.uiDisplayTimeNow) DOM.setHtml( this.$.uiDisplayTimeNow, this.GetTime() );
-      if(this.$.uiDisplayTimeDown) DOM.setHtml( this.$.uiDisplayTimeDown, this.GetTimeDown() );
-      if(this.$.uiDisplayTimeTotal) DOM.setHtml( this.$.uiDisplayTimeTotal, this.GetTimeMax() );
-
-      // update play time. (%)
-      if(this.$.uiDisplayTimePar) DOM.setHtml( this.$.uiDisplayTimePar, this.GetTimePar() );
-
-      // update seek-bar. (%)
-      if(this.$.uiSeekbarTimeCover) this.$.uiSeekbarTimeCover[0].style.width = this.GetTimePar();
-
-      if(this.on.TimeUpdate && typeof(this.on.TimeUpdate) === 'function'){
-        this.on.TimeUpdate({
-          current : this.GetTime(),
-          max     : this.GetTimeMax(),
-          down    : this.GetTimeDown(),
-          ratio   : this.GetTimeRatio(),
-          par     : this.GetTimePar()
-        });
-      }
+      let timeInfo = getPlayerTimeInfo(this.Player);
+      renderPlayingTime(this.$, timeInfo, this.on, DOM);
     } else {
-      // update player data. (ms)
-      if(this.$.uiDisplayTime) DOM.setHtml( this.$.uiDisplayTime, '00:00/00:00' );
-      if(this.$.uiDisplayTimeNow) DOM.setHtml( this.$.uiDisplayTimeNow, '00:00' );
-      if(this.$.uiDisplayTimeDown) DOM.setHtml( this.$.uiDisplayTimeDown, '00:00' );
-      if(this.$.uiDisplayTimeTotal) DOM.setHtml( this.$.uiDisplayTimeTotal, '00:00' );
-
-      // update play time. (%)
-      if(this.$.uiDisplayTimePar) DOM.setHtml( this.$.uiDisplayTimePar, '0%' );
-
-      // update seek-bar. (%)
-      if(this.$.uiSeekbarTimeCover) this.$.uiSeekbarTimeCover[0].style.width = '0%';
+      renderEmptyTime(this.$, DOM);
     }
 
+  }
+
+  private _getControlContext(){
+    return {
+      instance: this,
+      player: this.Player,
+      config: this.CONFIG,
+      callbacks: this.on,
+      cache: this.$,
+      classOn: () => {
+        this.ClassOn();
+      },
+      classOff: () => {
+        this.ClassOff();
+      },
+      pause: (callback?: () => {}) => {
+        this.Pause(callback);
+      },
+      setVolume: (vol?: number | 'off') => {
+        return this.SetVolume(vol);
+      },
+    };
+  }
+
+  private _getChangeContext(){
+    return {
+      instance: this,
+      player: this.Player,
+      config: this.CONFIG,
+      callbacks: this.on,
+      cache: this.$,
+      isPlayerChangeLoad: () => {
+        return this.PlayerChangeLoadFlg;
+      },
+      setPlayerChangeLoad: (loadable: boolean) => {
+        this.PlayerChangeLoadFlg = loadable;
+      },
+      setInfo: () => {
+        this._setInfo();
+      },
+      setPoster: () => {
+        this.SetPoster();
+      },
+      classOff: () => {
+        this.ClassOff();
+      },
+      play: (forceplay?: boolean, callback?: () => {}) => {
+        this.Play(forceplay, callback);
+      },
+    };
   }
 
   Play(forceplay?: boolean, callback?: ()=>{}){
-    if(this.Player.paused() || forceplay == true){
-      if(!this.on.PlayPrep && callback) this.on.PlayPrep = callback;
-      if(this.on.PlayPrep && typeof(this.on.PlayPrep) === 'function') this.on.PlayPrep(this, this.Player);
-
-      // When the player is stopped.
-      this.Player.play();
-      this.ClassOn();
-
-      if(!this.on.Play && callback) this.on.Play = callback;
-      if(this.on.Play && typeof(this.on.Play) === 'function') this.on.Play(this, this.Player);
-    } else {
-      // When the player is playing.
-      this.Pause();
-      this.ClassOff();
-    }
+    playPlayer(this._getControlContext(), forceplay, callback);
   }
 
   Stop(callback?: ()=>{}){
-    this.Player.pause();
-    this.Player.currentTime(0);
-    this.ClassOff();
-
-    if(!this.on.Stop && callback) this.on.Stop = callback;
-    if(this.on.Stop && typeof(this.on.Stop) === 'function') this.on.Stop(this, this.Player);
+    stopPlayer(this._getControlContext(), callback);
   }
 
   Pause(callback?: ()=>{}){
-    this.Player.pause();
-    this.ClassOff();
-
-    if(!this.on.Pause && callback) this.on.Pause = callback;
-    if(this.on.Pause && typeof(this.on.Pause) === 'function') this.on.Pause(this, this.Player);
+    pausePlayer(this._getControlContext(), callback);
   }
 
   Mute(){
-    if(this.Player.muted()){
-      this.Player.muted(false);
-      this.SetVolume(this.CONFIG.volume);
-      DOM.removeClass(this.$.uiBtnMute, this.CONFIG.classname_active);
-    }else{
-      this.Player.muted(true);
-      this.Player.volume(0);
-      DOM.addClass(this.$.uiBtnMute, this.CONFIG.classname_active);
-    }
+    mutePlayer(this._getControlContext(), DOM);
   }
 
   /**
@@ -719,149 +378,45 @@ export class PLAYER_MODULE_BRIGHTCOVE {
    * callback | function | callback function after changed media.
    */
   Change(id: any, isplay : boolean | null = null, callback?: ()=>{}){
-    // 動画IDが取得出来ない場合は処理を中止
-    if(id == '' || id == null || id == undefined) return;
-
-    if(!this.PlayerChangeLoadFlg) return false;
-
-    let _change_prev_paused = this.Player.paused();
-    let _change_prev_muted = this.Player.muted();
-    // if(isplay === true || isplay === false) _change_prev_paused = !isplay;
-
-    // Check if it is the same media.
-    if(this.CONFIG.videoid !== id){
-
-      this.PlayerChangeLoadFlg = false;
-
-      // Overwrite video id.
-      this.CONFIG.videoid = id;
-
-      // Reset playback position once in click event propagation.
-      // exclud IE, Edge, for there is a bugs
-      let _ua = window.navigator.userAgent.toLowerCase();
-      if(_ua.indexOf('msie') == -1 && _ua.indexOf('trident') == -1 && _ua.indexOf('edge') == -1) {
-        // this.Player.currentTime(0);
-      }
-
-      // Run playback start processing once in the click event propagation.
-      if(_change_prev_paused){
-        // this.Player.play();
-      }
-      if(_change_prev_muted){
-        this.Player.muted(true);
-      }
-
-      if(this.$.playerElem) DOM.removeClass(this.$.playerElem, this.CONFIG.classname_loaded_wrap);
-
-      this.Player.catalog.getVideo(id, (error: any, video: any) => {
-
-        // reload palyer data.
-        this.Player.catalog.load(video);
-
-        // Set MediaInfo
-        this._setInfo();
-        this.SetPoster();
-
-        // replay after data change.
-        setTimeout( () => {
-          this.ClassOff();
-          if(_change_prev_paused === false){
-            this.Play(true);
-          } else {
-            if(isplay === true){
-              this.Play(true);
-            }
-          }
-          if(_change_prev_muted === false){
-            this.Player.muted(false);
-          }
-        }, 100);
-
-        setTimeout( () => {
-          if(!this.on.Change && callback) this.on.Change = callback;
-          if(this.on.Change && typeof(this.on.Change) === 'function') this.on.Change(this, this.Player);
-        }, 300);
-
-        setTimeout( () => {
-          this.PlayerChangeLoadFlg = true;
-        }, 500);
-      });
-
-      // Determine if the next media information could be obtained.
-      this.Player.on('loadeddata',() => {
-        this.PlayerChangeLoadFlg = true;
-        this.Player.off('loadeddata');
-      });
-
-    } else {
-      if(isplay){
-        this.Play();
-      }
-
-      if(!this.on.Change && callback) this.on.Change = callback;
-      if(this.on.Change && typeof(this.on.Change) === 'function') this.on.Change(this, this.Player);
-
-    }
-
+    return changePlayerMedia(this._getChangeContext(), DOM, id, isplay, callback);
   }
 
   PauseAll(callback?: ()=>{}){
-    window.PLAYER_MODULE_ALL_PLATLIST.map((item: any)=>{
-      item.instance.Pause();
-    });
+    pauseAllPlayers();
 
     if(!this.on.PauseAll && callback) this.on.PauseAll = callback;
     if(this.on.PauseAll && typeof(this.on.PauseAll) === 'function') this.on.PauseAll(this, this.Player);
   }
 
   StopAll(callback?: ()=>{}){
-    window.PLAYER_MODULE_ALL_PLATLIST.map((item: any)=>{
-      item.instance.Stop();
-    });
+    stopAllPlayers();
 
     if(!this.on.StopAll && callback) this.on.StopAll = callback;
     if(this.on.StopAll && typeof(this.on.StopAll) === 'function') this.on.StopAll(this, this.Player);
   }
 
   SeekTo(sec: any){
-    if(!sec) return false;
-    if(typeof sec == 'object' || typeof sec == 'function') return false;
-    if(typeof sec == 'string') sec = Number(sec);
-    if(!sec) return false;
-    this.Player.currentTime(sec);
+    return seekPlayerTo(this.Player, sec);
   }
 
   GetTime(){
-    let _m = PLAYER_MODULE_BRIGHTCOVE.parseNumber(Math.floor(this.Player.currentTime()/60));
-    let _s = PLAYER_MODULE_BRIGHTCOVE.parseNumber(Math.floor(this.Player.currentTime()%60));
-    // @ts-ignore
-    if(isFinite(_s) && isFinite(_m)) return _m+':'+_s;
-    else return '00:00';
+    return getPlayerTime(this.Player);
   }
 
   GetTimeDown(){
-    let _countDownTime = this.Player.duration() - Math.floor(this.Player.currentTime());
-    let _m_down        = PLAYER_MODULE_BRIGHTCOVE.parseNumber(Math.floor(_countDownTime / 60));
-    let _s_down        = PLAYER_MODULE_BRIGHTCOVE.parseNumber(Math.floor(_countDownTime % 60));
-    // @ts-ignore
-    if(isFinite(_s_down) && isFinite(_m_down)) return _m_down+':'+_s_down;
-    else return '00:00';
+    return getPlayerTimeDown(this.Player);
   }
 
   GetTimeMax(){
-    let _m_max = PLAYER_MODULE_BRIGHTCOVE.parseNumber(Math.floor(this.Player.duration()/60));
-    let _s_max = PLAYER_MODULE_BRIGHTCOVE.parseNumber(Math.floor(this.Player.duration()%60));
-    return _m_max+':'+_s_max;
+    return getPlayerTimeMax(this.Player);
   }
 
   GetTimeRatio(){
-    return Math.floor(this.Player.currentTime() / this.Player.duration() * 1000) / 1000;
+    return getPlayerTimeRatio(this.Player);
   }
 
   GetTimePar(){
-    let _time = Math.floor(this.Player.currentTime() / this.Player.duration() * 1000) / 10;
-    if(isFinite(_time)) return _time + '%';
-    else return '0%';
+    return getPlayerTimePar(this.Player);
   }
 
   GetPoster(){
@@ -873,15 +428,7 @@ export class PLAYER_MODULE_BRIGHTCOVE {
   }
 
   SetVolume(vol?: number | 'off'){
-
-    if(vol === 'off'){
-      this.Player.volume(0);
-    }
-    if(typeof vol === 'number'){
-      if(Number(vol) < 0 || 1 < Number(vol)) return false;
-      this.CONFIG.volume = Number(vol);
-      this.Player.volume(this.CONFIG.volume);
-    }
+    return setPlayerVolume(this.Player, this.CONFIG, vol);
   }
 
   /**

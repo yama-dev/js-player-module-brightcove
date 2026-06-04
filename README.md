@@ -1,283 +1,196 @@
-# PLAYER MODULE BRIGHTCOVE
+# js-player-module-brightcove
 
-<br>
+Brightcove Player API を使ったカスタムプレーヤー用 JavaScript ライブラリです。
 
-## Feature
+## Features
 
-Brightcove custom player using the Brightcove Player API.
-The official document is here. -> https://docs.brightcove.com/brightcove-player/current-release/Player.html
+- Brightcove Player の埋め込みタグとプレーヤースクリプトを生成
+- 標準 UI の表示、非表示を切り替え可能
+- 動画、音声モードを切り替え可能
+- 再生、停止、一時停止、ミュート、シーク、音量変更、動画差し替え API を提供
+- 再生状態、時間更新、音量変更、動画変更などの callback を提供
 
-<br>
+## Requirements
 
-## Demo
+- Brightcove account id
+- Brightcove video id
+- Browser target: ES2015+
 
-- [https://yama-dev.github.io/js-player-module-brightcove/examples/](https://yama-dev.github.io/js-player-module-brightcove/examples/)
+v7 以降は IE11 をサポートしません。ビルドは Vite library mode で行います。
 
-<br>
+## Installation
 
-## Installation,Download
-
-- npm -> [https://www.npmjs.com/package/js-player-module-brightcove](https://www.npmjs.com/package/js-player-module-brightcove)
-
-- Standalone(CDN) -> [https://cdn.jsdelivr.net/gh/yama-dev/js-player-module-brightcove@v6.4.3/dist/js-player-module-brightcove.js](https://cdn.jsdelivr.net/gh/yama-dev/js-player-module-brightcove@v6.4.3/dist/js-player-module-brightcove.js)
-
-- Zip -> [yama-dev/js-player-module-brightcove](https://github.com/yama-dev/js-player-module-brightcove/releases/latest)
-
-<br>
-
-## Using
-
-### NPM Usage
-
-``` bash
-# install npm.
-npm install --save js-player-module-brightcove
+```bash
+npm install js-player-module-brightcove
 ```
 
-``` javascript
-// import.
+```js
 import PLAYER_MODULE_BRIGHTCOVE from 'js-player-module-brightcove';
 ```
 
-### Basic Standalone Usage
+Standalone で使う場合は npm package に含まれる `dist/js-player-module-brightcove.js` を読み込んでください。
 
-``` html
-<script src="./js-player-module-brightcove.js"></script>
-<div id="brightcovePlayer1">
-  <script>
-    new PLAYER_MODULE_BRIGHTCOVE({
-      id: 'brightcovePlayer1',
-      videoid: '4230322585001',
-      account: '20318290001'
-    });
-  </script>
+```html
+<script src="https://cdn.jsdelivr.net/npm/js-player-module-brightcove@latest/dist/js-player-module-brightcove.js"></script>
+```
+
+## Basic Usage
+
+```html
+<div id="brightcovePlayer"></div>
+
+<script>
+  const player = new PLAYER_MODULE_BRIGHTCOVE({
+    id: 'brightcovePlayer',
+    videoid: '4230322585001',
+    account: '20318290001'
+  });
+</script>
+```
+
+Brightcove Player script は `account` と `player` option から次の形式で読み込まれます。
+
+```text
+//players.brightcove.net/{account}/{player}_default/index.min.js
+```
+
+`player` を指定しない場合は `default` が使われます。
+
+## Usage Examples
+
+### Audio Mode
+
+```js
+new PLAYER_MODULE_BRIGHTCOVE({
+  mode: 'audio',
+  id: 'audioPlayer',
+  videoid: '4230322585001',
+  account: '20318290001'
+});
+```
+
+### Custom UI
+
+`ui_default: false` を指定すると、ライブラリが出力する標準 UI を使わずに独自 UI を実装できます。
+
+```html
+<div id="customPlayer">
+  <button type="button" onclick="player.Play()">Play</button>
+  <button type="button" onclick="player.Pause()">Pause</button>
+  <button type="button" onclick="player.Stop()">Stop</button>
 </div>
+
+<script>
+  const player = new PLAYER_MODULE_BRIGHTCOVE({
+    id: 'customPlayer',
+    videoid: '4230322585001',
+    account: '20318290001',
+    ui_default: false
+  });
+</script>
 ```
 
-<br>
+### Callbacks
 
-## Sample Code
-
-### ①BASIC Player
-
-<img src="https://raw.githubusercontent.com/yama-dev/assets/master/images/js-player-module-brightcove/sample_player1.png" style="width: 100%; max-width: 520px; border: 1px solid #eee;" alt="">
-
-``` html
-<div id="brightcovePlayer1">
-  <script>
-    new PLAYER_MODULE_BRIGHTCOVE({
-      id: 'brightcovePlayer1',
-      videoid: '4230322585001',
-      account: '20318290001'
-    });
-  </script>
-</div>
+```js
+const player = new PLAYER_MODULE_BRIGHTCOVE({
+  id: 'brightcovePlayer',
+  videoid: '4230322585001',
+  account: '20318290001',
+  on: {
+    PlayerInit(instance, brightcovePlayer) {
+      console.log(instance.GetMediaInfo());
+    },
+    TimeUpdate(time) {
+      console.log(time.current, time.max, time.par);
+    },
+    VolumeChange(volume) {
+      console.log(volume.volume, volume.par);
+    },
+    Change(instance) {
+      console.log(instance.GetPoster());
+    }
+  }
+});
 ```
 
-### ②Original image Player
+## Options
 
-<img src="https://raw.githubusercontent.com/yama-dev/assets/master/images/js-player-module-brightcove/sample_player_original-image.png" style="width: 100%; max-width: 520px; border: 1px solid #eee;" alt="">
+| Option                  | Type      | Default              | Description                                 |
+| :---                    | :---      | :---                 | :---                                        |
+| `id`                    | `string`  | `pmb`                | プレーヤーを出力する wrapper 要素の id。    |
+| `videoid`               | `string`  | `4929511769001`      | 初期表示する Brightcove video id。          |
+| `account`               | `string`  | `''`                 | Brightcove account id。                     |
+| `player`                | `string`  | `default`            | Brightcove player id。                      |
+| `mode`                  | `string`  | `movie`              | `movie` または `audio`。                    |
+| `width`                 | `string`  | `''`                 | video 要素の width。                        |
+| `height`                | `string`  | `''`                 | video 要素の height。                       |
+| `video_title`           | `string`  | `''`                 | video 要素の title 属性。                   |
+| `volume`                | `number`  | `1`                  | 初期音量。`0` から `1` の範囲。             |
+| `playsinline`           | `boolean` | `true`               | inline 再生属性を付与するか。               |
+| `loop`                  | `boolean` | `false`              | loop 属性を付与するか。                     |
+| `muted`                 | `boolean` | `false`              | muted 属性を付与するか。                    |
+| `ui_controls`           | `boolean` | `false`              | Brightcove 標準 controls 属性を付与するか。 |
+| `ui_autoplay`           | `boolean` | `false`              | autoplay 属性を付与するか。                 |
+| `ui_default`            | `boolean` | `true`               | ライブラリ標準 UI を出力するか。            |
+| `ui_default_css`        | `boolean` | `true`               | ライブラリ標準 CSS を出力するか。           |
+| `stop_outfocus`         | `boolean` | `false`              | window blur 時に停止するか。                |
+| `poster`                | `string`  | `''`                 | poster 画像 URL。                           |
+| `add_style`             | `string`  | `''`                 | 追加 CSS。                                  |
+| `classname_loaded_wrap` | `string`  | `is-pmb-loaded-wrap` | 読み込み完了時に wrapper へ付与する class。 |
+| `classname_active_wrap` | `string`  | `is-pmb-active-wrap` | 再生中に wrapper へ付与する class。         |
+| `classname_active`      | `string`  | `is-pmb-active`      | active 状態の UI に付与する class。         |
+| `on`                    | `object`  | `{}`                 | callback 設定。                             |
 
-``` html
-<div id="brightcovePlayerOriginalimage">
-  <script>
-    new PLAYER_MODULE_BRIGHTCOVE({
-      id: 'brightcovePlayerOriginalimage',
-      videoid: '4230322585001',
-      account: '20318290001'
-      ui_default: false
-    });
-  </script>
-  <div class="player__btn">
-    <div class="btn_play"><img class="on" src="http://placehold.jp/14/333/ddd/120x30.png?text=PLAY" alt=""><img class="off" src="http://placehold.jp/14/ddd/333/120x30.png?text=PLAY" alt=""></div>
-    <div class="btn_pause"><img class="on" src="http://placehold.jp/14/333/ddd/120x30.png?text=PAUSE" alt=""><img class="off" src="http://placehold.jp/14/ddd/333/120x30.png?text=PAUSE" alt=""></div>
-    <div class="btn_stop"><img class="on" src="http://placehold.jp/14/333/ddd/120x30.png?text=STOP" alt=""><img class="off" src="http://placehold.jp/14/ddd/333/120x30.png?text=STOP" alt=""></div>
-    <div class="btn_mute"><img class="on" src="http://placehold.jp/14/333/ddd/120x30.png?text=MUTE" alt=""><img class="off" src="http://placehold.jp/14/ddd/333/120x30.png?text=MUTE" alt=""></div>
-  </div>
-</div>
-```
+## Callbacks
 
-### ③AUDIO Player
+| Callback       | Payload                              | Timing                             |
+| :---           | :---                                 | :---                               |
+| `PlayerInit`   | `(instance, brightcovePlayer)`       | Brightcove player 初期化後。       |
+| `PlayerEnded`  | `(instance, brightcovePlayer)`       | 再生終了時。                       |
+| `PlayerPlay`   | `(instance, brightcovePlayer)`       | Brightcove player の play event。  |
+| `PlayerPause`  | `(instance, brightcovePlayer)`       | Brightcove player の pause event。 |
+| `TimeUpdate`   | `{ current, max, down, ratio, par }` | timeupdate 時。                    |
+| `VolumeChange` | `{ volume, par }`                    | volumechange 時。                  |
+| `PlayPrep`     | `(instance, brightcovePlayer)`       | `Play()` 実行直前。                |
+| `Play`         | `(instance, brightcovePlayer)`       | `Play()` 実行後。                  |
+| `Pause`        | `(instance, brightcovePlayer)`       | `Pause()` 実行後。                 |
+| `Stop`         | `(instance, brightcovePlayer)`       | `Stop()` 実行後。                  |
+| `PauseAll`     | `(instance, brightcovePlayer)`       | `PauseAll()` 実行後。              |
+| `StopAll`      | `(instance, brightcovePlayer)`       | `StopAll()` 実行後。               |
+| `Change`       | `(instance, brightcovePlayer)`       | `Change()` による動画変更後。      |
 
-<img src="https://raw.githubusercontent.com/yama-dev/assets/master/images/js-player-module-brightcove/sample_audio.png" style="width: 100%; max-width: 520px; border: 1px solid #eee;" alt="">
+## Methods
 
-``` html
-<div id="brightcovePlayerAudio">
-  <script>
-    new PLAYER_MODULE_BRIGHTCOVE({
-      mode: 'audio',
-      id: 'brightcovePlayerAudio',
-      videoid: '4230322585001',
-      account: '20318290001'
-    });
-  </script>
-</div>
-```
+| Method                                | Description                                         |
+| :---                                  | :---                                                |
+| `Play(forceplay?, callback?)`         | 再生します。再生中の場合は一時停止します。          |
+| `Stop(callback?)`                     | 一時停止して再生位置を `0` に戻します。             |
+| `Pause(callback?)`                    | 一時停止します。                                    |
+| `Mute()`                              | mute 状態を切り替えます。                           |
+| `Change(videoid, isplay?, callback?)` | 動画を差し替えます。                                |
+| `PauseAll(callback?)`                 | 登録済みの全プレーヤーを一時停止します。            |
+| `StopAll(callback?)`                  | 登録済みの全プレーヤーを停止します。                |
+| `SeekTo(sec)`                         | 指定秒数へシークします。                            |
+| `GetTime()`                           | 現在時間を `mm:ss` 形式で返します。                 |
+| `GetTimeDown()`                       | 残り時間を `mm:ss` 形式で返します。                 |
+| `GetTimeMax()`                        | 動画時間を `mm:ss` 形式で返します。                 |
+| `GetTimeRatio()`                      | 現在位置を `0` から `1` の比率で返します。          |
+| `GetTimePar()`                        | 現在位置を `%` 文字列で返します。                   |
+| `GetPoster()`                         | 現在の poster を返します。                          |
+| `GetMediaInfo()`                      | Brightcove の media info を返します。               |
+| `SetVolume(volume)`                   | 音量を設定します。`0` から `1` の範囲を指定します。 |
+| `SetVideoTitle(title)`                | video 要素の title 属性を更新します。               |
+| `SetPoster(path?)`                    | poster を更新し、UI に反映します。                  |
+| `Destroy()`                           | Brightcove player を reset します。                 |
 
-### ④ Full Custom Player
+## Links
 
-``` html
-<div id="brightcovePlayerCustom">
-  <script>
-    var PMB = new PLAYER_MODULE_BRIGHTCOVE({
-      mode: 'movie',
+- [npm](https://www.npmjs.com/package/js-player-module-brightcove)
+- [Demo](https://yama-dev.github.io/js-player-module-brightcove/examples/)
+- [Brightcove Player API](https://docs.brightcove.com/brightcove-player/current-release/Player.html)
+- [GitHub Releases](https://github.com/yama-dev/js-player-module-brightcove/releases/latest)
 
-      id: 'brightcovePlayerCustom',
-      ui_controls: true,
-      ui_autoplay: false,
-      ui_default: true,
-      ui_default_css : true,
+## License
 
-      videoid: '4230322585001',
-      account: '20318290001',
-      player: 'default',
-
-      loop: false,
-      muted: false,
-      volume: 0.5,
-      stop_outfocus : true,
-
-      width: '480px',
-      height: '300px',
-
-      poster: 'https://placehold.jp/750x500.png',
-
-      add_style : '',
-      classname_loaded_wrap : 'is-pmb-loaded-wrap',
-      classname_active_wrap : 'is-pmb-active-wrap',
-      classname_active: 'is-pmb-active',
-      on: {
-        PlayerInit: function(player){
-          console.log('PlayerInit', player);
-          console.log(player.GetMediaInfo());
-          console.log(player.GetPoster());
-        },
-        PlayerEnded: function(player){
-          console.log('PlayerEnded', player);
-        },
-        PlayerPlay: function(player){
-          console.log('PlayerPlay', player);
-        },
-        PlayerPause: function(player){
-          console.log('PlayerPause', player);
-          console.log(player.GetTime());
-          console.log(player.GetTimeMax());
-          console.log(player.GetTimeRatio());
-          console.log(player.GetTimeDown());
-        },
-
-        TimeUpdate : function(obj){
-          console.log('TimeUpdate', obj);
-        },
-        VolumeChange : function(obj){
-          console.log('VolumeChange', obj);
-        },
-
-        Play: function(player){
-          console.log('Play', player);
-        },
-        PlayPrep: function(player){
-          console.log('PlayPrep', player);
-        },
-        Pause: function(player){
-          console.log('Pause', player);
-        },
-        Stop: function(player){
-          console.log('Stop', player);
-        },
-        StopAll: function(player){
-          console.log('StopAll', player);
-        },
-        Change: function(player){
-          console.log('Change', player);
-          console.log(player.GetMediaInfo());
-          console.log(player.GetPoster());
-        }
-      }
-    });
-  </script>
-
-  <button class="btn btn-secondary" onclick="PMB.Play()">Media再生(Play)</button>
-  <button class="btn btn-secondary" onclick="PMB.Stop()">Media停止(Stop)</button>
-  <button class="btn btn-secondary" onclick="PMB.PauseAll()">Media全一時停止(PauseAll)</button>
-  <button class="btn btn-secondary" onclick="PMB.StopAll()">Media全停止(StopAll)</button>
-
-  <button class="btn btn-secondary" data-PMB-id="4230322585001" onclick="PMB.Change('4230322585001')">Media変更 id=4230322585001</button>
-  <div class="btn btn-secondary" data-PMB-id="4231692338001" onclick="PMB.Change('4231692338001')">
-    Media変更 id=4231692338001<br><br>
-    <p class="ui-time">00:00</p>
-    <p class="ui-time_down">00:00</p>
-  </div>
-
-  <button class="btn btn-secondary" onclick="PMB.SeekTo(30)">Media再生位置変更(SeekTo 30s)</button>
-  <button class="btn btn-secondary" onclick="PMB.SeekTo(60)">Media再生位置変更(SeekTo 60s)</button>
-</div>
-```
-
-<br>
-
-## API
-
-### Default
-
-| Parameter | Type   | Default      | Description                                |
-| :---      | :---:  | :---:        | :---                                       |
-| id        | string | - ※省略不可 | プレーヤーを出力する要素のidを設定します。 |
-| videoid   | string | - ※省略不可 | 動画のvideoidを設定します。                |
-| account   | string | - ※省略不可 | BrightcovePlayerのaccountを設定します。    |
-
-### Options
-
-| Parameter      | Type    | Default | Description                                                                                                                                                                                        |
-| :---           | :---:   | :---:   | :---                                                                                                                                                                                               |
-| playsinline    | boolean | true    | iOS10+でインライン再生をするかを指定します。<br>デフォルトでは、`playsinline`属性が設定され、インライン再生されます。<br>※`false`を指定するとiOS10+では全画面にプレーヤーが立ち上がります。       |
-| volume         | number  | 1       | 初期の音量を指定します。(0.0～1.0)<br>デフォルトでは、1(最大音量)がセットされます。<br>※機種、ブラウザに依存します。                                                                              |
-| ui_controls    | boolean | false   | `control`を表示するかしないかを指定します。<br>デフォルトでは、表示されません。                                                                                                                    |
-| ui_default     | boolean | true    | ライブラリであらかじめ用意したUIパーツを表示するかしないかを指定します。<br>デフォルトは、表示されます。<br>※`false`を指定すると出力されません。                                                  |
-| ui_default_css | boolean | true    | ライブラリであらかじめ用意したCSSを出力するかしないかを指定します。<br>デフォルトは、CSSを出力します。<br>※`false`を指定すると出力されません。                                                    |
-| ui_autoplay    | boolean | false   | 自動再生をするか指定します。<br>デフォルトでは、自動再生はされません。<br>※`true`を設定すると、動画のロードが完了すると自動再生を開始します。                                                     |
-| stop_outfocus  | boolean | false   | フォーカスが外れた時に自動停止するか指定します。<br>デフォルトでは、自動停止しません。<br>※`true`を設定すると、フォーカスが外れた時にメディアが自動停止します。                                   |
-| mode           | string  | 'movie' | `'movie'` -> 動画モード<br>`'audio` -> 音声モード<br><br>デフォルトでは、動画モードになります。<br>動画か音声のみかを簡単に切り替えが出来ます。<br>※`'audio'`を設定すると、動画が表示されません。 |
-| poster         | string  | null    | 動画のポスター画像を設定できます。<br>画像のパスを設定することで、サムネイルとして読み込まれます。                                                                                                 |
-
-<br>
-
-## Dependencies
-
-- [@yama-dev/js-dom](https://www.npmjs.com/package/@yama-dev/js-dom)
-- [@yama-dev/js-parse-module](https://www.npmjs.com/package/@yama-dev/js-parse-module)
-
-<br>
-
-## Development
-
-``` bash
-npm install
-npm run typecheck
-npm test
-npm run prod
-```
-
-### Release notes
-
-Record user-facing changes before release.
-
-``` bash
-npm run changeset
-npm run version-packages
-npm run release
-```
-
-<br><br><br>
-
-___
-
-## Licence
-
-[MIT](https://github.com/yama-dev/js-player-module-brightcove/blob/master/LICENSE)
-
-<br>
-
-## Author
-
-[yama-dev](https://github.com/yama-dev)
+MIT

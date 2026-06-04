@@ -20,5 +20,6 @@ _*/
 
 examples/
 webpack.config.js
+vite.config.ts
 .env
 Makefile
