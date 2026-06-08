@@ -49,6 +49,7 @@ export const DEFAULT_CONFIG: PlayerConfig = {
   ui_autoplay    : '',
   ui_default     : false,
   ui_default_css : true,
+  pause_others_on_play : false,
 
   stop_outfocus  : false,
   poster         : '',
@@ -89,6 +90,7 @@ export function createPlayerConfig(options: PlayerOptions): PlayerConfig {
     ui_autoplay    : options.ui_autoplay === true ? 'autoplay' : '',
     ui_default     : options.ui_default === false ? false : true,
     ui_default_css : options.ui_default_css === false ? false : true,
+    pause_others_on_play : options.pause_others_on_play === true,
 
     stop_outfocus  : options.stop_outfocus === true ? true : false,
     poster         : options.poster || '',

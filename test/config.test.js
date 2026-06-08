@@ -40,6 +40,7 @@ assert.equal(defaultedConfig.loop, '');
 assert.equal(defaultedConfig.muted, '');
 assert.equal(defaultedConfig.ui_controls, '');
 assert.equal(defaultedConfig.ui_autoplay, '');
+assert.equal(defaultedConfig.pause_others_on_play, false);
 assert.equal(defaultedConfig.stop_outfocus, false);
 
 const enabledFlagsConfig = createPlayerConfig({
@@ -49,6 +50,7 @@ const enabledFlagsConfig = createPlayerConfig({
   ui_controls: true,
   ui_autoplay: true,
   ui_default_css: false,
+  pause_others_on_play: true,
   stop_outfocus: true,
   classname_loaded_wrap: 'loaded',
   classname_active_wrap: 'active-wrap',
@@ -60,6 +62,7 @@ assert.equal(enabledFlagsConfig.muted, 'muted');
 assert.equal(enabledFlagsConfig.ui_controls, 'controls');
 assert.equal(enabledFlagsConfig.ui_autoplay, 'autoplay');
 assert.equal(enabledFlagsConfig.ui_default_css, false);
+assert.equal(enabledFlagsConfig.pause_others_on_play, true);
 assert.equal(enabledFlagsConfig.stop_outfocus, true);
 assert.equal(enabledFlagsConfig.classname_loaded_wrap, 'loaded');
 assert.equal(enabledFlagsConfig.classname_active_wrap, 'active-wrap');

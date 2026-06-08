@@ -1,6 +1,7 @@
 import { PlayerDomCache } from '../dom/dom-cache';
 import { toFixedNumber } from '../utils/number';
 import { PlayerCallbacks, PlayerConfig } from '../types';
+import { pauseOtherPlayers } from './player-registry';
 
 export interface PlayerLifecycleContext {
   instance: any;
@@ -71,6 +72,10 @@ export function registerPlayerLifecycle(context: PlayerLifecycleContext, DOM: an
   });
 
   context.player.on('play', ()=>{
+    if(context.config.pause_others_on_play) {
+      pauseOtherPlayers(context.config.player_id);
+    }
+
     context.classOn();
     if(context.callbacks.PlayerPlay && typeof(context.callbacks.PlayerPlay) === 'function') {
       context.callbacks.PlayerPlay(context.instance, context.player);

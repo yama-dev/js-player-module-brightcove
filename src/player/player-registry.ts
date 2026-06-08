@@ -36,6 +36,16 @@ export function pauseAllPlayers(): void {
   });
 }
 
+export function pauseOtherPlayers(activePlayerId: string): void {
+  const registryWindow = window as PlayerRegistryWindow;
+
+  registryWindow.PLAYER_MODULE_ALL_PLATLIST?.forEach((item: PlayerRegistryItem)=>{
+    if(item.player_id !== activePlayerId && !item.Player.paused()){
+      item.instance.Pause();
+    }
+  });
+}
+
 export function stopAllPlayers(): void {
   const registryWindow = window as PlayerRegistryWindow;
 

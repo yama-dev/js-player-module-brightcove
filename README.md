@@ -134,6 +134,7 @@ const player = new PLAYER_MODULE_BRIGHTCOVE({
 | `ui_autoplay`           | `boolean` | `false`              | autoplay 属性を付与するか。                 |
 | `ui_default`            | `boolean` | `true`               | ライブラリ標準 UI を出力するか。            |
 | `ui_default_css`        | `boolean` | `true`               | ライブラリ標準 CSS を出力するか。           |
+| `pause_others_on_play`  | `boolean` | `false`              | 再生開始時に再生中の他プレーヤーを一時停止するか。 |
 | `stop_outfocus`         | `boolean` | `false`              | window blur 時に停止するか。                |
 | `poster`                | `string`  | `''`                 | poster 画像 URL。                           |
 | `add_style`             | `string`  | `''`                 | 追加 CSS。                                  |

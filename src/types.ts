@@ -48,6 +48,7 @@ export interface PlayerOptions {
   ui_autoplay?: boolean;
   ui_default?: boolean;
   ui_default_css?: boolean;
+  pause_others_on_play?: boolean;
   stop_outfocus?: boolean;
   poster?: string;
   add_style?: string;
@@ -78,6 +79,7 @@ export interface PlayerConfig {
   ui_autoplay: string;
   ui_default: boolean;
   ui_default_css: boolean;
+  pause_others_on_play: boolean;
   stop_outfocus: boolean;
   poster: string;
   add_style: string;
