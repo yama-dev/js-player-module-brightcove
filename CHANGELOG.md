@@ -1,5 +1,11 @@
 # js-player-module-brightcove
 
+## 7.1.1
+
+### Patch Changes
+
+- 1b24700: スマホのシークバー操作でタップ位置と移動位置がずれる問題を修正
+
 ## 7.1.0
 
 ### Minor Changes
