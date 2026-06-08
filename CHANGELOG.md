@@ -1,5 +1,11 @@
 # js-player-module-brightcove
 
+## 7.1.0
+
+### Minor Changes
+
+- 909b5bc: 再生開始時に再生中の他プレーヤーを一時停止する `pause_others_on_play` オプションを追加
+
 ## 7.0.1
 
 ### Patch Changes
