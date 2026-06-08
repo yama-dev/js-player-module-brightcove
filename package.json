@@ -30,7 +30,7 @@
     "declarations": "rm -rf dist/types && tsc --emitDeclarationOnly",
     "typecheck": "tsc --noEmit",
     "test": "npm run typecheck && npm run test:unit",
-    "test:unit": "tsc --ignoreConfig src/utils/number.ts src/config.ts src/types.ts src/player/player-time.ts src/player/player-registry.ts src/player/player-controls.ts src/player/player-renderer.ts src/player/player-lifecycle.ts --target ES2020 --module commonjs --noImplicitAny false --outDir .tmp-test && node test/number.test.js && node test/config.test.js && node test/player-time.test.js && node test/player-registry.test.js && node test/player-controls.test.js && node test/player-renderer.test.js && node test/player-lifecycle.test.js",
+    "test:unit": "tsc --ignoreConfig src/utils/number.ts src/config.ts src/types.ts src/player/player-time.ts src/player/player-registry.ts src/player/player-controls.ts src/player/player-renderer.ts src/player/player-lifecycle.ts src/player/player-events.ts --target ES2020 --module commonjs --noImplicitAny false --outDir .tmp-test && node test/number.test.js && node test/config.test.js && node test/player-time.test.js && node test/player-registry.test.js && node test/player-controls.test.js && node test/player-renderer.test.js && node test/player-lifecycle.test.js && node test/player-events.test.js",
     "test:bundle": "node test/bundle.test.js",
     "test:release": "npm run clean && npm run test && npm run prod && npm run test:bundle",
     "pack:check": "npm pack --dry-run --cache .tmp-npm-cache",

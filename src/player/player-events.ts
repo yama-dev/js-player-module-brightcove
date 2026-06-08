@@ -15,6 +15,21 @@ export interface PlayerEventContext {
   Change(id: any, isplay?: boolean | null, callback?: () => {}): boolean | void;
 }
 
+function clampSeekbarRatio(ratio: number): number {
+  if(ratio >= 1) return 1;
+  if(ratio <= 0) return 0;
+  return ratio;
+}
+
+export function getSeekbarRatio(target: HTMLElement, clientX: number): number {
+  const rect = target.getBoundingClientRect();
+  const width = rect.width || target.clientWidth;
+
+  if(!width) return 0;
+
+  return clampSeekbarRatio((clientX - rect.left) / width);
+}
+
 export function bindEventPlay(context: PlayerEventContext, DOM: any): void {
   if(context.$.uiBtnPlay){
     DOM.addEvent(context.$.uiBtnPlay, 'click' , () => {
@@ -128,9 +143,7 @@ export function bindEventSeekbarTime(context: PlayerEventContext, DOM: any): voi
       DOM.addEvent(context.$.uiSeekbarTime, 'mousedown', (event: MouseEvent) => {
         context.PlayerChangeSeekingFlg = true;
         let _target        = event.currentTarget as HTMLElement;
-        let _currentWidth  = _target.clientWidth;
-        let _clickPosition = _target.getBoundingClientRect().left;
-        let _targetWidth   = (event.pageX - _clickPosition) / _currentWidth;
+        let _targetWidth   = getSeekbarRatio(_target, event.clientX);
         _targetTime = context.Player.duration() * _targetWidth;
         DOM.setStyle( context.$.uiSeekbarTimeCover, { width : (_targetWidth * 100) + '%' } );
         context.Player.currentTime(_targetTime);
@@ -159,13 +172,8 @@ export function bindEventSeekbarTime(context: PlayerEventContext, DOM: any): voi
       DOM.addEvent(context.$.uiSeekbarTime, 'mousemove', (event: MouseEvent) => {
         if(context.PlayerChangeSeekingFlg){
           let _target        = event.currentTarget as HTMLElement;
-          let _currentWidth  = _target.clientWidth;
-          let _clickPosition = _target.getBoundingClientRect().left;
-          let _targetWidth   = (event.pageX - _clickPosition) / _currentWidth;
+          let _targetWidth   = getSeekbarRatio(_target, event.clientX);
           _targetTime    = context.Player.duration() * _targetWidth;
-
-          if(_targetWidth >= 1) _targetWidth = 1;
-          if(_targetWidth <= 0) _targetWidth = 0;
 
           DOM.setStyle( context.$.uiSeekbarTimeCover, { width : (_targetWidth * 100) + '%' } );
           context.Player.currentTime(_targetTime);
@@ -176,10 +184,8 @@ export function bindEventSeekbarTime(context: PlayerEventContext, DOM: any): voi
 
       DOM.addEvent(context.$.uiSeekbarTime, 'touchstart', (event: TouchEvent) => {
         context.PlayerChangeSeekingFlg = true;
-        let _target        = event.touches[0].target as HTMLElement;
-        let _currentWidth  = _target.clientWidth;
-        let _clickPosition = _target.getBoundingClientRect().left;
-        let _targetWidth   = (event.touches[0].pageX - _clickPosition) / _currentWidth;
+        let _target        = event.currentTarget as HTMLElement;
+        let _targetWidth   = getSeekbarRatio(_target, event.touches[0].clientX);
         _targetTime = context.Player.duration() * _targetWidth;
         DOM.setStyle( context.$.uiSeekbarTimeCover, { width : (_targetWidth * 100) + '%' } );
         context.Player.currentTime(_targetTime);
@@ -207,14 +213,9 @@ export function bindEventSeekbarTime(context: PlayerEventContext, DOM: any): voi
 
       DOM.addEvent(context.$.uiSeekbarTime, 'touchmove', (event: TouchEvent) => {
         if(context.PlayerChangeSeekingFlg){
-          let _target        = event.touches[0].target as HTMLElement;
-          let _currentWidth  = _target.clientWidth;
-          let _clickPosition = _target.getBoundingClientRect().left;
-          let _targetWidth   = (event.touches[0].pageX - _clickPosition) / _currentWidth;
+          let _target        = event.currentTarget as HTMLElement;
+          let _targetWidth   = getSeekbarRatio(_target, event.touches[0].clientX);
           _targetTime    = context.Player.duration() * _targetWidth;
-
-          if(_targetWidth >= 1) _targetWidth = 1;
-          if(_targetWidth <= 0) _targetWidth = 0;
 
           DOM.setStyle( context.$.uiSeekbarTimeCover, { width : (_targetWidth * 100) + '%' } );
           context.Player.currentTime(_targetTime);
