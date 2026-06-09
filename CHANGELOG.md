@@ -1,5 +1,11 @@
 # js-player-module-brightcove
 
+## 7.2.0
+
+### Minor Changes
+
+- 574e43a: 相対シークと再生速度変更の API を追加し、先頭へのシークに対応
+
 ## 7.1.1
 
 ### Patch Changes
