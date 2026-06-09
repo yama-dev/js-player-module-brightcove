@@ -10,6 +10,11 @@ Brightcove Player API を使ったカスタムプレーヤー用 JavaScript ラ�
 - 再生、停止、一時停止、ミュート、シーク、音量変更、動画差し替え API を提供
 - 再生状態、時間更新、音量変更、動画変更などの callback を提供
 
+## Demo
+
+- [Video & Audio Player Demo](https://yama-dev.github.io/js-player-module-brightcove/examples/demo.html)
+- [Examples](https://yama-dev.github.io/js-player-module-brightcove/examples/)
+
 ## Requirements
 
 - Brightcove account id
@@ -192,8 +197,6 @@ const player = new PLAYER_MODULE_BRIGHTCOVE({
 ## Links
 
 - [npm](https://www.npmjs.com/package/js-player-module-brightcove)
-- [Demo](https://yama-dev.github.io/js-player-module-brightcove/examples/)
-- [Video & Audio Demo](https://yama-dev.github.io/js-player-module-brightcove/examples/demo.html)
 - [Brightcove Player API](https://docs.brightcove.com/brightcove-player/current-release/Player.html)
 - [GitHub Releases](https://github.com/yama-dev/js-player-module-brightcove/releases/latest)
 
