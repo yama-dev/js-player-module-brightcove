@@ -13,6 +13,8 @@ export interface PlayerChangeContext {
   setPoster(): void;
   classOff(): void;
   play(forceplay?: boolean, callback?: () => {}): void;
+  getPlaybackRate(): number;
+  setPlaybackRate(rate: number): boolean | void;
 }
 
 export function changePlayerMedia(
@@ -29,6 +31,7 @@ export function changePlayerMedia(
 
   let _change_prev_paused = context.player.paused();
   let _change_prev_muted = context.player.muted();
+  let _change_prev_playback_rate = context.getPlaybackRate();
   // if(isplay === true || isplay === false) _change_prev_paused = !isplay;
 
   // Check if it is the same media.
@@ -57,7 +60,6 @@ export function changePlayerMedia(
     if(context.cache.playerElem) DOM.removeClass(context.cache.playerElem, context.config.classname_loaded_wrap);
 
     context.player.catalog.getVideo(id, (error: any, video: any) => {
-
       // reload palyer data.
       context.player.catalog.load(video);
 
@@ -96,6 +98,7 @@ export function changePlayerMedia(
     context.player.on('loadeddata',() => {
       context.setPlayerChangeLoad(true);
       context.player.off('loadeddata');
+      context.setPlaybackRate(_change_prev_playback_rate);
     });
 
   } else {

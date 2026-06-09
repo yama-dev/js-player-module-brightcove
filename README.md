@@ -153,6 +153,7 @@ const player = new PLAYER_MODULE_BRIGHTCOVE({
 | `PlayerPause`  | `(instance, brightcovePlayer)`       | Brightcove player の pause event。 |
 | `TimeUpdate`   | `{ current, max, down, ratio, par }` | timeupdate 時。                    |
 | `VolumeChange` | `{ volume, par }`                    | volumechange 時。                  |
+| `PlaybackRateChange` | `rate`                          | ratechange 時。                    |
 | `PlayPrep`     | `(instance, brightcovePlayer)`       | `Play()` 実行直前。                |
 | `Play`         | `(instance, brightcovePlayer)`       | `Play()` 実行後。                  |
 | `Pause`        | `(instance, brightcovePlayer)`       | `Pause()` 実行後。                 |
@@ -173,6 +174,9 @@ const player = new PLAYER_MODULE_BRIGHTCOVE({
 | `PauseAll(callback?)`                 | 登録済みの全プレーヤーを一時停止します。            |
 | `StopAll(callback?)`                  | 登録済みの全プレーヤーを停止します。                |
 | `SeekTo(sec)`                         | 指定秒数へシークします。                            |
+| `SeekBy(sec)`                         | 現在位置から指定秒数だけ前後へシークします。        |
+| `GetPlaybackRate()`                   | 現在の再生速度を返します。                          |
+| `SetPlaybackRate(rate)`               | 再生速度を `0.5` から `2` の範囲で設定します。      |
 | `GetTime()`                           | 現在時間を `mm:ss` 形式で返します。                 |
 | `GetTimeDown()`                       | 残り時間を `mm:ss` 形式で返します。                 |
 | `GetTimeMax()`                        | 動画時間を `mm:ss` 形式で返します。                 |

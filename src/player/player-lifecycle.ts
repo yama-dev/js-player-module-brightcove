@@ -63,6 +63,12 @@ export function registerPlayerLifecycle(context: PlayerLifecycleContext, DOM: an
     }
   });
 
+  context.player.on('ratechange', ()=>{
+    if (context.callbacks.PlaybackRateChange && typeof context.callbacks.PlaybackRateChange === 'function') {
+      context.callbacks.PlaybackRateChange(context.player.playbackRate());
+    }
+  });
+
   // For Ended movie paly.
   context.player.on('ended', ()=>{
     context.stop();

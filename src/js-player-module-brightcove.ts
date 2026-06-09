@@ -49,10 +49,13 @@ import {
 } from './player/player-ui-state';
 
 import {
+  getPlayerPlaybackRate,
   mutePlayer,
   pausePlayer,
   playPlayer,
+  seekPlayerBy,
   seekPlayerTo,
+  setPlayerPlaybackRate,
   setPlayerVolume,
   stopPlayer
 } from './player/player-controls';
@@ -351,6 +354,12 @@ export class PLAYER_MODULE_BRIGHTCOVE {
       play: (forceplay?: boolean, callback?: () => {}) => {
         this.Play(forceplay, callback);
       },
+      getPlaybackRate: () => {
+        return this.GetPlaybackRate();
+      },
+      setPlaybackRate: (rate: number) => {
+        return this.SetPlaybackRate(rate);
+      },
     };
   }
 
@@ -397,6 +406,18 @@ export class PLAYER_MODULE_BRIGHTCOVE {
 
   SeekTo(sec: any){
     return seekPlayerTo(this.Player, sec);
+  }
+
+  SeekBy(sec: any){
+    return seekPlayerBy(this.Player, sec);
+  }
+
+  GetPlaybackRate(){
+    return getPlayerPlaybackRate(this.Player);
+  }
+
+  SetPlaybackRate(rate: any){
+    return setPlayerPlaybackRate(this.Player, rate);
   }
 
   GetTime(){

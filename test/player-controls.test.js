@@ -4,7 +4,10 @@ const {
   stopPlayer,
   pausePlayer,
   mutePlayer,
+  getPlayerPlaybackRate,
+  seekPlayerBy,
   seekPlayerTo,
+  setPlayerPlaybackRate,
   setPlayerVolume,
 } = require('../.tmp-test/player/player-controls');
 
@@ -13,6 +16,8 @@ function createPlayer(paused = true) {
   let muted = false;
   let volume = 1;
   let currentTime = 10;
+  let duration = 100;
+  let playbackRate = 1;
 
   return {
     calls,
@@ -41,6 +46,14 @@ function createPlayer(paused = true) {
       if (value === undefined) return currentTime;
       currentTime = value;
       calls.push(['currentTime', value]);
+    },
+    duration() {
+      return duration;
+    },
+    playbackRate(value) {
+      if (value === undefined) return playbackRate;
+      playbackRate = value;
+      calls.push(['playbackRate', value]);
     },
   };
 }
@@ -144,10 +157,35 @@ assert.deepEqual(domCalls, [
 ]);
 
 const seekPlayer = createPlayer();
-assert.equal(seekPlayerTo(seekPlayer, 0), false);
+assert.equal(seekPlayerTo(seekPlayer, 0), undefined);
 assert.equal(seekPlayerTo(seekPlayer, {}), false);
 assert.equal(seekPlayerTo(seekPlayer, '12'), undefined);
-assert.deepEqual(seekPlayer.calls, [['currentTime', 12]]);
+assert.equal(seekPlayerTo(seekPlayer, 200), undefined);
+assert.deepEqual(seekPlayer.calls, [
+  ['currentTime', 0],
+  ['currentTime', 12],
+  ['currentTime', 100],
+]);
+
+const relativeSeekPlayer = createPlayer();
+assert.equal(seekPlayerBy(relativeSeekPlayer, 10), undefined);
+assert.equal(seekPlayerBy(relativeSeekPlayer, -30), undefined);
+assert.equal(seekPlayerBy(relativeSeekPlayer, 200), undefined);
+assert.equal(seekPlayerBy(relativeSeekPlayer, 0), false);
+assert.equal(seekPlayerBy(relativeSeekPlayer, 'invalid'), false);
+assert.deepEqual(relativeSeekPlayer.calls, [
+  ['currentTime', 20],
+  ['currentTime', 0],
+  ['currentTime', 100],
+]);
+
+const playbackRatePlayer = createPlayer();
+assert.equal(getPlayerPlaybackRate(playbackRatePlayer), 1);
+assert.equal(setPlayerPlaybackRate(playbackRatePlayer, 0.25), false);
+assert.equal(setPlayerPlaybackRate(playbackRatePlayer, 2.5), false);
+assert.equal(setPlayerPlaybackRate(playbackRatePlayer, '1.5'), undefined);
+assert.equal(getPlayerPlaybackRate(playbackRatePlayer), 1.5);
+assert.deepEqual(playbackRatePlayer.calls, [['playbackRate', 1.5]]);
 
 const volumePlayer = createPlayer();
 const volumeConfig = { volume: 0.5 };

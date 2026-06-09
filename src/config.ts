@@ -12,6 +12,7 @@ export const DEFAULT_CALLBACKS: PlayerCallbacks = {
 
   TimeUpdate : null,
   VolumeChange : null,
+  PlaybackRateChange : null,
 
   PlayPrep: null,
   Play    : null,

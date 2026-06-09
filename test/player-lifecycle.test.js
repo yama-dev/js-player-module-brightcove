@@ -25,6 +25,9 @@ const player = {
   on(eventName, handler) {
     handlers[eventName] = handler;
   },
+  playbackRate() {
+    return 1.5;
+  },
 };
 const context = {
   instance: {},
@@ -36,6 +39,9 @@ const context = {
   callbacks: {
     PlayerPlay() {
       calls.push('PlayerPlay');
+    },
+    PlaybackRateChange(rate) {
+      calls.push(['PlaybackRateChange', rate]);
     },
   },
   getCache() {
@@ -54,7 +60,13 @@ const context = {
 
 registerPlayerLifecycle(context, {});
 handlers.play();
+handlers.ratechange();
 
-assert.deepEqual(calls, ['pauseOther', 'classOn', 'PlayerPlay']);
+assert.deepEqual(calls, [
+  'pauseOther',
+  'classOn',
+  'PlayerPlay',
+  ['PlaybackRateChange', 1.5],
+]);
 
 console.log('player lifecycle: ok');

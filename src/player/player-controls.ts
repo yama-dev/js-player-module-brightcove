@@ -69,11 +69,37 @@ export function mutePlayer(context: PlayerControlContext, DOM: any): void {
 }
 
 export function seekPlayerTo(player: any, sec: any): boolean | void {
-  if(!sec) return false;
-  if(typeof sec == 'object' || typeof sec == 'function') return false;
   if(typeof sec == 'string') sec = Number(sec);
-  if(!sec) return false;
-  player.currentTime(sec);
+  if(typeof sec !== 'number' || !Number.isFinite(sec)) return false;
+
+  const duration = player.duration();
+  if(!Number.isFinite(duration)) return false;
+
+  player.currentTime(Math.min(Math.max(sec, 0), duration));
+}
+
+export function seekPlayerBy(player: any, sec: any): boolean | void {
+  if(typeof sec == 'string') sec = Number(sec);
+  if(typeof sec !== 'number' || !Number.isFinite(sec) || sec === 0) return false;
+
+  const duration = player.duration();
+  const currentTime = player.currentTime();
+
+  if(!Number.isFinite(duration) || !Number.isFinite(currentTime)) return false;
+
+  player.currentTime(Math.min(Math.max(currentTime + sec, 0), duration));
+}
+
+export function getPlayerPlaybackRate(player: any): number {
+  return player.playbackRate();
+}
+
+export function setPlayerPlaybackRate(player: any, rate: any): boolean | void {
+  if(typeof rate == 'string') rate = Number(rate);
+  if(typeof rate !== 'number' || !Number.isFinite(rate)) return false;
+  if(rate < 0.5 || rate > 2) return false;
+
+  player.playbackRate(rate);
 }
 
 export function setPlayerVolume(player: any, config: PlayerConfig, vol?: number | 'off'): boolean | void {

@@ -15,6 +15,8 @@ export type VolumeChangeCallback = (volume: {
   par: number;
 }) => void;
 
+export type PlaybackRateChangeCallback = (rate: number) => void;
+
 export interface PlayerCallbacks {
   PlayerInit: PlayerCallback | null;
   PlayerEnded: PlayerCallback | null;
@@ -22,6 +24,7 @@ export interface PlayerCallbacks {
   PlayerPause: PlayerCallback | null;
   TimeUpdate: TimeUpdateCallback | null;
   VolumeChange: VolumeChangeCallback | null;
+  PlaybackRateChange: PlaybackRateChangeCallback | null;
   PlayPrep: PlayerCallback | null;
   Play: PlayerCallback | null;
   Pause: PlayerCallback | null;
