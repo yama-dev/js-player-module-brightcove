@@ -16,7 +16,7 @@ Brightcove Player API を使ったカスタムプレーヤー用 JavaScript ラ�
 - Brightcove video id
 - Browser target: ES2015+
 
-v7 以降は IE11 をサポートしません。ビルドは Vite library mode で行います。
+v7 以降は IE11 をサポートしていません。
 
 ## Installation
 
@@ -193,6 +193,7 @@ const player = new PLAYER_MODULE_BRIGHTCOVE({
 
 - [npm](https://www.npmjs.com/package/js-player-module-brightcove)
 - [Demo](https://yama-dev.github.io/js-player-module-brightcove/examples/)
+- [Video & Audio Demo](https://yama-dev.github.io/js-player-module-brightcove/examples/demo.html)
 - [Brightcove Player API](https://docs.brightcove.com/brightcove-player/current-release/Player.html)
 - [GitHub Releases](https://github.com/yama-dev/js-player-module-brightcove/releases/latest)
 
