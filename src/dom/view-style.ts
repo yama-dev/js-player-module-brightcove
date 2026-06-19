@@ -3,6 +3,25 @@ export let viewPlayerStyle = `
 #{{ id }} {
   position: relative;
 }
+#{{ id }} #{{ player_id_wrap }} {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-top: 56.25%;
+  padding-top: var(--pmb-padding-top, 56.25%);
+  overflow: hidden;
+}
+#{{ id }} #{{ player_id_wrap }} .video-js,
+#{{ id }} #{{ player_id_wrap }} video,
+#{{ id }} #{{ player_id_wrap }} iframe {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
 #{{ id }} .on {
   display: none;
 }

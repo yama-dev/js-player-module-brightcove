@@ -140,13 +140,17 @@
 
     #videoPlayer_player_wrap {
       width: 100%;
-      aspect-ratio: 16 / 9;
+      height: 0;
+      padding-top: 56.25%;
+      padding-top: var(--pmb-padding-top, 56.25%);
       position: relative;
       overflow: hidden;
       background: #17181b;
     }
 
     #videoPlayer_player_wrap .video-js {
+      position: absolute;
+      inset: 0;
       width: 100%;
       height: 100%;
     }
@@ -856,7 +860,8 @@
         <pre class="prettyprint lang-js"><code>const videoPlayer = new PLAYER_MODULE_BRIGHTCOVE({
   id: 'videoPlayer',
   videoid: '4230322585001',
-  account: '20318290001'
+  account: '20318290001',
+  aspect_ratio: '16:9'
 });</code></pre>
       </details>
 
@@ -900,6 +905,7 @@
   player: 'default',
   width: '',
   height: '',
+  aspect_ratio: '16:9',
   video_title: 'Brightcove video player',
   volume: 1,
 
@@ -1024,7 +1030,8 @@
   mode: 'audio',
   id: 'audioPlayer',
   videoid: '4231692338001',
-  account: '20318290001'
+  account: '20318290001',
+  aspect_ratio: '16:9'
 });</code></pre>
       </details>
 
@@ -1067,6 +1074,7 @@
   player: 'default',
   width: '',
   height: '',
+  aspect_ratio: '16:9',
   video_title: 'Brightcove audio player',
   volume: 1,
 
@@ -1158,6 +1166,7 @@
       id: 'videoPlayer',
       videoid: '4230322585001',
       account: '20318290001',
+      aspect_ratio: '16:9',
       ui_default: false,
       ui_default_css: false,
       pause_others_on_play: true,
@@ -1197,6 +1206,7 @@
       id: 'audioPlayer',
       videoid: '4231692338001',
       account: '20318290001',
+      aspect_ratio: '16:9',
       ui_default: false,
       ui_default_css: false,
       pause_others_on_play: true,

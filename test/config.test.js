@@ -3,6 +3,7 @@ const {
   DEFAULT_CALLBACKS,
   DEFAULT_CONFIG,
   createPlayerConfig,
+  getAspectRatioPadding,
 } = require('../.tmp-test/config');
 
 assert.equal(DEFAULT_CONFIG.id, 'pmb');
@@ -29,6 +30,8 @@ assert.equal(config.volume, 0);
 assert.equal(config.playsinline, '');
 assert.equal(config.ui_default, false);
 assert.equal(config.ui_default_css, true);
+assert.equal(config.aspect_ratio, '16:9');
+assert.equal(config.aspect_ratio_padding, '56.25%');
 
 const defaultedConfig = createPlayerConfig({});
 assert.equal(defaultedConfig.id, 'pmb');
@@ -42,6 +45,8 @@ assert.equal(defaultedConfig.ui_controls, '');
 assert.equal(defaultedConfig.ui_autoplay, '');
 assert.equal(defaultedConfig.pause_others_on_play, false);
 assert.equal(defaultedConfig.stop_outfocus, false);
+assert.equal(defaultedConfig.aspect_ratio, '16:9');
+assert.equal(defaultedConfig.aspect_ratio_padding, '56.25%');
 
 const enabledFlagsConfig = createPlayerConfig({
   id: 'player2',
@@ -67,5 +72,17 @@ assert.equal(enabledFlagsConfig.stop_outfocus, true);
 assert.equal(enabledFlagsConfig.classname_loaded_wrap, 'loaded');
 assert.equal(enabledFlagsConfig.classname_active_wrap, 'active-wrap');
 assert.equal(enabledFlagsConfig.classname_active, 'active');
+
+const verticalConfig = createPlayerConfig({
+  id: 'player3',
+  aspect_ratio: '9:16',
+});
+
+assert.equal(verticalConfig.aspect_ratio, '9:16');
+assert.equal(verticalConfig.aspect_ratio_padding, '177.77777777777777%');
+assert.equal(getAspectRatioPadding('4:3'), '75%');
+assert.equal(getAspectRatioPadding('21:9'), '42.857142857142854%');
+assert.equal(getAspectRatioPadding('0:9'), '56.25%');
+assert.equal(getAspectRatioPadding('abc'), '56.25%');
 
 console.log('player config: ok');

@@ -36,6 +36,8 @@ export const DEFAULT_CONFIG: PlayerConfig = {
   account        : '',
   width          : '',
   height         : '',
+  aspect_ratio   : '16:9',
+  aspect_ratio_padding : '56.25%',
 
   video_title    : '',
 
@@ -61,8 +63,27 @@ export const DEFAULT_CONFIG: PlayerConfig = {
   classname_active : 'is-pmb-active'
 };
 
+export function getAspectRatioPadding(aspectRatio: string | undefined): string {
+  const fallback = '56.25%';
+
+  if(!aspectRatio || aspectRatio.indexOf(':') === -1){
+    return fallback;
+  }
+
+  const ratios = aspectRatio.split(':');
+  const width = Number(ratios[0]);
+  const height = Number(ratios[1]);
+
+  if(ratios.length !== 2 || !isFinite(width) || !isFinite(height) || width <= 0 || height <= 0){
+    return fallback;
+  }
+
+  return `${(height / width) * 100}%`;
+}
+
 export function createPlayerConfig(options: PlayerOptions): PlayerConfig {
   const id = options.id || 'pmb';
+  const aspect_ratio = options.aspect_ratio || '16:9';
 
   return {
     mode           : options.mode || 'movie',
@@ -77,6 +98,8 @@ export function createPlayerConfig(options: PlayerOptions): PlayerConfig {
     account        : options.account || '',
     width          : options.width || '',
     height         : options.height || '',
+    aspect_ratio   : aspect_ratio,
+    aspect_ratio_padding : getAspectRatioPadding(aspect_ratio),
 
     video_title    : options.video_title || '',
 

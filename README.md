@@ -48,7 +48,8 @@ Standalone で使う場合は npm package に含まれる `dist/js-player-module
   const player = new PLAYER_MODULE_BRIGHTCOVE({
     id: 'brightcovePlayer',
     videoid: '4230322585001',
-    account: '20318290001'
+    account: '20318290001',
+    aspect_ratio: '16:9'
   });
 </script>
 ```
@@ -130,6 +131,7 @@ const player = new PLAYER_MODULE_BRIGHTCOVE({
 | `mode`                  | `string`  | `movie`              | `movie` または `audio`。                    |
 | `width`                 | `string`  | `''`                 | video 要素の width。                        |
 | `height`                | `string`  | `''`                 | video 要素の height。                       |
+| `aspect_ratio`          | `string`  | `16:9`               | 初期CSS利用時の表示比率。`9:16` など任意の `横:縦` を指定可能。 |
 | `video_title`           | `string`  | `''`                 | video 要素の title 属性。                   |
 | `volume`                | `number`  | `1`                  | 初期音量。`0` から `1` の範囲。             |
 | `playsinline`           | `boolean` | `true`               | inline 再生属性を付与するか。               |

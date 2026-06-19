@@ -43,7 +43,21 @@ export function createPlayerMarkup(config: PlayerConfig): PlayerMarkup {
   let playerCssOption = '';
 
   if(config.mode == 'audio'){
-    playerCssOption += `#${config.player_id} { opacity: 0.001; }`;
+    playerCssOption += `
+#${config.id} #${config.player_id_wrap} {
+  width: 1px;
+  height: 1px;
+  padding-top: 0;
+  overflow: hidden;
+  position: absolute;
+  opacity: 0.00001;
+  pointer-events: none;
+}
+#${config.id} #${config.player_id} {
+  width: 1px;
+  height: 1px;
+  opacity: 0.00001;
+}`;
   }
 
   if(config.add_style){
@@ -77,6 +91,7 @@ export function mountPlayerElements(
   // Player Main.
   let playerHtmlDomWrap = document.createElement('div');
   playerHtmlDomWrap.id  = config.player_id_wrap;
+  playerHtmlDomWrap.style.setProperty('--pmb-padding-top', config.aspect_ratio_padding);
   playerHtmlDomWrap.innerHTML = markup.playerHtml;
   cache.playerElem[0].insertBefore(playerHtmlDomWrap, cache.playerElem[0].firstElementChild);
 

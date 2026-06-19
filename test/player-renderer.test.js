@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 global.window = global;
 
 const {
+  createPlayerMarkup,
   mountPlayerElements,
 } = require('../.tmp-test/player/player-renderer');
 
@@ -19,6 +20,12 @@ global.document = {
       tagName,
       id: '',
       innerHTML: '',
+      style: {
+        values: {},
+        setProperty(name, value) {
+          this.values[name] = value;
+        },
+      },
       onload: null,
       onerror: null,
       src: '',
@@ -46,6 +53,7 @@ const config = {
   player_ui_id: 'player1_ui',
   player_id_wrap: 'player1_player_wrap',
   player_style_id: 'player1_style',
+  aspect_ratio_padding: '177.77777777777777%',
   ui_default: true,
   ui_default_css: false,
 };
@@ -70,6 +78,7 @@ mountPlayerElements(config, cache, markup, DOM, () => {
 assert.equal(insertedElements[0].element.id, 'player1_ui');
 assert.equal(insertedElements[0].element.innerHTML, markup.playerUiHtml);
 assert.equal(insertedElements[1].element.id, 'player1_player_wrap');
+assert.equal(insertedElements[1].element.style.values['--pmb-padding-top'], '177.77777777777777%');
 assert.equal(insertedElements[1].element.innerHTML, markup.playerHtml);
 assert.equal(appendedElements[0].tagName, 'style');
 assert.equal(appendedElements[0].innerHTML, markup.playerCssOption);
@@ -79,5 +88,35 @@ assert.equal(appendedElements[1].src.startsWith(`${markup.playerScriptCode}?`), 
 
 appendedElements[1].onload();
 assert.equal(scriptLoaded, 1);
+
+const audioMarkup = createPlayerMarkup({
+  mode: 'audio',
+  id: 'audio1',
+  player_id: 'audio1_player',
+  player_id_wrap: 'audio1_player_wrap',
+  player_ui_id: 'audio1_ui',
+  player_style_id: 'audio1_style',
+  videoid: 'video1',
+  account: 'account1',
+  player: 'default',
+  width: '1',
+  height: '1',
+  video_title: '',
+  poster: '',
+  ui_controls: '',
+  ui_autoplay: '',
+  playsinline: '',
+  loop: '',
+  muted: '',
+  add_style: '',
+});
+
+assert.equal(audioMarkup.playerCssOption.includes('#audio1 #audio1_player_wrap'), true);
+assert.equal(audioMarkup.playerCssOption.includes('#audio1 #audio1_player'), true);
+assert.equal(audioMarkup.playerCssOption.includes('width: 1px;'), true);
+assert.equal(audioMarkup.playerCssOption.includes('height: 1px;'), true);
+assert.equal(audioMarkup.playerCssOption.includes('padding-top: 0;'), true);
+assert.equal(audioMarkup.playerCssOption.includes('opacity: 0.00001;'), true);
+assert.equal(audioMarkup.playerCssOption.includes('pointer-events: none;'), true);
 
 console.log('player renderer: ok');

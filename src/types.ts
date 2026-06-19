@@ -41,6 +41,7 @@ export interface PlayerOptions {
   account?: string;
   width?: string;
   height?: string;
+  aspect_ratio?: string;
   video_title?: string;
   player?: string;
   volume?: number;
@@ -72,6 +73,8 @@ export interface PlayerConfig {
   account: string;
   width: string;
   height: string;
+  aspect_ratio: string;
+  aspect_ratio_padding: string;
   video_title: string;
   player: string;
   volume: number;
