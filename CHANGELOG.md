@@ -1,5 +1,11 @@
 # js-player-module-brightcove
 
+## 7.3.0
+
+### Minor Changes
+
+- 5ab17ad: Add the `aspect_ratio` option for responsive player sizing and hide audio-mode player wrappers without preserving video aspect-ratio space.
+
 ## 7.2.0
 
 ### Minor Changes
