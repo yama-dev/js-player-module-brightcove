@@ -293,13 +293,19 @@ export class PLAYER_MODULE_BRIGHTCOVE {
     deactivatePlayerUi(this.$, this.CONFIG, DOM);
   }
 
-  Update(){
+  Update(currentTimeOverride?: number){
     // Not change value at seeking.
-    if(this.PlayerChangeSeekingFlg) return;
+    if(this.PlayerChangeSeekingFlg && currentTimeOverride === undefined) return;
 
     // Determine while changing media.
     if(this.PlayerChangeLoadFlg){
-      let timeInfo = getPlayerTimeInfo(this.Player);
+      const timeSource = currentTimeOverride === undefined
+        ? this.Player
+        : {
+          currentTime: () => currentTimeOverride,
+          duration: () => this.Player.duration(),
+        };
+      let timeInfo = getPlayerTimeInfo(timeSource);
       renderPlayingTime(this.$, timeInfo, this.on, DOM);
     } else {
       renderEmptyTime(this.$, DOM);

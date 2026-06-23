@@ -13,6 +13,7 @@ export interface PlayerEventContext {
   Mute(): void;
   SetVolume(vol?: number | 'off'): boolean | void;
   Change(id: any, isplay?: boolean | null, callback?: () => {}): boolean | void;
+  Update(currentTimeOverride?: number): void;
 }
 
 function clampSeekbarRatio(ratio: number): number {
@@ -138,45 +139,95 @@ export function bindEventSeekbarTime(context: PlayerEventContext, DOM: any): voi
   if(context.$.uiSeekbarTime){
 
     let _targetTime = 0;
+    let pendingPreplaySeekTime: number | null = null;
+    let preplaySeekInProgress = false;
+    let preplaySeekTargetTime: number | null = null;
+    let preplaySeekStableUpdates = 0;
+
+    const completePreplaySeek = () => {
+      if(!preplaySeekInProgress) return;
+
+      preplaySeekInProgress = false;
+      preplaySeekTargetTime = null;
+      preplaySeekStableUpdates = 0;
+      context.PlayerChangeSeekingFlg = false;
+      context.Update();
+    };
+
+    const tryCompletePreplaySeek = () => {
+      if(preplaySeekTargetTime === null) return;
+
+      const currentTime = context.Player.currentTime();
+      if(Number.isFinite(currentTime) && currentTime >= preplaySeekTargetTime - 0.25){
+        preplaySeekStableUpdates += 1;
+      } else {
+        preplaySeekStableUpdates = 0;
+      }
+
+      if(preplaySeekStableUpdates >= 2){
+        completePreplaySeek();
+      }
+    };
+
+    context.Player.on('play', () => {
+      if(pendingPreplaySeekTime === null) return;
+
+      const preplaySeekTime = pendingPreplaySeekTime;
+      pendingPreplaySeekTime = null;
+      preplaySeekInProgress = true;
+      preplaySeekTargetTime = preplaySeekTime;
+      preplaySeekStableUpdates = 0;
+      context.PlayerChangeSeekingFlg = true;
+      context.Update(preplaySeekTime);
+      context.Player.currentTime(preplaySeekTime);
+    });
+
+    context.Player.on('timeupdate', tryCompletePreplaySeek);
+
+    const updateSeekPosition = (target: HTMLElement, clientX: number) => {
+      const targetWidth = getSeekbarRatio(target, clientX);
+      const duration = context.Player.duration();
+
+      if(!Number.isFinite(duration)) return;
+
+      _targetTime = duration * targetWidth;
+      DOM.setStyle(context.$.uiSeekbarTimeCover, { width: (targetWidth * 100) + '%' });
+
+      if(typeof context.Player.hasStarted === 'function' && !context.Player.hasStarted()){
+        pendingPreplaySeekTime = _targetTime;
+      } else {
+        context.Player.currentTime(_targetTime);
+      }
+
+      context.Update(_targetTime);
+    };
+
+    const finishSeeking = () => {
+      if(!context.PlayerChangeSeekingFlg) return;
+
+      if(pendingPreplaySeekTime !== null){
+        context.Update(_targetTime);
+        return;
+      }
+
+      context.PlayerChangeSeekingFlg = false;
+      context.Update(_targetTime);
+    };
 
     if(!isTouchDevice()){
       DOM.addEvent(context.$.uiSeekbarTime, 'mousedown', (event: MouseEvent) => {
         context.PlayerChangeSeekingFlg = true;
-        let _target        = event.currentTarget as HTMLElement;
-        let _targetWidth   = getSeekbarRatio(_target, event.clientX);
-        _targetTime = context.Player.duration() * _targetWidth;
-        DOM.setStyle( context.$.uiSeekbarTimeCover, { width : (_targetWidth * 100) + '%' } );
-        context.Player.currentTime(_targetTime);
+        updateSeekPosition(event.currentTarget as HTMLElement, event.clientX);
       });
 
-      DOM.addEvent(context.$.uiSeekbarTime, 'mouseleave', () => {
-        if(context.PlayerChangeSeekingFlg){
-          context.Play();
-          setTimeout(()=>{
-            context.Play();
-            context.PlayerChangeSeekingFlg = false;
-          }, 100);
-        }
-      });
+      DOM.addEvent(context.$.uiSeekbarTime, 'mouseleave', finishSeeking);
 
-      DOM.addEvent(context.$.uiSeekbarTime, 'mouseup', () => {
-        if(context.PlayerChangeSeekingFlg){
-          context.Play();
-          setTimeout(()=>{
-            context.Play();
-            context.PlayerChangeSeekingFlg = false;
-          }, 100);
-        }
-      });
+      DOM.addEvent(context.$.uiSeekbarTime, 'mouseup', finishSeeking);
+      DOM.addEvent(window, 'mouseup', finishSeeking);
 
       DOM.addEvent(context.$.uiSeekbarTime, 'mousemove', (event: MouseEvent) => {
         if(context.PlayerChangeSeekingFlg){
-          let _target        = event.currentTarget as HTMLElement;
-          let _targetWidth   = getSeekbarRatio(_target, event.clientX);
-          _targetTime    = context.Player.duration() * _targetWidth;
-
-          DOM.setStyle( context.$.uiSeekbarTimeCover, { width : (_targetWidth * 100) + '%' } );
-          context.Player.currentTime(_targetTime);
+          updateSeekPosition(event.currentTarget as HTMLElement, event.clientX);
         }
       });
 
@@ -184,41 +235,18 @@ export function bindEventSeekbarTime(context: PlayerEventContext, DOM: any): voi
 
       DOM.addEvent(context.$.uiSeekbarTime, 'touchstart', (event: TouchEvent) => {
         context.PlayerChangeSeekingFlg = true;
-        let _target        = event.currentTarget as HTMLElement;
-        let _targetWidth   = getSeekbarRatio(_target, event.touches[0].clientX);
-        _targetTime = context.Player.duration() * _targetWidth;
-        DOM.setStyle( context.$.uiSeekbarTimeCover, { width : (_targetWidth * 100) + '%' } );
-        context.Player.currentTime(_targetTime);
+        updateSeekPosition(event.currentTarget as HTMLElement, event.touches[0].clientX);
       });
 
-      DOM.addEvent(context.$.uiSeekbarTime, 'touchcancel', () => {
-        if(context.PlayerChangeSeekingFlg){
-          context.Play();
-          setTimeout(()=>{
-            context.Play();
-            context.PlayerChangeSeekingFlg = false;
-          }, 100);
-        }
-      });
+      DOM.addEvent(context.$.uiSeekbarTime, 'touchcancel', finishSeeking);
 
-      DOM.addEvent(context.$.uiSeekbarTime, 'touchend', () => {
-        if(context.PlayerChangeSeekingFlg){
-          context.Play();
-          setTimeout(()=>{
-            context.Play();
-            context.PlayerChangeSeekingFlg = false;
-          }, 100);
-        }
-      });
+      DOM.addEvent(context.$.uiSeekbarTime, 'touchend', finishSeeking);
+      DOM.addEvent(window, 'touchcancel', finishSeeking);
+      DOM.addEvent(window, 'touchend', finishSeeking);
 
       DOM.addEvent(context.$.uiSeekbarTime, 'touchmove', (event: TouchEvent) => {
         if(context.PlayerChangeSeekingFlg){
-          let _target        = event.currentTarget as HTMLElement;
-          let _targetWidth   = getSeekbarRatio(_target, event.touches[0].clientX);
-          _targetTime    = context.Player.duration() * _targetWidth;
-
-          DOM.setStyle( context.$.uiSeekbarTimeCover, { width : (_targetWidth * 100) + '%' } );
-          context.Player.currentTime(_targetTime);
+          updateSeekPosition(event.currentTarget as HTMLElement, event.touches[0].clientX);
         }
       });
 
