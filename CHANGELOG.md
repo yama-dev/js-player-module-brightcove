@@ -1,5 +1,17 @@
 # js-player-module-brightcove
 
+## 7.3.2
+
+### Patch Changes
+
+- ビルド後の JavaScript に含まれる複数行テンプレートの改行とインデントを除去しました。
+
+## 7.3.1
+
+### Patch Changes
+
+- iOS Safari で初回再生前にシークした場合の進捗表示と再生位置の不整合を修正しました。
+
 ## 7.3.0
 
 ### Minor Changes
