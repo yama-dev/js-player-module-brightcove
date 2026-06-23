@@ -2,6 +2,9 @@ import { PlayerDomCache } from '../dom/dom-cache';
 import { PlayerConfig } from '../types';
 import { isTouchDevice } from '../utils/util';
 
+const PREPLAY_SEEK_TOLERANCE_SECONDS = 0.25;
+const PREPLAY_SEEK_STABLE_UPDATE_COUNT = 2;
+
 export interface PlayerEventContext {
   CONFIG: PlayerConfig;
   Player: any;
@@ -139,15 +142,17 @@ export function bindEventSeekbarTime(context: PlayerEventContext, DOM: any): voi
   if(context.$.uiSeekbarTime){
 
     let _targetTime = 0;
+
+    // Setting currentTime before the first playback can prevent progress updates
+    // on iOS Safari. Defer the actual seek until playback starts and keep the
+    // requested position rendered while the player settles at the target.
     let pendingPreplaySeekTime: number | null = null;
-    let preplaySeekInProgress = false;
     let preplaySeekTargetTime: number | null = null;
     let preplaySeekStableUpdates = 0;
 
     const completePreplaySeek = () => {
-      if(!preplaySeekInProgress) return;
+      if(preplaySeekTargetTime === null) return;
 
-      preplaySeekInProgress = false;
       preplaySeekTargetTime = null;
       preplaySeekStableUpdates = 0;
       context.PlayerChangeSeekingFlg = false;
@@ -158,13 +163,14 @@ export function bindEventSeekbarTime(context: PlayerEventContext, DOM: any): voi
       if(preplaySeekTargetTime === null) return;
 
       const currentTime = context.Player.currentTime();
-      if(Number.isFinite(currentTime) && currentTime >= preplaySeekTargetTime - 0.25){
+      if(Number.isFinite(currentTime) && currentTime >= preplaySeekTargetTime - PREPLAY_SEEK_TOLERANCE_SECONDS){
+        // A single update may briefly reach the target and then jump backward.
         preplaySeekStableUpdates += 1;
       } else {
         preplaySeekStableUpdates = 0;
       }
 
-      if(preplaySeekStableUpdates >= 2){
+      if(preplaySeekStableUpdates >= PREPLAY_SEEK_STABLE_UPDATE_COUNT){
         completePreplaySeek();
       }
     };
@@ -174,7 +180,6 @@ export function bindEventSeekbarTime(context: PlayerEventContext, DOM: any): voi
 
       const preplaySeekTime = pendingPreplaySeekTime;
       pendingPreplaySeekTime = null;
-      preplaySeekInProgress = true;
       preplaySeekTargetTime = preplaySeekTime;
       preplaySeekStableUpdates = 0;
       context.PlayerChangeSeekingFlg = true;
